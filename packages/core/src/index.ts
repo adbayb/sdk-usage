@@ -1,10 +1,28 @@
-import {
-	JSXOpeningElement,
-	TsPropertySignature,
-	TsType,
-	parse,
-} from "@swc/core";
+import { JSXOpeningElement, TsType, parse } from "@swc/core";
 import { Visitor } from "@swc/core/Visitor";
+
+type Node = {
+	/* Metadata */
+	createdAt: string;
+	/* Data */
+	name: string;
+	module: string;
+	version: string;
+	type: "component" | "type" | "method" | "variable" | "unknown";
+	args?: {
+		data: Record<string, unknown>;
+		isSpread: boolean;
+	};
+	location: {
+		url: string; // Versioned (GitHub, ...) link if available, otherwise relative path
+		line: number;
+		column: number;
+		module: string; // Consumer package
+		repository: string; // Consumer repository
+	};
+};
+
+const data: Array<Node> = [];
 
 const getLocation = (content: string, offset: number) => {
 	const linesTillOffset = content.substring(0, offset).split(/\n/);
@@ -26,24 +44,40 @@ class CustomVisitor extends Visitor {
 	}
 
 	override visitJSXOpeningElement(n: JSXOpeningElement): JSXOpeningElement {
-		console.log(
-			"JSXOpeningElement",
-			n.name.type === "Identifier" ? n.name.value : n.name,
-			getLocation(this.source, n.span.start)
-		);
+		if (n.name.type !== "Identifier") return n;
+
+		data.push({
+			createdAt: new Date().toISOString(),
+			location: {
+				...getLocation(this.source, n.span.start),
+				url: "",
+				module: "",
+				repository: "",
+			},
+			module: "",
+			name: n.name.value,
+			type: "component",
+			version: "",
+			args: {
+				isSpread: false,
+				data: n.attributes.reduce((props, prop) => {
+					if (
+						prop.type !== "JSXAttribute" ||
+						prop.name.type !== "Identifier"
+					)
+						return props;
+
+					props[prop.name.value] = prop.value;
+
+					return props;
+				}, {} as Record<string, unknown>),
+			},
+		});
 
 		return n;
 	}
 
-	visitTsType(n: TsType): TsType {
-		console.log("TsType", n);
-
-		return n;
-	}
-
-	visitTsPropertySignature(n: TsPropertySignature): TsPropertySignature {
-		console.log("TsPropertySignature", n);
-
+	override visitTsType(n: TsType): TsType {
 		return n;
 	}
 }
@@ -55,6 +89,8 @@ const scan = async () => {
 	});
 
 	new CustomVisitor(EXAMPLE).visitModule(module);
+
+	console.log(JSON.stringify(data, null, 2));
 };
 
 const EXAMPLE = `import { Link as ChakraLink, Button } from '@chakra-ui/react'
