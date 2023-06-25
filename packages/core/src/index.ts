@@ -6,11 +6,30 @@ import {
 } from "@swc/core";
 import { Visitor } from "@swc/core/Visitor";
 
+const getLocation = (content: string, offset: number) => {
+	const linesTillOffset = content.substring(0, offset).split(/\n/);
+	const line = linesTillOffset.length;
+	const column = (linesTillOffset[line - 1] as string).length;
+
+	return {
+		line,
+		column,
+	};
+};
+
 class CustomVisitor extends Visitor {
+	source: string;
+
+	constructor(source: string) {
+		super();
+		this.source = source;
+	}
+
 	override visitJSXOpeningElement(n: JSXOpeningElement): JSXOpeningElement {
 		console.log(
 			"JSXOpeningElement",
-			n.name.type === "Identifier" ? n.name.value : n.name
+			n.name.type === "Identifier" ? n.name.value : n.name,
+			getLocation(this.source, n.span.start)
 		);
 
 		return n;
@@ -35,7 +54,7 @@ const scan = async () => {
 		tsx: true,
 	});
 
-	new CustomVisitor().visitModule(module);
+	new CustomVisitor(EXAMPLE).visitModule(module);
 };
 
 const EXAMPLE = `import { Link as ChakraLink, Button } from '@chakra-ui/react'
