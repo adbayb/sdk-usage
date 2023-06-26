@@ -67,13 +67,39 @@ const getLocation = (content: string, offset: number) => {
 
 const createVisitor = (source: string) => {
 	const visitor = new Visitor();
+	const imports = new Map<string, { module: string; name: string }>();
 
 	visitor.visitTsType = (n) => {
 		return n;
 	};
 
+	visitor.visitImportDeclaration = (n) => {
+		const module = n.source.value;
+
+		n.specifiers.forEach((specifier) => {
+			const specifierValue = specifier.local.value;
+
+			imports.set(specifierValue, {
+				// @ts-expect-error `imported` field is exposed by `ImportSpecifier` node (@todo: fix the typing issue in @swc/core)
+				name: specifier.imported?.value || specifierValue,
+				module,
+			});
+		});
+
+		return n;
+	};
+
 	visitor.visitJSXOpeningElement = (n) => {
 		if (n.name.type !== "Identifier") return n;
+
+		const name = n.name.value;
+		const importMetadata = imports.get(name);
+
+		if (!importMetadata) {
+			throw new Error(
+				`\`visitJSXOpeningElement\` no import found for ${name}`
+			);
+		}
 
 		data.push({
 			createdAt: new Date().toISOString(),
@@ -83,8 +109,8 @@ const createVisitor = (source: string) => {
 				module: "",
 				repository: "",
 			},
-			module: "",
-			name: n.name.value,
+			module: importMetadata.module,
+			name: importMetadata.name,
 			type: "component",
 			version: "",
 			args: {
@@ -138,7 +164,7 @@ export const Button = (props: ButtonProps) => (
     flexGrow={3}
     mx={2}
   >
-    <Button width="100%" bgGradient="linear(to-tr, teal.300,yellow.400)">
+    <Button width="100%" bgGradient="linear(to-tr, teal.300,yellow.400)" testVariable={myVariable}>
       {props.children}
     </Button>
   </ChakraLink>
