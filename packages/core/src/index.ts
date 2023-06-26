@@ -1,7 +1,13 @@
-import { JSXOpeningElement, TsType, parse } from "@swc/core";
+import {
+	JSXAttrValue,
+	JSXOpeningElement,
+	Node,
+	TsType,
+	parse,
+} from "@swc/core";
 import { Visitor } from "@swc/core/Visitor";
 
-type Node = {
+type SonarNode = {
 	/* Metadata */
 	createdAt: string;
 	/* Data */
@@ -22,7 +28,37 @@ type Node = {
 	};
 };
 
-const data: Array<Node> = [];
+const data: Array<SonarNode> = [];
+
+type PrimitiveValue = string | boolean | undefined | null | bigint | number;
+
+const getUnsupportedValue = (node: Node) => `type#${node.type}`;
+
+const getLiteralValue = (node: JSXAttrValue | undefined): PrimitiveValue => {
+	if (!node) {
+		return true;
+	}
+
+	if (node.type === "NullLiteral") {
+		return null;
+	}
+
+	if (
+		node.type === "StringLiteral" ||
+		node.type === "NumericLiteral" ||
+		node.type === "BigIntLiteral" ||
+		node.type === "BooleanLiteral" ||
+		node.type === "JSXText"
+	) {
+		return node.value;
+	}
+
+	if (node.type === "JSXExpressionContainer") {
+		return getLiteralValue(node.expression as JSXAttrValue);
+	}
+
+	return getUnsupportedValue(node);
+};
 
 const getLocation = (content: string, offset: number) => {
 	const linesTillOffset = content.substring(0, offset).split(/\n/);
@@ -60,17 +96,20 @@ class CustomVisitor extends Visitor {
 			version: "",
 			args: {
 				isSpread: false,
-				data: n.attributes.reduce((props, prop) => {
-					if (
-						prop.type !== "JSXAttribute" ||
-						prop.name.type !== "Identifier"
-					)
+				data: n.attributes.reduce<Record<string, unknown>>(
+					(props, prop) => {
+						if (
+							prop.type !== "JSXAttribute" ||
+							prop.name.type !== "Identifier"
+						)
+							return props;
+
+						props[prop.name.value] = getLiteralValue(prop.value);
+
 						return props;
-
-					props[prop.name.value] = prop.value;
-
-					return props;
-				}, {} as Record<string, unknown>),
+					},
+					{}
+				),
 			},
 		});
 
