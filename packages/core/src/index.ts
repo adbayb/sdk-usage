@@ -1,10 +1,4 @@
-import {
-	JSXAttrValue,
-	JSXOpeningElement,
-	Node,
-	TsType,
-	parse,
-} from "@swc/core";
+import { JSXAttrValue, Module, Node, parse } from "@swc/core";
 import { Visitor } from "@swc/core/Visitor";
 
 type SonarNode = {
@@ -71,21 +65,20 @@ const getLocation = (content: string, offset: number) => {
 	};
 };
 
-class CustomVisitor extends Visitor {
-	source: string;
+const createVisitor = (source: string) => {
+	const visitor = new Visitor();
 
-	constructor(source: string) {
-		super();
-		this.source = source;
-	}
+	visitor.visitTsType = (n) => {
+		return n;
+	};
 
-	override visitJSXOpeningElement(n: JSXOpeningElement): JSXOpeningElement {
+	visitor.visitJSXOpeningElement = (n) => {
 		if (n.name.type !== "Identifier") return n;
 
 		data.push({
 			createdAt: new Date().toISOString(),
 			location: {
-				...getLocation(this.source, n.span.start),
+				...getLocation(source, n.span.start),
 				url: "",
 				module: "",
 				repository: "",
@@ -114,12 +107,12 @@ class CustomVisitor extends Visitor {
 		});
 
 		return n;
-	}
+	};
 
-	override visitTsType(n: TsType): TsType {
-		return n;
-	}
-}
+	return function visit(module: Module) {
+		visitor.visitModule(module);
+	};
+};
 
 const scan = async () => {
 	const module = await parse(EXAMPLE, {
@@ -127,7 +120,9 @@ const scan = async () => {
 		tsx: true,
 	});
 
-	new CustomVisitor(EXAMPLE).visitModule(module);
+	const visit = createVisitor(EXAMPLE);
+
+	visit(module);
 
 	console.log(JSON.stringify(data, null, 2));
 };
