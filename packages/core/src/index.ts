@@ -1,7 +1,7 @@
 import { JSXAttrValue, Module, Node, parse } from "@swc/core";
 import { Visitor } from "@swc/core/Visitor";
 
-type SonarNode = {
+type SonarItem = {
 	/* Metadata */
 	createdAt: string;
 	/* Data */
@@ -9,10 +9,12 @@ type SonarNode = {
 	module: string;
 	version: string;
 	type: "component" | "type" | "method" | "variable" | "unknown";
-	args?: {
-		data: Record<string, unknown>;
-		isSpread: boolean;
-	};
+	args?:
+		| {
+				data: Record<string, unknown>;
+				isSpread: boolean;
+		  }
+		| undefined;
 	location: {
 		url: string; // Versioned (GitHub, ...) link if available, otherwise relative path
 		line: number;
@@ -22,11 +24,11 @@ type SonarNode = {
 	};
 };
 
-const data: Array<SonarNode> = [];
+const data: Array<SonarItem> = [];
 
 type PrimitiveValue = string | boolean | undefined | null | bigint | number;
 
-const getUnsupportedValue = (node: Node) => `type#${node.type}`;
+const getUnsupportedValue = (node: Node) => `#${node.type}`;
 
 const getLiteralValue = (node: JSXAttrValue | undefined): PrimitiveValue => {
 	if (!node) {
@@ -68,15 +70,69 @@ const getLocation = (content: string, offset: number) => {
 const createVisitor = (source: string) => {
 	const visitor = new Visitor();
 	const imports = new Map<string, { module: string; name: string }>();
-
-	visitor.visitTsType = (n) => {
-		return n;
+	const createItem = ({
+		offset,
+		module,
+		name,
+		type,
+		args,
+	}: Pick<SonarItem, "module" | "name" | "args" | "type"> & {
+		offset: number;
+	}) => {
+		return {
+			createdAt: new Date().toISOString(),
+			location: {
+				...getLocation(source, offset),
+				url: "",
+				module: "",
+				repository: "",
+			},
+			module,
+			name,
+			type,
+			version: "",
+			args,
+		};
 	};
 
-	visitor.visitImportDeclaration = (n) => {
-		const module = n.source.value;
+	visitor.visitTsType = (node) => {
+		let typeValue = "";
 
-		n.specifiers.forEach((specifier) => {
+		if (
+			node.type === "TsTypeReference" &&
+			node.typeName.type === "Identifier"
+		) {
+			typeValue = node.typeName.value;
+		}
+
+		if (
+			node.type === "TsIndexedAccessType" &&
+			node.indexType.type === "TsTypeReference" &&
+			node.indexType.typeName.type === "Identifier"
+		) {
+			typeValue = node.indexType.typeName.value;
+		}
+
+		const importMetadata = imports.get(typeValue);
+
+		if (!importMetadata) return node;
+
+		data.push(
+			createItem({
+				offset: node.span.start,
+				module: importMetadata.module,
+				name: importMetadata.name,
+				type: "type",
+			})
+		);
+
+		return node;
+	};
+
+	visitor.visitImportDeclaration = (node) => {
+		const module = node.source.value;
+
+		node.specifiers.forEach((specifier) => {
 			const specifierValue = specifier.local.value;
 
 			imports.set(specifierValue, {
@@ -86,13 +142,13 @@ const createVisitor = (source: string) => {
 			});
 		});
 
-		return n;
+		return node;
 	};
 
-	visitor.visitJSXOpeningElement = (n) => {
-		if (n.name.type !== "Identifier") return n;
+	visitor.visitJSXOpeningElement = (node) => {
+		if (node.name.type !== "Identifier") return node;
 
-		const name = n.name.value;
+		const name = node.name.value;
 		const importMetadata = imports.get(name);
 
 		if (!importMetadata) {
@@ -101,38 +157,35 @@ const createVisitor = (source: string) => {
 			);
 		}
 
-		data.push({
-			createdAt: new Date().toISOString(),
-			location: {
-				...getLocation(source, n.span.start),
-				url: "",
-				module: "",
-				repository: "",
-			},
-			module: importMetadata.module,
-			name: importMetadata.name,
-			type: "component",
-			version: "",
-			args: {
-				isSpread: false,
-				data: n.attributes.reduce<Record<string, unknown>>(
-					(props, prop) => {
-						if (
-							prop.type !== "JSXAttribute" ||
-							prop.name.type !== "Identifier"
-						)
+		data.push(
+			createItem({
+				offset: node.span.start,
+				module: importMetadata.module,
+				name: importMetadata.name,
+				type: "component",
+				args: {
+					isSpread: false,
+					data: node.attributes.reduce<Record<string, unknown>>(
+						(props, prop) => {
+							if (
+								prop.type !== "JSXAttribute" ||
+								prop.name.type !== "Identifier"
+							)
+								return props;
+
+							props[prop.name.value] = getLiteralValue(
+								prop.value
+							);
+
 							return props;
+						},
+						{}
+					),
+				},
+			})
+		);
 
-						props[prop.name.value] = getLiteralValue(prop.value);
-
-						return props;
-					},
-					{}
-				),
-			},
-		});
-
-		return n;
+		return node;
 	};
 
 	return function visit(module: Module) {
@@ -153,9 +206,10 @@ const scan = async () => {
 	console.log(JSON.stringify(data, null, 2));
 };
 
-const EXAMPLE = `import { Link as ChakraLink, Button } from '@chakra-ui/react'
+const EXAMPLE = `import { Link as ChakraLink, Button, ButtonProps, type ChakraLinkProps } from '@chakra-ui/react'
 export interface ButtonProps {
   children: string;
+  test: ChakraLinkProps["plop"]
 }
 export const Button = (props: ButtonProps) => (
   <ChakraLink
