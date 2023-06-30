@@ -84,16 +84,16 @@ const createVisitor = (source: string) => {
 		offset: number;
 	}): Item => {
 		return {
-			location: {
-				...getLocation(source, offset),
-				file: "",
-				module: "",
-			},
-			module,
 			name,
 			type,
+			module,
 			version: "",
 			args,
+			location: {
+				...getLocation(source, offset),
+				file: import.meta.url,
+				module: "",
+			},
 		};
 	};
 
@@ -109,10 +109,10 @@ const createVisitor = (source: string) => {
 
 		if (
 			node.type === "TsIndexedAccessType" &&
-			node.indexType.type === "TsTypeReference" &&
-			node.indexType.typeName.type === "Identifier"
+			node.objectType.type === "TsTypeReference" &&
+			node.objectType.typeName.type === "Identifier"
 		) {
-			typeValue = node.indexType.typeName.value;
+			typeValue = node.objectType.typeName.value;
 		}
 
 		const importMetadata = imports.get(typeValue);
