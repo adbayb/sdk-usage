@@ -39,10 +39,11 @@ const main = async (parser: Parser) => {
 	const output: Output = {
 		createdAt: new Date().toISOString(),
 		source: process.cwd(),
-		items: await parser.parse(code, { createItem, createFallbackToken }),
+		data: await parser.parse(code, { createItem, createFallbackToken }),
 	};
 
 	console.log(JSON.stringify(output, null, 2));
 };
 
+// @todo: make output file configurable
 main(parser);

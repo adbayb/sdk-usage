@@ -15,7 +15,7 @@ export type Parser = {
 export type Primitive = string | boolean | undefined | null | bigint | number;
 
 export type Output = Metadata & {
-	items: Array<Item>;
+	data: Array<Item>;
 };
 
 type Metadata = {
@@ -42,4 +42,15 @@ export type Item = {
 				isSpread: boolean;
 		  }
 		| undefined;
+};
+
+/**
+ * Plugins introduce only external side effects without having control over internal side effects
+ * to not introduce weird behaviors if multiple plugins are composed together
+ * @example instance counter, elasticsearch put op, ...
+ */
+export type Plugin = {
+	onStart(metadata: Metadata): void; // eg. For setting up the initial context
+	onCollect(item: Item): void; // eg. For rest calls, count processing, ...
+	onEnd(output: Output): void; // eg. For managing write operations, clean up, ...
 };

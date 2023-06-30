@@ -16,35 +16,6 @@ export const parser: Parser = {
 	},
 };
 
-const getLiteralValue = (
-	node: JSXAttrValue | undefined,
-	methods: Pick<ParserMethods, "createFallbackToken">
-): Primitive => {
-	if (!node) {
-		return true;
-	}
-
-	if (node.type === "NullLiteral") {
-		return null;
-	}
-
-	if (
-		node.type === "StringLiteral" ||
-		node.type === "NumericLiteral" ||
-		node.type === "BigIntLiteral" ||
-		node.type === "BooleanLiteral" ||
-		node.type === "JSXText"
-	) {
-		return node.value;
-	}
-
-	if (node.type === "JSXExpressionContainer") {
-		return getLiteralValue(node.expression as JSXAttrValue, methods);
-	}
-
-	return methods.createFallbackToken(node.type);
-};
-
 const createVisitor = ({ createItem, createFallbackToken }: ParserMethods) => {
 	const items: Array<Item> = [];
 	const visitor = new Visitor();
@@ -145,4 +116,33 @@ const createVisitor = ({ createItem, createFallbackToken }: ParserMethods) => {
 
 		return items;
 	};
+};
+
+const getLiteralValue = (
+	node: JSXAttrValue | undefined,
+	methods: Pick<ParserMethods, "createFallbackToken">
+): Primitive => {
+	if (!node) {
+		return true;
+	}
+
+	if (node.type === "NullLiteral") {
+		return null;
+	}
+
+	if (
+		node.type === "StringLiteral" ||
+		node.type === "NumericLiteral" ||
+		node.type === "BigIntLiteral" ||
+		node.type === "BooleanLiteral" ||
+		node.type === "JSXText"
+	) {
+		return node.value;
+	}
+
+	if (node.type === "JSXExpressionContainer") {
+		return getLiteralValue(node.expression as JSXAttrValue, methods);
+	}
+
+	return methods.createFallbackToken(node.type);
 };
