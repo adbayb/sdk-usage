@@ -1,10 +1,16 @@
 import { JSXAttrValue, Module, Node, parse } from "@swc/core";
 import { Visitor } from "@swc/core/Visitor";
 
-type SonarItem = {
-	/* Metadata */
+type Output = Metadata & {
+	items: Array<Item>;
+};
+
+type Metadata = {
 	createdAt: string;
-	/* Data */
+	source: string; // URL (if VCS) or filesystem path for the currently analyzed project
+};
+
+type Item = {
 	name: string;
 	module: string;
 	version: string;
@@ -16,15 +22,12 @@ type SonarItem = {
 		  }
 		| undefined;
 	location: {
-		url: string; // Versioned (GitHub, ...) link if available, otherwise relative path
+		file: string;
 		line: number;
 		column: number;
-		module: string; // Consumer package
-		repository: string; // Consumer repository
+		module: string;
 	};
 };
-
-const data: Array<SonarItem> = [];
 
 type PrimitiveValue = string | boolean | undefined | null | bigint | number;
 
@@ -68,6 +71,7 @@ const getLocation = (content: string, offset: number) => {
 };
 
 const createVisitor = (source: string) => {
+	const data: Array<Item> = [];
 	const visitor = new Visitor();
 	const imports = new Map<string, { module: string; name: string }>();
 	const createItem = ({
@@ -76,16 +80,14 @@ const createVisitor = (source: string) => {
 		name,
 		type,
 		args,
-	}: Pick<SonarItem, "module" | "name" | "args" | "type"> & {
+	}: Pick<Item, "module" | "name" | "args" | "type"> & {
 		offset: number;
-	}) => {
+	}): Item => {
 		return {
-			createdAt: new Date().toISOString(),
 			location: {
 				...getLocation(source, offset),
-				url: "",
+				file: "",
 				module: "",
-				repository: "",
 			},
 			module,
 			name,
@@ -190,6 +192,8 @@ const createVisitor = (source: string) => {
 
 	return function visit(module: Module) {
 		visitor.visitModule(module);
+
+		return data;
 	};
 };
 
@@ -200,10 +204,14 @@ const scan = async () => {
 	});
 
 	const visit = createVisitor(EXAMPLE);
+	const items = visit(module);
+	const output: Output = {
+		createdAt: new Date().toISOString(),
+		source: process.cwd(),
+		items,
+	};
 
-	visit(module);
-
-	console.log(JSON.stringify(data, null, 2));
+	console.log(JSON.stringify(output, null, 2));
 };
 
 const EXAMPLE = `import { Link as ChakraLink, Button, ButtonProps, type ChakraLinkProps } from '@chakra-ui/react'
