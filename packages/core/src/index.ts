@@ -14,7 +14,7 @@ type Item = {
 	name: string;
 	module: string;
 	version: string;
-	type: "component" | "type" | "method" | "variable" | "unknown";
+	type: "element" | "type" | "method" | "variable" | "unknown";
 	args?:
 		| {
 				data: Record<string, unknown>;
@@ -153,18 +153,14 @@ const createVisitor = (source: string) => {
 		const name = node.name.value;
 		const importMetadata = imports.get(name);
 
-		if (!importMetadata) {
-			throw new Error(
-				`\`visitJSXOpeningElement\` no import found for ${name}`
-			);
-		}
+		if (!importMetadata) return node;
 
 		data.push(
 			createItem({
-				offset: node.span.start,
-				module: importMetadata.module,
 				name: importMetadata.name,
-				type: "component",
+				module: importMetadata.module,
+				offset: node.span.start,
+				type: "element",
 				args: {
 					isSpread: false,
 					data: node.attributes.reduce<Record<string, unknown>>(
@@ -198,12 +194,12 @@ const createVisitor = (source: string) => {
 };
 
 const scan = async () => {
-	const module = await parse(EXAMPLE, {
+	const module = await parse(EXAMPLE_SOLID, {
 		syntax: "typescript",
 		tsx: true,
 	});
 
-	const visit = createVisitor(EXAMPLE);
+	const visit = createVisitor(EXAMPLE_SOLID);
 	const items = visit(module);
 	const output: Output = {
 		createdAt: new Date().toISOString(),
@@ -214,7 +210,7 @@ const scan = async () => {
 	console.log(JSON.stringify(output, null, 2));
 };
 
-const EXAMPLE = `import { Link as ChakraLink, Button, ButtonProps, type ChakraLinkProps } from '@chakra-ui/react'
+export const EXAMPLE_REACT = `import { Link as ChakraLink, Button, ButtonProps, type ChakraLinkProps } from '@chakra-ui/react'
 export interface ButtonProps {
   children: string;
   test: ChakraLinkProps["plop"]
@@ -231,5 +227,21 @@ export const Button = (props: ButtonProps) => (
     </Button>
   </ChakraLink>
 )`;
+
+export const EXAMPLE_SOLID = `import { render } from "solid-js/web";
+import { createSignal } from "solid-js";
+
+function Counter() {
+  const [count, setCount] = createSignal(1);
+  const increment = () => setCount(count() + 1);
+
+  return (
+    <button type="button" onClick={increment}>
+      {count()} hello
+    </button>
+  );
+}
+
+render(() => <Counter />, document.getElementById("app")!);`;
 
 scan();

@@ -1,3 +1,3 @@
-# jsx-sonar
+# ESonar
 
-A code sonar to analyze and collect JSX syntax (with React, PReact, Solid, Vue, ... support)
+A code sonar to analyze ECMAScript modules usage with JSX and TypeScript support.
