@@ -20,7 +20,7 @@
 		}
 	},
 	"sideEffects": false,
-    "homepage": "https://github.com/adbayb/esonar/tree/main/packages/core#readme",
+	"homepage": "https://github.com/adbayb/esonar/tree/main/packages/core#readme",
 	"bugs": {
 		"url": "https://github.com/adbayb/esonar/issues"
 	},
@@ -29,16 +29,16 @@
 		"url": "https://github.com/adbayb/esonar.git",
 		"directory": "packages/core"
 	},
-    "keywords": [
+	"keywords": [
 		"sonar",
 		"analyze",
 		"inspect",
 		"scan",
-        "monitor",
-        "usage",
-        "jsx",
-        "react",
-        "api"
+		"monitor",
+		"usage",
+		"jsx",
+		"react",
+		"api"
 	],
 	"scripts": {
 		"start": "tsx ./src/index.ts",
@@ -46,7 +46,8 @@
 		"watch": "quickbundle watch"
 	},
 	"dependencies": {
-		"@swc/core": "^1.3.66"
+		"@swc/core": "^1.3.66",
+		"astray": "^1.1.1"
 	},
 	"devDependencies": {
 		"quickbundle": "1.2.0",

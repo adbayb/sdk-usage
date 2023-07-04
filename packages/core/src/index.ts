@@ -1,6 +1,6 @@
 import type { Location, Output, Parser, ParserMethods } from "./types";
-import { EXAMPLE_REACT } from "./constants";
-import { parser } from "./parsers/swc";
+import { EXAMPLE_SOLID } from "./constants";
+import { parser } from "./parser";
 
 const createFallbackToken = (value: string) => `#${value}`; // Preserve unrecognized tokens and flag them by prefixing with `#`
 
@@ -18,7 +18,7 @@ const createLocation = (code: string, offset: number): Location => {
 };
 
 const main = async (parser: Parser) => {
-	const code = EXAMPLE_REACT;
+	const code = EXAMPLE_SOLID;
 	const createItem: ParserMethods["createItem"] = ({
 		offset,
 		module,
