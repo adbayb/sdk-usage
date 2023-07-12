@@ -11,7 +11,7 @@ import { Item, Parser, ParserMethods, Primitive } from "./types";
 
 export const parser: Parser = {
 	id: "swc",
-	async parse(source, methods) {
+	async execute(source, methods) {
 		const ast = await swcParse(source, {
 			syntax: "typescript",
 			tsx: true,
