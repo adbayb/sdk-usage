@@ -1,12 +1,12 @@
-import { Context } from "./context";
-import { Package } from "./package";
+import type { Context } from "./context";
+import type { Package } from "./package";
 
 export type Item = {
 	createdAt: string;
 	name: string;
 	module: string;
 	location: Location;
-	type: "component" | "type" | "method" | "variable" | "unknown";
+	type: "component" | "method" | "type" | "unknown" | "variable";
 	args?:
 		| {
 				data: Record<string, unknown>;
@@ -30,8 +30,8 @@ export const createItem = ({
 	offset,
 	root,
 	pkg,
-}: Pick<Item, "module" | "name" | "type" | "args"> &
-	Pick<Location, "root" | "pkg" | "file"> & {
+}: Pick<Item, "args" | "module" | "name" | "type"> &
+	Pick<Location, "file" | "pkg" | "root"> & {
 		code: string;
 		offset: number;
 	}) => {
@@ -41,6 +41,7 @@ export const createItem = ({
 		file: "./index.ts",
 		pkg,
 	};
+
 	const item: Item = {
 		createdAt: new Date().toISOString(),
 		name,
@@ -57,8 +58,8 @@ export const createItem = ({
 	return item;
 };
 
-type Location = Position &
-	Pick<Context, "root"> & {
+type Location = Pick<Context, "root"> &
+	Position & {
 		/** Relative path to the file */
 		file: string;
 		/** Package metadata */

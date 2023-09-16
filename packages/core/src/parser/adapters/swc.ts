@@ -1,13 +1,14 @@
-import {
+import type {
 	ImportDeclaration,
 	JSXAttrValue,
 	JSXOpeningElement,
 	Module,
 	TsType,
-	parse as swcParse,
 } from "@swc/core";
+import { parse as swcParse } from "@swc/core";
 import { walk } from "astray";
-import { Parser, Primitive } from "../types";
+
+import type { Parser, Primitive } from "../types";
 import { getUnknownValue } from "../helpers";
 
 type AST = {
@@ -29,6 +30,7 @@ export const parser: Parser = {
 		 * SWC traverser (`import { Visitor } from "@swc/core/Visitor"`) is not used since it doesn't traverse recursively nodes
 		 * (at least, recursive `JSXOpeningElement`s are not retrieved)
 		 */
+		// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 		walk<Module, void, AST>(ast, {
 			ImportDeclaration(node) {
 				const module = node.source.value;
@@ -37,8 +39,11 @@ export const parser: Parser = {
 					const specifierValue = specifier.local.value;
 
 					onSettingImport({
-						// @ts-expect-error `imported` field is exposed by `ImportSpecifier` node (@todo: fix the typing issue in @swc/core)
-						name: specifier.imported?.value || specifierValue,
+						name:
+							// @ts-expect-error `imported` field is exposed by `ImportSpecifier` node (@todo: fix the typing issue in @swc/core)
+							// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+							(specifier.imported?.value ||
+								specifierValue) as string,
 						alias: specifierValue,
 						module,
 					});
@@ -68,12 +73,12 @@ export const parser: Parser = {
 									return props;
 
 								props[prop.name.value] = getLiteralValue(
-									prop.value
+									prop.value,
 								);
 
 								return props;
 							},
-							{}
+							{},
 						),
 					},
 				});

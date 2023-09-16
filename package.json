@@ -1,60 +1,41 @@
 {
 	"private": true,
-	"author": {
-	  "name": "Ayoub Adib",
-	  "email": "adbayb@gmail.com",
-	  "url": "https://twitter.com/adbayb"
-	},
-	"repository": {
-	  "type": "git",
-	  "url": "git@github.com:adbayb/esonar.git"
-	},
-	"license": "MIT",
+	"version": "0.0.0",
+	"type": "module",
 	"scripts": {
-	  "prepare": "husky install ./scripts/hooks && pnpm build",
-	  "clean": "scripts clean",
-	  "check": "scripts check",
-	  "fix": "scripts fix",
-	  "start": "turbo run start",
-	  "build": "turbo run build",
-	  "watch": "turbo run watch"
+		"prepare": "stack install",
+		"clean": "stack clean",
+		"check": "stack check",
+		"fix": "stack fix",
+		"start": "stack start",
+		"build": "stack build",
+		"watch": "stack watch",
+		"test": "stack test",
+		"release:log": "stack release --log",
+		"release:version": "stack release --tag",
+		"release:publish": "stack release --publish"
 	},
-	"devDependencies": {
-	  "@adbayb/eslint-config": "0.14.0",
-	  "@adbayb/prettier-config": "0.14.0",
-	  "@adbayb/scripts": "0.14.0",
-	  "@adbayb/ts-config": "0.14.0",
-	  "@commitlint/cli": "17.6.6",
-	  "@commitlint/config-conventional": "17.6.6",
-	  "@types/node": "18.16.0",
-	  "eslint": "8.43.0",
-	  "husky": "8.0.3",
-	  "lint-staged": "13.2.2",
-	  "prettier": "2.8.8",
-	  "vitest": "0.32.2",
-	  "turbo": "1.10.6",
-	  "typescript": "5.1.3"
+	"packageManager": "pnpm@8.7.5",
+	"engines": {
+		"node": ">=18.0.0",
+		"pnpm": ">=8.0.0",
+		"npm": "please-use-pnpm",
+		"yarn": "please-use-pnpm"
 	},
 	"prettier": "@adbayb/prettier-config",
 	"eslintConfig": {
-	  "extends": "@adbayb"
+		"extends": "@adbayb"
 	},
 	"commitlint": {
-	  "extends": [
-		"@commitlint/config-conventional"
-	  ]
+		"extends": [
+			"@commitlint/config-conventional"
+		]
 	},
-	"lint-staged": {
-	  "**/*.{js,jsx,ts,tsx,cjs,mjs,cts,mts}": [
-		"pnpm check"
-	  ],
-	  "**/*.{json,md,mdx,html,css,yaml,yml}": [
-		"pnpm fix"
-	  ]
-	},
-	"packageManager": "pnpm@8.6.3",
-	"engines": {
-	  "node": ">=18.0.0",
-	  "pnpm": ">=8.0.0"
+	"devDependencies": {
+		"@adbayb/eslint-config": "1.5.0",
+		"@adbayb/prettier-config": "1.2.0",
+		"@adbayb/stack": "1.10.0",
+		"@adbayb/ts-config": "1.0.0",
+		"@types/node": "18.17.17"
 	}
 }

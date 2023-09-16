@@ -1,20 +1,20 @@
-import { Import } from "../entities/import";
-import { Item } from "../entities/item";
+import type { Import } from "../entities/import";
+import type { Item } from "../entities/item";
 
 export type Parser = {
 	id: string;
-	execute(
+	execute: (
 		code: string,
 		callbacks: {
 			onAddingItem: (
-				item: Pick<Item, "module" | "name" | "args" | "type"> & {
+				item: Pick<Item, "args" | "module" | "name" | "type"> & {
 					offset: number;
-				}
+				},
 			) => void;
 			onGettingImport: (name: Import["name"]) => Import | undefined;
 			onSettingImport: (data: Import) => void;
-		}
-	): Promise<void>;
+		},
+	) => Promise<void>;
 };
 
-export type Primitive = string | boolean | undefined | null | bigint | number;
+export type Primitive = bigint | boolean | number | string | null | undefined;

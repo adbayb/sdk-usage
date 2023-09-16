@@ -1,16 +1,12 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-import {
-	Button,
-	ButtonProps,
-	Link as ChakraLink,
-	type ChakraLinkProps,
-} from "@chakra-ui/react";
+import { Button as ChakraButton, Link as ChakraLink } from "@chakra-ui/react";
+import type { LinkProps as ChakraLinkProps } from "@chakra-ui/react";
 
-export interface ButtonProps {
+export type ButtonProps = {
 	children: string;
-	test: ChakraLinkProps["plop"];
-}
+	test: ChakraLinkProps["isExternal"];
+};
+
+const MY_VARIABLE = "test";
 
 export const Button = (props: ButtonProps) => (
 	<ChakraLink
@@ -19,12 +15,12 @@ export const Button = (props: ButtonProps) => (
 		flexGrow={3}
 		mx={2}
 	>
-		<Button
+		<ChakraButton
 			width="100%"
 			bgGradient="linear(to-tr, teal.300,yellow.400)"
-			testVariable={myVariable}
+			data-test={MY_VARIABLE}
 		>
 			{props.children}
-		</Button>
+		</ChakraButton>
 	</ChakraLink>
 );

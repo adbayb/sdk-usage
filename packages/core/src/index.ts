@@ -19,4 +19,6 @@ const main = async () => {
 	console.log(JSON.stringify(output, null, 2));
 };
 
-main();
+main().catch((error) => {
+	console.log("Error", error);
+});
