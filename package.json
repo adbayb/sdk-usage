@@ -15,7 +15,7 @@
 		"release:version": "stack release --tag",
 		"release:publish": "stack release --publish"
 	},
-	"packageManager": "pnpm@8.7.5",
+	"packageManager": "pnpm@8.8.0",
 	"engines": {
 		"node": ">=18.0.0",
 		"pnpm": ">=8.0.0",
@@ -32,9 +32,9 @@
 		]
 	},
 	"devDependencies": {
-		"@adbayb/eslint-config": "1.5.0",
+		"@adbayb/eslint-config": "1.6.0",
 		"@adbayb/prettier-config": "1.2.0",
-		"@adbayb/stack": "1.10.0",
+		"@adbayb/stack": "1.11.0",
 		"@adbayb/ts-config": "1.0.0",
 		"@types/node": "18.17.17"
 	}
