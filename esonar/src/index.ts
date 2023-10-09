@@ -17,7 +17,9 @@ const main = async () => {
 		},
 	});
 
-	console.log(JSON.stringify(output, null, 2));
+	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+	output;
+	// console.log(JSON.stringify(output, null, 2));
 };
 
 main().catch((error) => {
