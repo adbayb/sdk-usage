@@ -9,7 +9,7 @@
 		"dist"
 	],
 	"bin": {
-		"esonar": "./bin/index.cjs"
+		"esonar": "./bin/index.mjs"
 	},
 	"sideEffects": false,
 	"type": "module",
