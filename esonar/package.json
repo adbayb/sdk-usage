@@ -34,7 +34,7 @@
 		"directory": "esonar"
 	},
 	"scripts": {
-		"start": "./bin/index.cjs",
+		"start": "./bin/index.mjs",
 		"build": "quickbundle build",
 		"watch": "quickbundle watch"
 	},
