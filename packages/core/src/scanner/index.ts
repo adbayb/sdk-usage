@@ -1,19 +1,18 @@
 import { fdir } from "fdir";
 import { dirname } from "node:path";
+import { createRequire } from "node:module";
 
 import { CWD } from "../constants";
+
+const require = createRequire(import.meta.url);
 
 export type ScannerOptions = {
 	/**
 	 * A list of folders to ignore
-	 *
-	 * @default [".git", "node_modules", "dist", "out"]
 	 */
 	excludeFolders?: string[];
 	/**
 	 * A list of files to include (following glob matcher)
-	 *
-	 * @default **\/*\/!(test|stories|*.test|*.stories).?(m){j,t}s?(x)
 	 */
 	includeFiles?: string[];
 };
@@ -29,7 +28,17 @@ export const scan = (options: ScannerOptions = {}) => {
 		.crawl(CWD)
 		.sync()
 		.map((path) => {
-			return { metadata: path, folder: dirname(path) };
+			const metadata = require(path) as {
+				name: string;
+				version: string;
+				description: string;
+				dependencies?: Record<string, string>;
+				devDependencies?: Record<string, string>;
+				peerDependencies?: Record<string, string>;
+				optionalDependencies?: Record<string, string>;
+			};
+
+			return { metadata, folder: dirname(path) };
 		});
 
 	return projects.map((project) => {
@@ -49,5 +58,3 @@ const DEFAULT_EXCLUDED_FOLDERS = [".git", "node_modules", "dist", "out"];
 const DEFAULT_INCLUDED_FILES = [
 	"**/*/!(test|*.test|stories|*.stories).?(m){j,t}s?(x)", // js|jsx|ts|tsx|cjs|mjs|cjsx|mjsx excluding test-like and story-like files
 ];
-
-console.log(scan());

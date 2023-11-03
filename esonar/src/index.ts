@@ -1,10 +1,8 @@
-import { parse } from "@esonar/core";
-
-import { EXAMPLE_SOLID } from "./constants";
+import { parse, scan } from "@esonar/core";
 
 const main = async () => {
 	// @todo: make output file configurable
-	const output = await parse(EXAMPLE_SOLID, {
+	await parse("console.log('hello')", {
 		root: process.cwd(),
 		file: "./test.tsx",
 		pkg: {
@@ -17,9 +15,7 @@ const main = async () => {
 		},
 	});
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	output;
-	// console.log(JSON.stringify(output, null, 2));
+	console.log(scan());
 };
 
 main().catch((error) => {
