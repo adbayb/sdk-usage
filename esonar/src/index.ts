@@ -9,10 +9,20 @@ const main = async () => {
 	for (const project of projects) {
 		for (const file of project.files) {
 			const content = readFileSync(file, "utf-8");
+			const module = project.metadata.name;
+
+			// console.log(
+			// 	file,
+			// 	await parse(content, {
+			// 		file,
+			// 		module,
+			// 	}),
+			// );
 
 			items.push(
 				...(await parse(content, {
 					file,
+					module,
 				})),
 			);
 		}

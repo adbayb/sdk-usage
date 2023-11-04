@@ -1,22 +1,31 @@
 import type { Import } from "../entities/import";
 import type { Item } from "../entities/item";
 import { createItem } from "../entities/item";
+import type { Location } from "../entities/location";
+import { createLocation } from "../entities/location";
 
 import { parser } from "./adapters/swc";
 
-type Metadata = Pick<Item["location"], "file">;
+type Context = Pick<Location, "file" | "module">;
 
-export const parse = async (code: string, { file }: Metadata) => {
+export const parse = async (code: string, context: Context) => {
 	const items: Item[] = [];
 	const imports = new Map<Import["alias"], Import>();
 
 	await parser.execute(code, {
-		onAddingItem: (item) => {
+		onAddingItem: ({ module, name, offset, type, args }) => {
 			items.push(
 				createItem({
-					...item,
-					code,
-					file,
+					args,
+					module,
+					name,
+					type,
+					location: createLocation({
+						code,
+						offset,
+						file: context.file,
+						module: context.module,
+					}),
 				}),
 			);
 		},
