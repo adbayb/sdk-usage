@@ -1,5 +1,6 @@
-import type { Context } from "./context";
-import type { Package } from "./package";
+import { relative } from "node:path";
+
+import { CWD } from "../constants";
 
 export type Item = {
 	createdAt: string;
@@ -22,61 +23,46 @@ export type Item = {
  * @returns created item
  */
 export const createItem = ({
-	module,
-	name,
-	type,
 	args,
 	code,
+	file,
+	module,
+	name,
 	offset,
-	root,
-	pkg,
-}: Pick<Item, "args" | "module" | "name" | "type"> &
-	Pick<Location, "file" | "pkg" | "root"> & {
-		code: string;
-		offset: number;
-	}) => {
-	const location: Location = {
-		...createPosition(code, offset),
-		root,
-		file: "./index.ts",
-		pkg,
-	};
-
+	type,
+}: CreateLocationParameters &
+	Pick<Item, "args" | "module" | "name" | "type">) => {
 	const item: Item = {
 		createdAt: new Date().toISOString(),
 		name,
 		type,
 		module,
 		args,
-		location,
+		location: createLocation({ code, offset, file }),
 	};
-
-	if (pkg) {
-		item.location.pkg = pkg;
-	}
 
 	return item;
 };
 
-type Location = Pick<Context, "root"> &
-	Position & {
-		/** Relative path to the file */
-		file: string;
-		/** Package metadata */
-		pkg?: Pick<Package, "name" | "version"> | undefined;
-	};
-
-type Position = {
+type Location = {
+	// @todo pkg consumer name
+	file: string;
 	line: number;
 	column: number;
 };
 
-const createPosition = (code: string, offset: number) => {
+type CreateLocationParameters = Pick<Location, "file"> & {
+	code: string;
+	offset: number;
+};
+
+const createLocation = ({ code, offset, file }: CreateLocationParameters) => {
 	const linesTillOffset = code.substring(0, offset).split(/\n/);
 	const line = linesTillOffset.length;
 	const column = (linesTillOffset[line - 1] as string).length;
 
 	return {
+		file: `./${relative(CWD, file)}`,
 		column,
 		line,
 	};

@@ -3,6 +3,7 @@ import { dirname } from "node:path";
 import { createRequire } from "node:module";
 
 import { CWD } from "../constants";
+import type { Package } from "../entities/package";
 
 const require = createRequire(import.meta.url);
 
@@ -28,15 +29,7 @@ export const scan = (options: ScannerOptions = {}) => {
 		.crawl(CWD)
 		.sync()
 		.map((path) => {
-			const metadata = require(path) as {
-				name: string;
-				version: string;
-				description: string;
-				dependencies?: Record<string, string>;
-				devDependencies?: Record<string, string>;
-				peerDependencies?: Record<string, string>;
-				optionalDependencies?: Record<string, string>;
-			};
+			const metadata = require(path) as Package;
 
 			return { metadata, folder: dirname(path) };
 		});

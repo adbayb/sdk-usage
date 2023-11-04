@@ -1,21 +1,24 @@
+import type { Item } from "@esonar/core";
 import { parse, scan } from "@esonar/core";
+import { readFileSync } from "fs";
 
 const main = async () => {
-	// @todo: make output file configurable
-	await parse("console.log('hello')", {
-		root: process.cwd(),
-		file: "./test.tsx",
-		pkg: {
-			name: "@example/solid",
-			version: "0.1.0",
-			dependencies: new Map([
-				["@suid/material", "1.0.0"],
-				["solid-js", "2.0.0"],
-			]),
-		},
-	});
+	const projects = scan();
+	const items: Item[] = [];
 
-	console.log(scan());
+	for (const project of projects) {
+		for (const file of project.files) {
+			const content = readFileSync(file, "utf-8");
+
+			items.push(
+				...(await parse(content, {
+					file,
+				})),
+			);
+		}
+	}
+
+	console.log(items);
 };
 
 main().catch((error) => {
