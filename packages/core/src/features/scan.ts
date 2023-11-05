@@ -1,6 +1,6 @@
 import { fdir } from "fdir";
-import { dirname } from "node:path";
 import { createRequire } from "node:module";
+import { dirname } from "node:path";
 
 import { CWD } from "../constants";
 import type { Package } from "../entities/package";

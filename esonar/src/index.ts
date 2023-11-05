@@ -1,7 +1,9 @@
 import { esonar } from "@esonar/core";
 
 const main = async () => {
-	await esonar();
+	const items = await esonar();
+
+	console.log(items);
 };
 
 main().catch((error) => {

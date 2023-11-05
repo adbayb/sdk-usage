@@ -1,8 +1,10 @@
 import { readFileSync } from "fs";
 
-import { scan } from "./scanner";
+import { createItem } from "./entities/item";
 import type { Item } from "./entities/item";
-import { parse } from "./parser";
+import { createLocation } from "./entities/location";
+import { parse } from "./features/parse";
+import { scan } from "./features/scan";
 
 export const esonar = async () => {
 	const projects = scan();
@@ -10,17 +12,24 @@ export const esonar = async () => {
 
 	for (const project of projects) {
 		for (const file of project.files) {
-			const content = readFileSync(file, "utf-8");
+			const code = readFileSync(file, "utf-8");
 			const module = project.metadata.name;
 
-			const projectItems = await parse(content, {
-				file,
-				module,
+			await parse(code, (item) => {
+				items.push(
+					createItem({
+						...item,
+						location: createLocation({
+							code,
+							file,
+							module,
+							offset: item.offset,
+						}),
+					}),
+				);
 			});
-
-			items.push(...projectItems);
 		}
 	}
 
-	console.log(items);
+	return items;
 };
