@@ -10,7 +10,7 @@ type Metadata = {
  * @example instance counter, elasticsearch put op, ...
  */
 export type Plugin = {
-	onStart: (metadata: Metadata) => void; // For initial operations (eg. setting up the initial context)
 	onCollect: (item: Item) => void; // For atomic operations on a single item (eg. rest calls, specific item alteration, ...)
 	onEnd: (items: Item[]) => void; // For global operations on all items (eg. managing write operations, clean up, or even reducing items to count elements, ...)
+	onStart: (metadata: Metadata) => void; // For initial operations (eg. setting up the initial context)
 };

@@ -31,7 +31,7 @@ export const scan = (options: ScannerOptions = {}) => {
 		.map((path) => {
 			const metadata = require(path) as Package;
 
-			return { metadata, folder: dirname(path) };
+			return { folder: dirname(path), metadata };
 		});
 
 	return projects.map((project) => {

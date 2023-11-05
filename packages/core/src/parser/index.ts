@@ -13,19 +13,19 @@ export const parse = async (code: string, context: Context) => {
 	const imports = new Map<Import["alias"], Import>();
 
 	await parser.execute(code, {
-		onAddingItem: ({ module, name, offset, type, args }) => {
+		onAddingItem: ({ name, args, module, offset, type }) => {
 			items.push(
 				createItem({
-					args,
-					module,
 					name,
-					type,
+					args,
 					location: createLocation({
 						code,
-						offset,
 						file: context.file,
 						module: context.module,
+						offset,
 					}),
+					module,
+					type,
 				}),
 			);
 		},

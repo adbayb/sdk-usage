@@ -1,17 +1,17 @@
 import type { Location } from "./location";
 
 export type Item = {
-	createdAt: string;
 	name: string;
-	module: string;
-	location: Location;
-	type: "component" | "method" | "type" | "unknown" | "variable";
 	args?:
 		| {
 				data: Record<string, unknown>;
 				isSpread: boolean;
 		  }
 		| undefined;
+	createdAt: string;
+	location: Location;
+	module: string;
+	type: "component" | "method" | "type" | "unknown" | "variable";
 };
 
 /**
@@ -21,19 +21,19 @@ export type Item = {
  * @returns created item
  */
 export const createItem = ({
-	args,
-	module,
 	name,
-	type,
+	args,
 	location,
+	module,
+	type,
 }: Pick<Item, "args" | "location" | "module" | "name" | "type">) => {
 	const item: Item = {
-		createdAt: new Date().toISOString(),
 		name,
-		type,
-		module,
 		args,
+		createdAt: new Date().toISOString(),
 		location,
+		module,
+		type,
 	};
 
 	return item;

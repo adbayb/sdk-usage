@@ -59,11 +59,7 @@ export const parser: Parser = {
 
 				onAddingItem({
 					name: importMetadata.name,
-					module: importMetadata.module,
-					offset: node.span.start,
-					type: "component",
 					args: {
-						isSpread: false,
 						data: node.attributes.reduce<Record<string, unknown>>(
 							(props, prop) => {
 								if (
@@ -80,7 +76,11 @@ export const parser: Parser = {
 							},
 							{},
 						),
+						isSpread: false,
 					},
+					module: importMetadata.module,
+					offset: node.span.start,
+					type: "component",
 				});
 			},
 			TsType(node) {
@@ -106,9 +106,9 @@ export const parser: Parser = {
 				if (!importMetadata) return;
 
 				onAddingItem({
-					offset: node.span.start,
-					module: importMetadata.module,
 					name: importMetadata.name,
+					module: importMetadata.module,
+					offset: node.span.start,
 					type: "type",
 				});
 			},

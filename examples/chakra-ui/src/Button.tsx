@@ -10,15 +10,15 @@ const MY_VARIABLE = "test";
 
 export const Button = (props: ButtonProps) => (
 	<ChakraLink
-		isExternal
-		href="https://github.com/vercel/next.js/blob/canary/examples/with-chakra-ui"
 		flexGrow={3}
+		href="https://github.com/vercel/next.js/blob/canary/examples/with-chakra-ui"
+		isExternal
 		mx={2}
 	>
 		<ChakraButton
-			width="100%"
 			bgGradient="linear(to-tr, teal.300,yellow.400)"
 			data-test={MY_VARIABLE}
+			width="100%"
 		>
 			{props.children}
 		</ChakraButton>

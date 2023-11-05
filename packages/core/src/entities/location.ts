@@ -3,10 +3,10 @@ import { relative } from "node:path";
 import { CWD } from "../constants";
 
 export type Location = {
-	module: string;
+	column: number;
 	file: string;
 	line: number;
-	column: number;
+	module: string;
 };
 
 export const createLocation = ({
