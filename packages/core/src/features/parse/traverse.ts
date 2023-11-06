@@ -9,10 +9,12 @@ export const traverse = <
 		[Key in keyof NodeMapper]?: (node: NodeMapper[Key]) => void;
 	},
 ) => {
-	const visit = visitor[node.type];
+	if (isNode(node)) {
+		const visit = visitor[node.type];
 
-	if (typeof visit === "function") {
-		visit(node);
+		if (typeof visit === "function") {
+			visit(node);
+		}
 	}
 
 	for (const key of Object.keys(node)) {
@@ -30,7 +32,7 @@ export const traverse = <
 			continue;
 		}
 
-		if (isNode(child)) {
+		if (isObject(child)) {
 			traverse(child, visitor);
 		}
 	}
