@@ -18,7 +18,9 @@ export const esonar = async () => {
 			await parse(code, (item) => {
 				items.push(
 					createItem({
+						// @todo: Version
 						...item,
+						// @todo: Git origin URL if available
 						location: createLocation({
 							code,
 							file,

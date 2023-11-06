@@ -6,11 +6,12 @@ import type {
 	Module,
 	TsType,
 } from "@swc/core";
-import { walk } from "astray";
 
-import type { Import } from "../entities/import";
-import type { Item } from "../entities/item";
-import type { Primitive } from "../types";
+import type { Import } from "../../entities/import";
+import type { Item } from "../../entities/item";
+import type { Primitive } from "../../types";
+
+import { traverse } from "./traverse";
 
 export const parse = async (
 	code: string,
@@ -29,11 +30,10 @@ export const parse = async (
 
 	/**
 	 * Traverse method using the visitor design pattern.
-	 * SWC traverser (`import { Visitor } from "@swc/core/Visitor"`) is not used since it doesn't traverse recursively nodes
-	 * (at least, recursive `JSXOpeningElement`s are not retrieved)
+	 * SWC traverser (`import { Visitor } from "@swc/core/Visitor"`) is not used since it is deprecated
+	 * and doesn't traverse recursively nodes (at least, recursive `JSXOpeningElement`s are not retrieved)
 	 */
-	// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
-	walk<Module, void, AST>(ast, {
+	traverse<Module, AST>(ast, {
 		ImportDeclaration(node) {
 			const module = node.source.value;
 
