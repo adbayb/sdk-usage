@@ -2,7 +2,7 @@ import { fdir } from "fdir";
 import { createRequire } from "node:module";
 import { dirname } from "node:path";
 
-import type { Package } from "../entities/package";
+import type { Package } from "../../types";
 
 const require = createRequire(import.meta.url);
 

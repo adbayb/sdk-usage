@@ -1,4 +1,4 @@
-import type { Item } from "./entities/item";
+import type { Item } from "./modules/item";
 
 type Metadata = {
 	source: string; // URL (if VCS) or filesystem path for the currently analyzed project
@@ -16,3 +16,25 @@ export type Plugin = {
 };
 
 export type Primitive = bigint | boolean | number | string | null | undefined;
+
+/**
+ * Import entity to model an import statement
+ */
+export type Import = {
+	name: string;
+	alias: string;
+	module: string; // import specifier value
+};
+
+/**
+ * Package entity to model `package.json` metadata
+ */
+export type Package = {
+	name: string;
+	description: string;
+	dependencies?: Record<string, string>;
+	devDependencies?: Record<string, string>;
+	optionalDependencies?: Record<string, string>;
+	peerDependencies?: Record<string, string>;
+	version: string;
+};

@@ -7,9 +7,8 @@ import type {
 	TsType,
 } from "@swc/core";
 
-import type { Import } from "../../entities/import";
-import type { Item } from "../../entities/item";
-import type { Primitive } from "../../types";
+import type { Import, Primitive } from "../../types";
+import type { Item } from "../item";
 
 import { traverse } from "./traverse";
 
