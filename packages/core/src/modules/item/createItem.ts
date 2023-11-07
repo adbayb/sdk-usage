@@ -3,12 +3,10 @@ import { relative } from "node:path";
 import type { Item } from "./entities/item";
 import type { Location } from "./entities/location";
 
-type CreateItemInput = Pick<
-	Item,
-	"args" | "module" | "name" | "type" | "version"
-> & {
-	location: CreateLocationInput;
-};
+type CreateItemInput = Partial<Pick<Item, "data" | "metadata">> &
+	Pick<Item, "module" | "name" | "type" | "version"> & {
+		location: CreateLocationInput;
+	};
 
 /**
  * Aggregate factory that creates a sonar item.
@@ -18,17 +16,21 @@ type CreateItemInput = Pick<
  */
 export const createItem = ({
 	name,
-	args,
+	data,
 	location,
+	metadata,
 	module,
 	type,
 	version,
 }: CreateItemInput) => {
 	const item: Item = {
 		name,
-		args,
 		createdAt: new Date().toISOString(),
+		data: data ?? {},
 		location: createLocation(location),
+		metadata: {
+			hasSpreadOperator: metadata?.hasSpreadOperator ?? false,
+		},
 		module,
 		type,
 		version,

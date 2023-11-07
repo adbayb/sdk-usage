@@ -4,14 +4,12 @@ import type { Location } from "./location";
 
 export type Item = {
 	name: string;
-	args?:
-		| {
-				data: Record<string, unknown>;
-				isSpread: boolean;
-		  }
-		| undefined;
 	createdAt: string;
+	data: Record<string, unknown>;
 	location: Location;
+	metadata: {
+		hasSpreadOperator: boolean;
+	};
 	module: Package["name"];
 	type: "component" | "method" | "type" | "unknown" | "variable";
 	version: Package["version"];

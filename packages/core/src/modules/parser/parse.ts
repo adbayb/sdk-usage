@@ -12,14 +12,14 @@ import type { Item } from "../item";
 
 import { traverse } from "./traverse";
 
-export const parse = async (
-	code: string,
-	addCallback: (
-		item: Pick<Item, "args" | "module" | "name" | "type"> & {
+type AddCallback = (
+	item: Partial<Pick<Item, "data" | "metadata">> &
+		Pick<Item, "module" | "name" | "type"> & {
 			offset: number;
 		},
-	) => void,
-) => {
+) => void;
+
+export const parse = async (code: string, addCallback: AddCallback) => {
 	const imports = new Map<Import["alias"], Import>();
 
 	const ast = await swcParse(code, {
@@ -59,25 +59,20 @@ export const parse = async (
 
 			addCallback({
 				name: importMetadata.name,
-				args: {
-					data: node.attributes.reduce<Record<string, unknown>>(
-						(props, prop) => {
-							if (
-								prop.type !== "JSXAttribute" ||
-								prop.name.type !== "Identifier"
-							)
-								return props;
-
-							props[prop.name.value] = getLiteralValue(
-								prop.value,
-							);
-
+				data: node.attributes.reduce<Record<string, unknown>>(
+					(props, prop) => {
+						if (
+							prop.type !== "JSXAttribute" ||
+							prop.name.type !== "Identifier"
+						)
 							return props;
-						},
-						{},
-					),
-					isSpread: false,
-				},
+
+						props[prop.name.value] = getLiteralValue(prop.value);
+
+						return props;
+					},
+					{},
+				),
 				module: importMetadata.module,
 				offset: node.span.start,
 				type: "component",
