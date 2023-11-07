@@ -1,7 +1,5 @@
 import { relative } from "node:path";
 
-import { CWD } from "../constants";
-
 export type Location = {
 	column: number;
 	file: string;
@@ -14,9 +12,11 @@ export const createLocation = ({
 	file,
 	module,
 	offset,
+	path,
 }: Pick<Location, "file" | "module"> & {
 	code: string;
 	offset: number;
+	path: string;
 }) => {
 	const linesTillOffset = code.substring(0, offset).split(/\n/);
 	const line = linesTillOffset.length;
@@ -24,7 +24,7 @@ export const createLocation = ({
 
 	return {
 		column,
-		file: `./${relative(CWD, file)}`,
+		file: `./${relative(path, file)}`,
 		line,
 		module,
 	};

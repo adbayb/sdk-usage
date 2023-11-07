@@ -2,12 +2,11 @@ import { fdir } from "fdir";
 import { createRequire } from "node:module";
 import { dirname } from "node:path";
 
-import { CWD } from "../constants";
 import type { Package } from "../entities/package";
 
 const require = createRequire(import.meta.url);
 
-export type ScannerOptions = {
+export type ScanOptions = {
 	/**
 	 * A list of folders to ignore
 	 */
@@ -16,9 +15,13 @@ export type ScannerOptions = {
 	 * A list of files to include (following glob matcher)
 	 */
 	includeFiles?: string[];
+	/**
+	 * The path to scan from
+	 */
+	path: string;
 };
 
-export const scan = (options: ScannerOptions = {}) => {
+export const scan = (options: ScanOptions) => {
 	const excludedFolders = options.excludeFolders ?? DEFAULT_EXCLUDED_FOLDERS;
 	const includedFiles = options.includeFiles ?? DEFAULT_INCLUDED_FILES;
 
@@ -26,12 +29,12 @@ export const scan = (options: ScannerOptions = {}) => {
 		.withBasePath()
 		.glob("**/package.json")
 		.exclude((dirName) => excludedFolders.includes(dirName))
-		.crawl(CWD)
+		.crawl(options.path)
 		.sync()
-		.map((path) => {
-			const metadata = require(path) as Package;
+		.map((filepath) => {
+			const metadata = require(filepath) as Package;
 
-			return { folder: dirname(path), metadata };
+			return { folder: dirname(filepath), metadata };
 		});
 
 	return projects.map((project) => {

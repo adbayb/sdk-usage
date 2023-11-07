@@ -1,13 +1,24 @@
 import { readFileSync } from "fs";
 
+import { CWD } from "./constants";
 import { createItem } from "./entities/item";
 import type { Item } from "./entities/item";
 import { createLocation } from "./entities/location";
 import { parse } from "./features/parse";
 import { scan } from "./features/scan";
+import type { ScanOptions } from "./features/scan";
 
-export const esonar = async () => {
-	const projects = scan();
+type ConfigurationOptions = Partial<
+	Pick<ScanOptions, "excludeFolders" | "includeFiles" | "path">
+>;
+
+export const esonar = async (options: ConfigurationOptions = {}) => {
+	const path = options.path ?? CWD;
+
+	const projects = scan({
+		path,
+	});
+
 	const items: Item[] = [];
 
 	for (const project of projects) {
@@ -26,6 +37,7 @@ export const esonar = async () => {
 							file,
 							module,
 							offset: item.offset,
+							path,
 						}),
 					}),
 				);
