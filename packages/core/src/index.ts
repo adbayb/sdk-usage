@@ -14,7 +14,13 @@ const require = createRequire(import.meta.url);
 
 type ConfigurationOptions = Partial<
 	Pick<ScanOptions, "excludeFolders" | "includeFiles" | "path">
->;
+> & {
+	/**
+	 * Only analyze components imported from the specificied module list
+	 * @default []
+	 */
+	includeModules?: string[];
+};
 
 const resolvePackageJson = (fromPath: string): string => {
 	const filepath = join(fromPath, "./package.json");
@@ -58,20 +64,26 @@ export const esonar = async (options: ConfigurationOptions = {}) => {
 					version = "";
 				}
 
-				items.push(
-					createItem({
-						...item,
-						// @todo: Git origin URL if available
-						location: {
-							code,
-							file,
-							module,
-							offset: item.offset,
-							path,
-						},
-						version,
-					}),
-				);
+				if (
+					!options.includeModules ||
+					options.includeModules.length === 0 ||
+					options.includeModules.includes(item.module)
+				) {
+					items.push(
+						createItem({
+							...item,
+							// @todo: Git origin URL if available
+							location: {
+								code,
+								file,
+								module,
+								offset: item.offset,
+								path,
+							},
+							version,
+						}),
+					);
+				}
 			});
 		}
 	}
