@@ -8,7 +8,7 @@ export type Item = {
 	data: Record<string, unknown>;
 	location: Location;
 	metadata: {
-		hasSpreadOperator: boolean;
+		withSpreading: boolean;
 	};
 	module: Package["name"];
 	type: "component" | "method" | "type" | "unknown" | "variable";

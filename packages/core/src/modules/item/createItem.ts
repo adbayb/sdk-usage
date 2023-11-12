@@ -29,7 +29,7 @@ export const createItem = ({
 		data: data ?? {},
 		location: createLocation(location),
 		metadata: {
-			hasSpreadOperator: metadata?.hasSpreadOperator ?? false,
+			withSpreading: metadata?.withSpreading ?? false,
 		},
 		module,
 		type,
