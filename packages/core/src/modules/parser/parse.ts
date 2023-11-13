@@ -19,13 +19,22 @@ type AddCallback = (
 		},
 ) => void;
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const parse = async (code: string, addCallback: AddCallback) => {
 	const imports = new Map<Import["alias"], Import>();
+	let ast: Module | null;
 
-	const ast = await swcParse(code, {
-		syntax: "typescript",
-		tsx: true,
-	});
+	try {
+		ast = await swcParse(code, {
+			syntax: "typescript",
+			tsx: true,
+		});
+	} catch (error) {
+		ast = null;
+		// @todo: log error with file path
+	}
+
+	if (ast === null) return;
 
 	/**
 	 * Traverse method using the visitor design pattern.
