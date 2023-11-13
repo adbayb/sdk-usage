@@ -35,7 +35,7 @@ const resolvePackageJson = (fromPath: string): string => {
 export const esonar = async (options: ConfigurationOptions = {}) => {
 	const path = options.path ?? CWD;
 
-	const projects = scan({
+	const projects = await scan({
 		path,
 	});
 
@@ -43,11 +43,20 @@ export const esonar = async (options: ConfigurationOptions = {}) => {
 
 	for (const project of projects) {
 		const module = project.metadata.name;
+		const link = project.link;
 
 		for (const file of project.files) {
 			const code = readFileSync(file, "utf-8");
 
 			await parse(code, (item) => {
+				if (
+					options.includeModules &&
+					options.includeModules.length > 0 &&
+					!options.includeModules.includes(item.module)
+				) {
+					return;
+				}
+
 				let version: string;
 
 				try {
@@ -64,26 +73,20 @@ export const esonar = async (options: ConfigurationOptions = {}) => {
 					version = "";
 				}
 
-				if (
-					!options.includeModules ||
-					options.includeModules.length === 0 ||
-					options.includeModules.includes(item.module)
-				) {
-					items.push(
-						createItem({
-							...item,
-							// @todo: Git origin URL if available
-							location: {
-								code,
-								file,
-								module,
-								offset: item.offset,
-								path,
-							},
-							version,
-						}),
-					);
-				}
+				items.push(
+					createItem({
+						...item,
+						location: {
+							code,
+							file,
+							link,
+							module,
+							offset: item.offset,
+							path,
+						},
+						version,
+					}),
+				);
 			});
 		}
 	}

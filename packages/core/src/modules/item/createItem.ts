@@ -39,7 +39,7 @@ export const createItem = ({
 	return item;
 };
 
-type CreateLocationInput = Pick<Location, "file" | "module"> & {
+type CreateLocationInput = Pick<Location, "file" | "link" | "module"> & {
 	code: string;
 	offset: number;
 	path: string;
@@ -48,6 +48,7 @@ type CreateLocationInput = Pick<Location, "file" | "module"> & {
 const createLocation = ({
 	code,
 	file,
+	link,
 	module,
 	offset,
 	path,
@@ -60,6 +61,7 @@ const createLocation = ({
 		column,
 		file: `./${relative(path, file)}`,
 		line,
+		link,
 		module,
 	};
 };
