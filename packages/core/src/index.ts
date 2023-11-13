@@ -43,6 +43,13 @@ export const esonar = async (options: ConfigurationOptions = {}) => {
 
 	for (const project of projects) {
 		const module = project.metadata.name;
+
+		const dependencies = {
+			...project.metadata.devDependencies,
+			...project.metadata.optionalDependencies,
+			...project.metadata.dependencies,
+		};
+
 		const link = project.link;
 
 		for (const file of project.files) {
@@ -70,7 +77,7 @@ export const esonar = async (options: ConfigurationOptions = {}) => {
 						) as Package
 					).version;
 				} catch {
-					version = "";
+					version = dependencies[item.module] ?? "";
 				}
 
 				items.push(
