@@ -32,7 +32,7 @@ const resolvePackageJson = (fromPath: string): string => {
 	return resolvePackageJson(join(fromPath, "../"));
 };
 
-export const esonar = async (options: ConfigurationOptions = {}) => {
+export const analyze = async (options: ConfigurationOptions = {}) => {
 	const path = options.path ?? CWD;
 
 	const projects = await scan({

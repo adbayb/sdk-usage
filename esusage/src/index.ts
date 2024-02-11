@@ -1,7 +1,7 @@
-import { esonar } from "@esonar/core";
+import { analyze } from "@esusage/core";
 
 const main = async () => {
-	const items = await esonar();
+	const items = await analyze();
 
 	console.log(JSON.stringify(items, null, 2), items.length);
 };

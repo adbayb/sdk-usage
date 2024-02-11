@@ -1,6 +1,6 @@
 {
-	"name": "esonar",
-	"description": "A code sonar to analyze ECMAScript modules usage with JSX and TypeScript support",
+	"name": "esusage",
+	"description": "A code analyzer to collect ECMAScript modules usage with JSX and TypeScript support",
 	"version": "0.0.0",
 	"publishConfig": {
 		"access": "public"
@@ -9,7 +9,7 @@
 		"dist"
 	],
 	"bin": {
-		"esonar": "./bin/index.mjs"
+		"esusage": "./bin/index.mjs"
 	},
 	"sideEffects": false,
 	"type": "module",
@@ -27,12 +27,12 @@
 	},
 	"license": "MIT",
 	"author": "Ayoub Adib <adbayb@gmail.com> (https://twitter.com/adbayb)",
-	"bugs": "https://github.com/adbayb/esonar/issues",
-	"homepage": "https://github.com/adbayb/esonar/tree/main/esonar#readme",
+	"bugs": "https://github.com/adbayb/esusage/issues",
+	"homepage": "https://github.com/adbayb/esusage/tree/main/esusage#readme",
 	"repository": {
 		"type": "git",
-		"url": "git@github.com:adbayb/esonar.git",
-		"directory": "esonar"
+		"url": "git@github.com:adbayb/esusage.git",
+		"directory": "esusage"
 	},
 	"scripts": {
 		"start": "./bin/index.mjs",
@@ -43,6 +43,6 @@
 		"quickbundle": "1.2.0"
 	},
 	"dependencies": {
-		"@esonar/core": "workspace:^"
+		"@esusage/core": "workspace:^"
 	}
 }

@@ -1,7 +1,7 @@
 {
-	"name": "@esonar/core",
+	"name": "@esusage/core",
 	"version": "0.0.0",
-	"description": "ESonar core functionalities",
+	"description": "ESUsage core functionalities",
 	"author": "Ayoub Adib <adbayb@gmail.com>",
 	"license": "MIT",
 	"files": [
@@ -21,21 +21,22 @@
 		}
 	},
 	"sideEffects": false,
-	"homepage": "https://github.com/adbayb/esonar/tree/main/packages/core#readme",
+	"homepage": "https://github.com/adbayb/esusage/tree/main/packages/core#readme",
 	"bugs": {
-		"url": "https://github.com/adbayb/esonar/issues"
+		"url": "https://github.com/adbayb/esusage/issues"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/adbayb/esonar.git",
+		"url": "https://github.com/adbayb/esusage.git",
 		"directory": "packages/core"
 	},
 	"keywords": [
-		"sonar",
 		"analyze",
+		"analyzer",
 		"inspect",
 		"scan",
 		"monitor",
+		"sonar",
 		"usage",
 		"jsx",
 		"react",

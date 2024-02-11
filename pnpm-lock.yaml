@@ -24,9 +24,9 @@ importers:
         specifier: 20.8.10
         version: 20.8.10
 
-  esonar:
+  esusage:
     dependencies:
-      '@esonar/core':
+      '@esusage/core':
         specifier: workspace:^
         version: link:../packages/core
     devDependencies:
@@ -6124,7 +6124,7 @@ packages:
       gzip-size: 6.0.0
       termost: 0.9.0
       threads: 1.7.0
-      typescript: 5.1.3
+      typescript: 5.2.2
     transitivePeerDependencies:
       - enquirer
       - supports-color
@@ -7137,12 +7137,6 @@ packages:
 
   /typedarray@0.0.6:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
-    dev: true
-
-  /typescript@5.1.3:
-    resolution: {integrity: sha512-XH627E9vkeqhlZFQuL+UsyAXEnibT0kWR2FWONlr4sTjvxyJYnyefgrkyECLzM5NenmKzRAy2rR/OlYLA1HkZw==}
-    engines: {node: '>=14.17'}
-    hasBin: true
     dev: true
 
   /typescript@5.2.2:

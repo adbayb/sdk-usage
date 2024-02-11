@@ -1,12 +1,13 @@
-name: Check pull request
+name: Conventional commit
 
 on:
     pull_request:
         types: [opened, edited]
 
 jobs:
-    pr_title:
+    main:
         timeout-minutes: 5
+        name: Check pull request title
         runs-on: ubuntu-latest
         steps:
             - uses: amannn/action-semantic-pull-request@v5

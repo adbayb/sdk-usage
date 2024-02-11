@@ -9,8 +9,7 @@ type CreateItemInput = Partial<Pick<Item, "data" | "metadata">> &
 	};
 
 /**
- * Aggregate factory that creates a sonar item.
- * A sonar item is the parsing unit output.
+ * Aggregate factory that creates an item.
  * @param input Factory variables
  * @returns created item
  */

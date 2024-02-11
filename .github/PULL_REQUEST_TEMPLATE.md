@@ -6,7 +6,7 @@
   2. Some valuable tests have been added
   3. For non-internal change, a changelog entry is added
 
-  Learn more about contributing [here](https://github.com/adbayb/esonar/blob/main/CONTRIBUTING.md)
+  Learn more about contributing [here](https://github.com/adbayb/esusage/blob/main/CONTRIBUTING.md)
 -->
 
 ## Description
