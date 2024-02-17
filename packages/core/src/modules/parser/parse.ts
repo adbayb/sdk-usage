@@ -6,11 +6,10 @@ import type {
 	Module,
 	TsType,
 } from "@swc/core";
+import { visit } from "esvisitor";
 
 import type { Import, Primitive } from "../../types";
 import type { Item } from "../item";
-
-import { traverse } from "./traverse";
 
 type AddCallback = (
 	item: Partial<Pick<Item, "data" | "metadata">> &
@@ -36,12 +35,11 @@ export const parse = async (code: string, addCallback: AddCallback) => {
 
 	if (ast === null) return;
 
-	/**
-	 * Traverse method using the visitor design pattern.
-	 * SWC traverser (`import { Visitor } from "@swc/core/Visitor"`) is not used since it is deprecated
-	 * and doesn't traverse recursively nodes (at least, recursive `JSXOpeningElement`s are not retrieved)
-	 */
-	traverse<Module, AST>(ast, {
+	visit<{
+		ImportDeclaration: ImportDeclaration;
+		JSXOpeningElement: JSXOpeningElement;
+		TsType: TsType;
+	}>(ast, {
 		ImportDeclaration(node) {
 			const module = node.source.value;
 
@@ -117,12 +115,6 @@ export const parse = async (code: string, addCallback: AddCallback) => {
 			});
 		},
 	});
-};
-
-type AST = {
-	ImportDeclaration: ImportDeclaration;
-	JSXOpeningElement: JSXOpeningElement;
-	TsType: TsType;
 };
 
 /**
