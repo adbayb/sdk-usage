@@ -6,28 +6,35 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 /**
- * Resolve a relative path from the node module directory
- * @param path The relative path
- * @returns The resolved absolute path
+ * Resolve a relative path from the node module directory.
+ * @param path - The relative path.
+ * @returns The resolved absolute path.
+ * @example
+ * resolveFromPackageDirectory("./src/index.ts");
  */
 export const resolveFromPackageDirectory = (path: string) => {
 	return resolve(__dirname, "../", path);
 };
 
 /**
- * Resolve a relative path from the current working directory
- * @param path The relative path
- * @returns The resolved absolute path
+ * Resolve a relative path from the current working directory.
+ * @param path - The relative path.
+ * @returns The resolved absolute path.
+ * @example
+ * resolveFromWorkingDirectory("./src/index.ts");
  */
 export const resolveFromWorkingDirectory = (path: string) => {
 	return resolve(process.cwd(), path);
 };
 
 /**
- * Execute an external command
- * @param command The command to execute
- * @param options Options including current working directory configuration
- * @returns The output (either the command output or error)
+ * Execute an external command.
+ * @param command - The command to execute.
+ * @param options - Options including current working directory configuration.
+ * @param options.cwd - Configure the current working directory.
+ * @returns The output (either the command output or error).
+ * @example
+ * exec("ls");
  */
 export const exec = async (command: string, options: { cwd?: string } = {}) => {
 	return new Promise<string>((success, error) => {

@@ -6,7 +6,7 @@ type Metadata = {
 
 /**
  * Plugins introduce only external side effects without having control over internal side effects
- * to not introduce weird behaviors if multiple plugins are composed together
+ * to not introduce weird behaviors if multiple plugins are composed together.
  * @example instance counter, elasticsearch put op, ...
  */
 export type Plugin = {
@@ -18,7 +18,7 @@ export type Plugin = {
 export type Primitive = bigint | boolean | number | string | null | undefined;
 
 /**
- * Import entity to model an import statement
+ * Import entity to model an import statement.
  */
 export type Import = {
 	name: string;
@@ -27,7 +27,7 @@ export type Import = {
 };
 
 /**
- * Package entity to model `package.json` metadata
+ * Package entity to model `package.json` metadata.
  */
 export type Package = {
 	name: string;

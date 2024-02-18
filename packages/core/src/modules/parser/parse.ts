@@ -118,9 +118,11 @@ export const parse = async (code: string, addCallback: AddCallback) => {
 };
 
 /**
- * Helper to unify the way unknown AST token are persisted
- * @param token AST token value
- * @returns Formatted AST token
+ * Helper to unify the way unknown AST token are persisted.
+ * @param token - AST token value.
+ * @returns Formatted AST token.
+ * @example
+ * getUnknownValue("VariableDeclaration");
  */
 const getUnknownValue = (token: string) => `#${token}`;
 

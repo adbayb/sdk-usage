@@ -16,7 +16,7 @@ type ConfigurationOptions = Partial<
 	Pick<ScanOptions, "excludeFolders" | "includeFiles" | "path">
 > & {
 	/**
-	 * Only analyze components imported from the specificied module list
+	 * Only analyze components imported from the specificied module list.
 	 * @default []
 	 */
 	includeModules?: string[];

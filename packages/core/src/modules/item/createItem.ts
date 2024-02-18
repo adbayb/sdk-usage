@@ -10,8 +10,17 @@ type CreateItemInput = Partial<Pick<Item, "data" | "metadata">> &
 
 /**
  * Aggregate factory that creates an item.
- * @param input Factory variables
- * @returns created item
+ * @param input - Factory variables.
+ * @param input.name - Name.
+ * @param input.data - Parameter list.
+ * @param input.location - Location.
+ * @param input.metadata - Metadata that describe the way the code is passed.
+ * @param input.module - Source module.
+ * @param input.type - Component type.
+ * @param input.version - Module version.
+ * @returns Created item.
+ * @example
+ * createItem({ ... });
  */
 export const createItem = ({
 	name,

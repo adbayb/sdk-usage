@@ -9,15 +9,15 @@ const require = createRequire(import.meta.url);
 
 export type ScanOptions = {
 	/**
-	 * A list of folders to ignore
+	 * A list of folders to ignore.
 	 */
 	excludeFolders?: string[];
 	/**
-	 * A list of files to include (following glob matcher)
+	 * A list of files to include (following glob matcher).
 	 */
 	includeFiles?: string[];
 	/**
-	 * The path to scan from
+	 * The path to scan from.
 	 */
 	path: string;
 };
