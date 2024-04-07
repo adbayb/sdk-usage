@@ -1,5 +1,5 @@
 ---
-"esusage": minor
+"@esusage/cli": minor
 "@esusage/core": minor
 ---
 

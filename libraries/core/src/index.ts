@@ -13,7 +13,7 @@ import type { Package } from "./types";
 const require = createRequire(import.meta.url);
 
 type ConfigurationOptions = Partial<
-	Pick<ScanOptions, "excludeFolders" | "includeFiles" | "path">
+	Pick<ScanOptions, "excludeFolders" | "includeFiles">
 > & {
 	/**
 	 * Only analyze components imported from the specificied module list.
@@ -32,13 +32,11 @@ const resolvePackageJson = (fromPath: string): string => {
 	return resolvePackageJson(join(fromPath, "../"));
 };
 
-export const analyze = async (options: ConfigurationOptions = {}) => {
-	const path = options.path ?? CWD;
-
-	const projects = await scan({
-		path,
-	});
-
+export const analyze = async (
+	path: string = CWD,
+	options: ConfigurationOptions = {},
+) => {
+	const projects = await scan(path);
 	const items: Item[] = [];
 
 	for (const project of projects) {

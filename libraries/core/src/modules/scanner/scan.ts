@@ -16,13 +16,9 @@ export type ScanOptions = {
 	 * A list of files to include (following glob matcher).
 	 */
 	includeFiles?: string[];
-	/**
-	 * The path to scan from.
-	 */
-	path: string;
 };
 
-export const scan = async (options: ScanOptions) => {
+export const scan = async (path: string, options: ScanOptions = {}) => {
 	const excludedFolders = options.excludeFolders ?? DEFAULT_EXCLUDED_FOLDERS;
 	const includedFiles = options.includeFiles ?? DEFAULT_INCLUDED_FILES;
 
@@ -30,7 +26,7 @@ export const scan = async (options: ScanOptions) => {
 		.withBasePath()
 		.glob("**/package.json")
 		.exclude((dirName) => excludedFolders.includes(dirName))
-		.crawl(options.path)
+		.crawl(path)
 		.sync();
 
 	const projects: { folder: string; link: string; metadata: Package }[] = [];

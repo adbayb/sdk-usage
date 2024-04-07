@@ -1,5 +1,5 @@
 {
-	"name": "esusage",
+	"name": "@esusage/cli",
 	"description": "A code analyzer to collect ECMAScript modules usage with JSX and TypeScript support",
 	"version": "0.0.0",
 	"publishConfig": {
