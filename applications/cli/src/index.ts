@@ -1,7 +1,7 @@
-import { analyze } from "@esusage/core";
+import { esusage } from "@esusage/core";
 
 const main = async () => {
-	const items = await analyze(process.cwd());
+	const items = await esusage(process.cwd());
 
 	console.log(JSON.stringify(items, null, 2), items.length);
 };

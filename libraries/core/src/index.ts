@@ -31,7 +31,7 @@ const resolvePackageJson = (fromPath: string): string => {
 	return resolvePackageJson(join(fromPath, "../"));
 };
 
-export const analyze = async (
+export const esusage = async (
 	path: string,
 	options: ConfigurationOptions = {},
 ) => {
