@@ -11,6 +11,6 @@ export type Item = {
 		withSpreading: boolean;
 	};
 	module: Package["name"];
-	type: "component" | "method" | "type" | "unknown" | "variable";
+	type: string;
 	version: Package["version"];
 };

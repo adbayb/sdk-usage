@@ -1,40 +1,24 @@
-import { existsSync, readFileSync } from "fs";
-import { createRequire } from "node:module";
-import { join } from "node:path";
+import { readFileSync } from "fs";
 
+import { require, resolvePackageJson } from "./helpers";
 import { createItem } from "./modules/item";
 import type { Item } from "./modules/item";
 import { parse } from "./modules/parser";
+import { jsxElementPlugin, typePlugin } from "./modules/plugin";
 import { scan } from "./modules/scanner";
 import type { ScanOptions } from "./modules/scanner";
 import type { Package } from "./types";
 
-const require = createRequire(import.meta.url);
-
-type ConfigurationOptions = Partial<
-	Pick<ScanOptions, "excludeFolders" | "includeFiles">
-> & {
-	/**
-	 * Only analyze components imported from the specificied module list.
-	 * @default []
-	 */
-	includeModules?: string[];
-};
-
-const resolvePackageJson = (fromPath: string): string => {
-	const filepath = join(fromPath, "./package.json");
-
-	if (existsSync(filepath)) {
-		return filepath;
+type Options = Partial<
+	Pick<ScanOptions, "excludeFolders" | "includeFiles"> & {
+		/**
+		 * Only analyze components imported from the specificied module list.
+		 */
+		includeModules: string[];
 	}
+>;
 
-	return resolvePackageJson(join(fromPath, "../"));
-};
-
-export const esusage = async (
-	path: string,
-	options: ConfigurationOptions = {},
-) => {
+export const esusage = async (path: string, options: Options = {}) => {
 	const projects = await scan(path);
 	const items: Item[] = [];
 
@@ -52,45 +36,48 @@ export const esusage = async (
 		for (const file of project.files) {
 			const code = readFileSync(file, "utf-8");
 
-			await parse(code, (item) => {
-				if (
-					options.includeModules &&
-					options.includeModules.length > 0 &&
-					!options.includeModules.includes(item.module)
-				) {
-					return;
-				}
+			await parse(code, {
+				onAdd(item) {
+					if (
+						options.includeModules &&
+						options.includeModules.length > 0 &&
+						!options.includeModules.includes(item.module)
+					) {
+						return;
+					}
 
-				let version: string;
+					let version: string;
 
-				try {
-					version = (
-						require(
-							resolvePackageJson(
-								require.resolve(item.module, {
-									paths: [file],
-								}),
-							),
-						) as Package
-					).version;
-				} catch {
-					version = dependencies[item.module] ?? "";
-				}
+					try {
+						version = (
+							require(
+								resolvePackageJson(
+									require.resolve(item.module, {
+										paths: [file],
+									}),
+								),
+							) as Package
+						).version;
+					} catch {
+						version = dependencies[item.module] ?? "";
+					}
 
-				items.push(
-					createItem({
-						...item,
-						location: {
-							code,
-							file,
-							link,
-							module,
-							offset: item.offset,
-							path,
-						},
-						version,
-					}),
-				);
+					items.push(
+						createItem({
+							...item,
+							location: {
+								code,
+								file,
+								link,
+								module,
+								offset: item.offset,
+								path,
+							},
+							version,
+						}),
+					);
+				},
+				plugins: [jsxElementPlugin, typePlugin],
 			});
 		}
 	}

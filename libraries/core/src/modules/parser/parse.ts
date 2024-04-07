@@ -1,26 +1,21 @@
 import { parse as swcParse } from "@swc/core";
-import type {
-	ImportDeclaration,
-	JSXAttrValue,
-	JSXOpeningElement,
-	Module,
-	TsType,
-} from "@swc/core";
+import type { ImportDeclaration, JSXAttrValue, Module } from "@swc/core";
 import { visit } from "esvisitor";
 
 import type { Import, Primitive } from "../../types";
-import type { Item } from "../item";
+import type { Nodes, Plugin, PluginItemOutput } from "../plugin";
 
-type AddCallback = (
-	item: Partial<Pick<Item, "data" | "metadata">> &
-		Pick<Item, "module" | "name" | "type"> & {
-			offset: number;
-		},
-) => void;
+type Options = {
+	onAdd: (item: PluginItemOutput) => void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	plugins: Plugin<any>[];
+};
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-export const parse = async (code: string, addCallback: AddCallback) => {
-	const imports = new Map<Import["alias"], Import>();
+export const parse = async (code: string, { onAdd, plugins }: Options) => {
+	const context = {
+		imports: new Map<Import["alias"], Import>(),
+	};
+
 	let ast: Module | null;
 
 	try {
@@ -35,18 +30,16 @@ export const parse = async (code: string, addCallback: AddCallback) => {
 
 	if (ast === null) return;
 
-	visit<{
-		ImportDeclaration: ImportDeclaration;
-		JSXOpeningElement: JSXOpeningElement;
-		TsType: TsType;
-	}>(ast, {
+	const visitor: {
+		[Key in keyof SupportedNodes]?: VisitorFunction<Key>;
+	} = {
 		ImportDeclaration(node) {
 			const module = node.source.value;
 
 			node.specifiers.forEach((specifier) => {
 				const specifierValue = specifier.local.value;
 
-				imports.set(specifierValue, {
+				context.imports.set(specifierValue, {
 					name:
 						// @ts-expect-error `imported` field is exposed by `ImportSpecifier` node (@todo: fix the typing issue in @swc/core)
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -56,77 +49,43 @@ export const parse = async (code: string, addCallback: AddCallback) => {
 				});
 			});
 		},
-		JSXOpeningElement(node) {
-			if (node.name.type !== "Identifier") return;
+	};
 
-			const name = node.name.value;
-			const importMetadata = imports.get(name);
+	for (const plugin of plugins) {
+		const pluginOutput = plugin(context, {
+			getJSXAttributeValue,
+		});
 
-			if (!importMetadata) return;
+		const nodeKeys = Object.keys(pluginOutput) as (keyof SupportedNodes)[];
 
-			addCallback({
-				name: importMetadata.name,
-				data: node.attributes.reduce<Record<string, unknown>>(
-					(props, prop) => {
-						if (
-							prop.type !== "JSXAttribute" ||
-							prop.name.type !== "Identifier"
-						)
-							return props;
+		for (const nodeKey of nodeKeys) {
+			const currentVisitorFn = visitor[nodeKey] as VisitorFunction;
 
-						props[prop.name.value] = getLiteralValue(prop.value);
+			visitor[nodeKey] = (node) => {
+				if (typeof currentVisitorFn === "function") {
+					currentVisitorFn(node);
+				}
 
-						return props;
-					},
-					{},
-				),
-				module: importMetadata.module,
-				offset: node.span.start,
-				type: "component",
-			});
-		},
-		TsType(node) {
-			let typeValue = "";
+				const output = pluginOutput[nodeKey]?.(node);
 
-			if (
-				node.type === "TsTypeReference" &&
-				node.typeName.type === "Identifier"
-			) {
-				typeValue = node.typeName.value;
-			}
+				if (output) {
+					onAdd(output);
+				}
+			};
+		}
+	}
 
-			if (
-				node.type === "TsIndexedAccessType" &&
-				node.objectType.type === "TsTypeReference" &&
-				node.objectType.typeName.type === "Identifier"
-			) {
-				typeValue = node.objectType.typeName.value;
-			}
-
-			const importMetadata = imports.get(typeValue);
-
-			if (!importMetadata) return;
-
-			addCallback({
-				name: importMetadata.name,
-				module: importMetadata.module,
-				offset: node.span.start,
-				type: "type",
-			});
-		},
-	});
+	visit<SupportedNodes>(ast, visitor);
 };
 
-/**
- * Helper to unify the way unknown AST token are persisted.
- * @param token - AST token value.
- * @returns Formatted AST token.
- * @example
- * getUnknownValue("VariableDeclaration");
- */
-const getUnknownValue = (token: string) => `#${token}`;
+type SupportedNodes = Nodes & {
+	ImportDeclaration: ImportDeclaration;
+};
 
-const getLiteralValue = (node: JSXAttrValue | undefined): Primitive => {
+type VisitorFunction<Key extends keyof SupportedNodes = keyof SupportedNodes> =
+	(node: SupportedNodes[Key]) => void;
+
+const getJSXAttributeValue = (node: JSXAttrValue | undefined): Primitive => {
 	if (!node) {
 		return true;
 	}
@@ -146,8 +105,17 @@ const getLiteralValue = (node: JSXAttrValue | undefined): Primitive => {
 	}
 
 	if (node.type === "JSXExpressionContainer") {
-		return getLiteralValue(node.expression as JSXAttrValue);
+		return getJSXAttributeValue(node.expression as JSXAttrValue);
 	}
 
-	return getUnknownValue(node.type);
+	return createUnknownToken(node.type);
 };
+
+/**
+ * Helper to unify the way unknown AST token are managed.
+ * @param token - AST token value.
+ * @returns Formatted AST token.
+ * @example
+ * createUnknownToken("VariableDeclaration");
+ */
+const createUnknownToken = (token: string) => `#${token}`;
