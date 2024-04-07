@@ -1,4 +1,18 @@
+import type {
+	ImportDeclaration,
+	JSXAttrValue,
+	JSXOpeningElement,
+	TsType,
+} from "@swc/core";
+
 export type Primitive = bigint | boolean | number | string | null | undefined;
+
+export type Nodes = {
+	ImportDeclaration: ImportDeclaration;
+	JSXAttrValue: JSXAttrValue;
+	JSXOpeningElement: JSXOpeningElement;
+	TsType: TsType;
+};
 
 /**
  * Import entity to model an import statement.

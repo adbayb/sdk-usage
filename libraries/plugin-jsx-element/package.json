@@ -1,7 +1,7 @@
 {
-	"name": "@esusage/core",
+	"name": "@esusage/plugin-jsx-element",
 	"version": "0.0.0",
-	"description": "ESUsage core functionalities",
+	"description": "ESUsage plugin to enable JSX element analysis",
 	"author": "Ayoub Adib <adbayb@gmail.com>",
 	"license": "MIT",
 	"files": [
@@ -28,7 +28,7 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/adbayb/esusage.git",
-		"directory": "libraries/core"
+		"directory": "libraries/plugin-jsx-element"
 	},
 	"keywords": [
 		"analyze",
@@ -46,12 +46,11 @@
 		"build": "quickbundle build",
 		"watch": "quickbundle watch"
 	},
-	"dependencies": {
-		"@swc/core": "^1.4.12",
-		"esvisitor": "^1.0.0",
-		"fdir": "^6.1.1"
+	"peerDependencies": {
+		"@esusage/core": "^0.1.0"
 	},
 	"devDependencies": {
+		"@esusage/core": "workspace:*",
 		"@types/node": "20.12.5",
 		"quickbundle": "1.2.0"
 	}

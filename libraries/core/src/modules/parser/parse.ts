@@ -1,17 +1,19 @@
 import { parse as swcParse } from "@swc/core";
-import type { ImportDeclaration, JSXAttrValue, Module } from "@swc/core";
+import type { Module } from "@swc/core";
 import { visit } from "esvisitor";
 
-import type { Import, Primitive } from "../../types";
-import type { Nodes, Plugin, PluginItemOutput } from "../plugin";
+import type { Import, Nodes, Primitive } from "../../types";
+import type { Plugin, PluginOutput } from "../plugin";
 
-type Options = {
-	onAdd: (item: PluginItemOutput) => void;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	plugins: Plugin<any>[];
+export type ParseOptions = {
+	onAdd: (item: PluginOutput) => void;
+	/**
+	 * A list of plugins to enable.
+	 */
+	plugins: Plugin[];
 };
 
-export const parse = async (code: string, { onAdd, plugins }: Options) => {
+export const parse = async (code: string, { onAdd, plugins }: ParseOptions) => {
 	const context = {
 		imports: new Map<Import["alias"], Import>(),
 	};
@@ -31,7 +33,7 @@ export const parse = async (code: string, { onAdd, plugins }: Options) => {
 	if (ast === null) return;
 
 	const visitor: {
-		[Key in keyof SupportedNodes]?: VisitorFunction<Key>;
+		[Key in keyof Nodes]?: VisitorFunction<Key>;
 	} = {
 		ImportDeclaration(node) {
 			const module = node.source.value;
@@ -54,19 +56,26 @@ export const parse = async (code: string, { onAdd, plugins }: Options) => {
 	for (const plugin of plugins) {
 		const pluginOutput = plugin(context, {
 			getJSXAttributeValue,
-		});
+		}) as Record<
+			keyof Nodes,
+			(node: Nodes[keyof Nodes]) => PluginOutput | undefined
+		>;
 
-		const nodeKeys = Object.keys(pluginOutput) as (keyof SupportedNodes)[];
+		const nodeKeys = Object.keys(
+			pluginOutput,
+		) as (keyof typeof pluginOutput)[];
 
 		for (const nodeKey of nodeKeys) {
-			const currentVisitorFn = visitor[nodeKey] as VisitorFunction;
+			const currentVisitorFn = visitor[nodeKey] as
+				| VisitorFunction
+				| undefined;
 
 			visitor[nodeKey] = (node) => {
 				if (typeof currentVisitorFn === "function") {
 					currentVisitorFn(node);
 				}
 
-				const output = pluginOutput[nodeKey]?.(node);
+				const output = pluginOutput[nodeKey](node);
 
 				if (output) {
 					onAdd(output);
@@ -75,17 +84,16 @@ export const parse = async (code: string, { onAdd, plugins }: Options) => {
 		}
 	}
 
-	visit<SupportedNodes>(ast, visitor);
+	visit<Nodes>(ast, visitor);
 };
 
-type SupportedNodes = Nodes & {
-	ImportDeclaration: ImportDeclaration;
-};
+type VisitorFunction<Key extends keyof Nodes = keyof Nodes> = (
+	node: Nodes[Key],
+) => void;
 
-type VisitorFunction<Key extends keyof SupportedNodes = keyof SupportedNodes> =
-	(node: SupportedNodes[Key]) => void;
-
-const getJSXAttributeValue = (node: JSXAttrValue | undefined): Primitive => {
+const getJSXAttributeValue = (
+	node: Nodes["JSXAttrValue"] | undefined,
+): Primitive => {
 	if (!node) {
 		return true;
 	}
@@ -105,7 +113,7 @@ const getJSXAttributeValue = (node: JSXAttrValue | undefined): Primitive => {
 	}
 
 	if (node.type === "JSXExpressionContainer") {
-		return getJSXAttributeValue(node.expression as JSXAttrValue);
+		return getJSXAttributeValue(node.expression as Nodes["JSXAttrValue"]);
 	}
 
 	return createUnknownToken(node.type);
