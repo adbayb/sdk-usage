@@ -2,7 +2,6 @@ import { existsSync, readFileSync } from "fs";
 import { createRequire } from "node:module";
 import { join } from "node:path";
 
-import { CWD } from "./constants";
 import { createItem } from "./modules/item";
 import type { Item } from "./modules/item";
 import { parse } from "./modules/parser";
@@ -33,7 +32,7 @@ const resolvePackageJson = (fromPath: string): string => {
 };
 
 export const analyze = async (
-	path: string = CWD,
+	path: string,
 	options: ConfigurationOptions = {},
 ) => {
 	const projects = await scan(path);

@@ -43,6 +43,9 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0
     devDependencies:
+      '@esusage/cli':
+        specifier: workspace:*
+        version: link:../../applications/cli
       '@types/react':
         specifier: 18.2.74
         version: 18.2.74

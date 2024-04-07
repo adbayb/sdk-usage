@@ -43,7 +43,6 @@
 		"api"
 	],
 	"scripts": {
-		"start": "pnpm watch",
 		"build": "quickbundle build",
 		"watch": "quickbundle watch"
 	},

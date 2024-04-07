@@ -1,8 +1,7 @@
 import { analyze } from "@esusage/core";
-import { resolve } from "node:path";
 
 const main = async () => {
-	const items = await analyze(resolve("../../examples/chakra-ui"));
+	const items = await analyze(process.cwd());
 
 	console.log(JSON.stringify(items, null, 2), items.length);
 };

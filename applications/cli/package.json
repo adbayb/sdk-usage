@@ -35,7 +35,6 @@
 		"directory": "esusage"
 	},
 	"scripts": {
-		"start": "./bin/index.mjs",
 		"build": "quickbundle build",
 		"watch": "quickbundle watch"
 	},
