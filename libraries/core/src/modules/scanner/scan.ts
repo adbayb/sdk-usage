@@ -1,11 +1,8 @@
 import { fdir } from "fdir";
-import { createRequire } from "node:module";
 import { dirname } from "node:path";
 
-import { exec } from "../../helpers";
+import { exec, require } from "../../helpers";
 import type { Package } from "../../types";
-
-const require = createRequire(import.meta.url);
 
 export type ScanOptions = {
 	/**
