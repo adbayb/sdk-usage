@@ -47,12 +47,12 @@
 		"watch": "quickbundle watch"
 	},
 	"dependencies": {
-		"@swc/core": "^1.4.12",
+		"@swc/core": "^1.7.3",
 		"esvisitor": "^1.0.0",
-		"fdir": "^6.1.1"
+		"fdir": "^6.2.0"
 	},
 	"devDependencies": {
-		"@types/node": "20.12.5",
+		"@types/node": "20.14.12",
 		"quickbundle": "1.2.0"
 	}
 }
