@@ -1,5 +1,5 @@
+import type { Item } from "../../entities/item";
 import type { Import, Nodes, Primitive } from "../../types";
-import type { Item } from "../item";
 
 export const createPlugin = (factory: Plugin) => {
 	return factory;
@@ -19,7 +19,7 @@ export type Plugin = (
 	[Key in keyof Nodes]?: (node: Nodes[Key]) => PluginOutput | undefined;
 };
 
-export type PluginOutput = Partial<Pick<Item, "data" | "metadata">> &
+export type PluginOutput = Partial<Pick<Item, "input">> &
 	Pick<Item, "module" | "name" | "type"> & {
 		offset: number;
 	};

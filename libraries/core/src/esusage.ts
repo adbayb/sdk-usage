@@ -1,8 +1,8 @@
 import { readFileSync } from "fs";
 
+import { createItem } from "./entities/item";
+import type { Item } from "./entities/item";
 import { require, resolvePackageJson } from "./helpers";
-import { createItem } from "./modules/item";
-import type { Item } from "./modules/item";
 import { parse } from "./modules/parser";
 import type { ParseOptions } from "./modules/parser";
 import { scan } from "./modules/scanner";

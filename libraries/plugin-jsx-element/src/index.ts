@@ -14,22 +14,27 @@ export default createPlugin((context, { getJSXAttributeValue }) => {
 
 			return {
 				name: importMetadata.name,
-				data: node.attributes.reduce<Record<string, unknown>>(
-					(props, prop) => {
-						if (
-							prop.type !== "JSXAttribute" ||
-							prop.name.type !== "Identifier"
-						)
+				input: {
+					data: node.attributes.reduce<Record<string, unknown>>(
+						(props, prop) => {
+							if (
+								prop.type !== "JSXAttribute" ||
+								prop.name.type !== "Identifier"
+							)
+								return props;
+
+							props[prop.name.value] = getJSXAttributeValue(
+								prop.value,
+							);
+
 							return props;
-
-						props[prop.name.value] = getJSXAttributeValue(
-							prop.value,
-						);
-
-						return props;
+						},
+						{},
+					),
+					metadata: {
+						withSpreading: false, // TODO
 					},
-					{},
-				),
+				},
 				module: importMetadata.module,
 				offset: node.span.start,
 				type: TYPE,
