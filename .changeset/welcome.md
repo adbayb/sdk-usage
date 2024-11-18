@@ -1,5 +1,5 @@
 ---
-"@esusage/cli": minor
+"esusage": minor
 "@esusage/core": minor
 "@esusage/plugin-jsx-element": minor
 "@esusage/plugin-type": minor

@@ -12,6 +12,6 @@
 	},
 	"devDependencies": {
 		"@types/react": "18.3.3",
-		"@esusage/cli": "workspace:*"
+		"esusage": "workspace:*"
 	}
 }

@@ -1,3 +1,3 @@
-# @esusage/cli
+# esusage
 
 TODO
