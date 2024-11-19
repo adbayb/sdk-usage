@@ -14,15 +14,15 @@ export default createSyntaxPlugin((context, { getJSXAttributeValue }) => {
 				name: importMetadata.name,
 				input: {
 					data: node.attributes.reduce<Record<string, unknown>>(
-						(props, prop) => {
+						(props, property) => {
 							if (
-								prop.type !== "JSXAttribute" ||
-								prop.name.type !== "Identifier"
+								property.type !== "JSXAttribute" ||
+								property.name.type !== "Identifier"
 							)
 								return props;
 
-							props[prop.name.value] = getJSXAttributeValue(
-								prop.value,
+							props[property.name.value] = getJSXAttributeValue(
+								property.value,
 							);
 
 							return props;

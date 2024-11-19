@@ -22,7 +22,7 @@ export const createLocation = ({
 	offset,
 	path,
 }: CreateLocationInput) => {
-	const linesTillOffset = code.substring(0, offset).split(/\n/);
+	const linesTillOffset = code.slice(0, Math.max(0, offset)).split(/\n/);
 	const line = linesTillOffset.length;
 	const column = (linesTillOffset[line - 1] as string).length;
 

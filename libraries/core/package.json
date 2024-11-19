@@ -8,13 +8,9 @@
 		"dist"
 	],
 	"type": "module",
-	"platform": "node",
-	"source": "./src/index.ts",
-	"main": "./dist/index.cjs",
-	"module": "./dist/index.mjs",
-	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
+			"source": "./src/index.ts",
 			"import": "./dist/index.mjs",
 			"require": "./dist/index.cjs",
 			"types": "./dist/index.d.ts"
@@ -47,12 +43,12 @@
 		"watch": "quickbundle watch"
 	},
 	"dependencies": {
-		"@swc/core": "^1.7.3",
+		"@swc/core": "^1.9.2",
 		"esvisitor": "^1.0.0",
-		"fdir": "^6.2.0"
+		"fdir": "^6.4.2"
 	},
 	"devDependencies": {
-		"@types/node": "20.14.12",
-		"quickbundle": "1.2.0"
+		"@types/node": "22.9.0",
+		"quickbundle": "2.8.0"
 	}
 }

@@ -1,10 +1,11 @@
+/* eslint-disable sonarjs/function-name */
+import { visit } from "esvisitor";
 import { parse as swcParse } from "@swc/core";
 import type { Module } from "@swc/core";
-import { visit } from "esvisitor";
 
-import type { ItemDTO } from "../../entities/item";
-import type { Import, Nodes, Primitive } from "../../types";
 import type { Plugins } from "../plugin";
+import type { Import, Nodes, Primitive } from "../../types";
+import type { ItemDTO } from "../../entities/item";
 
 export type ParseOptions = {
 	onAdd: (item: ItemDTO) => void;
@@ -19,19 +20,19 @@ export const parse = async (code: string, { onAdd, plugins }: ParseOptions) => {
 		imports: new Map<Import["alias"], Import>(),
 	};
 
-	let ast: Module | null;
+	let ast: Module | undefined;
 
 	try {
 		ast = await swcParse(code, {
 			syntax: "typescript",
 			tsx: true,
 		});
-	} catch (error) {
-		ast = null;
-		// @todo: log error with file path
+	} catch {
+		ast = undefined;
+		// TODO: log error with file path
 	}
 
-	if (ast === null) return;
+	if (ast === undefined) return;
 
 	const visitor: {
 		[Key in keyof Nodes]?: VisitorFunction<Key>;
@@ -44,7 +45,7 @@ export const parse = async (code: string, { onAdd, plugins }: ParseOptions) => {
 
 				context.imports.set(specifierValue, {
 					name:
-						// @ts-expect-error `imported` field is exposed by `ImportSpecifier` node (@todo: fix the typing issue in @swc/core)
+						// @ts-expect-error `imported` field is not exposed by `ImportSpecifier` node (issue in `@swc/core` type definition).
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 						(specifier.imported?.value || specifierValue) as string,
 					alias: specifierValue,
@@ -64,13 +65,13 @@ export const parse = async (code: string, { onAdd, plugins }: ParseOptions) => {
 		) as (keyof typeof pluginOutput)[];
 
 		for (const nodeKey of nodeKeys) {
-			const currentVisitorFn = visitor[nodeKey] as
+			const currentVisitorFunction = visitor[nodeKey] as
 				| VisitorFunction
 				| undefined;
 
 			visitor[nodeKey] = (node) => {
-				if (typeof currentVisitorFn === "function") {
-					currentVisitorFn(node);
+				if (typeof currentVisitorFunction === "function") {
+					currentVisitorFunction(node);
 				}
 
 				const output = pluginOutput[nodeKey]?.(node as never);
@@ -91,30 +92,35 @@ type VisitorFunction<Key extends keyof Nodes = keyof Nodes> = (
 
 const getJSXAttributeValue = (
 	node: Nodes["JSXAttrValue"] | undefined,
+	// eslint-disable-next-line sonarjs/cyclomatic-complexity
 ): Primitive => {
 	if (!node) {
 		return true;
 	}
 
-	if (node.type === "NullLiteral") {
-		return null;
+	switch (node.type) {
+		case "NullLiteral": {
+			return null;
+		}
+		case "StringLiteral":
+		case "NumericLiteral":
+		case "BigIntLiteral":
+		case "BooleanLiteral":
+		case "JSXText": {
+			return node.value;
+		}
+		case "JSXExpressionContainer": {
+			return getJSXAttributeValue(
+				node.expression as Nodes["JSXAttrValue"],
+			);
+		}
+		case "JSXElement":
+		case "JSXFragment":
+		case "RegExpLiteral":
+		default: {
+			return createUnknownToken(node.type);
+		}
 	}
-
-	if (
-		node.type === "StringLiteral" ||
-		node.type === "NumericLiteral" ||
-		node.type === "BigIntLiteral" ||
-		node.type === "BooleanLiteral" ||
-		node.type === "JSXText"
-	) {
-		return node.value;
-	}
-
-	if (node.type === "JSXExpressionContainer") {
-		return getJSXAttributeValue(node.expression as Nodes["JSXAttrValue"]);
-	}
-
-	return createUnknownToken(node.type);
 };
 
 /**

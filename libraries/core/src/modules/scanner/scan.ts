@@ -1,8 +1,9 @@
-import { fdir } from "fdir";
 import { dirname } from "node:path";
 
-import { exec, require } from "../../helpers";
+import { fdir } from "fdir";
+
 import type { Package } from "../../types";
+import { exec, require } from "../../helpers";
 
 export type ScanOptions = {
 	/**
@@ -22,7 +23,7 @@ export const scan = async (path: string, options: ScanOptions = {}) => {
 	const projectPaths = new fdir()
 		.withBasePath()
 		.glob("**/package.json")
-		.exclude((dirName) => excludedFolders.includes(dirName))
+		.exclude((directoryName) => excludedFolders.includes(directoryName))
 		.crawl(path)
 		.sync();
 
@@ -48,7 +49,7 @@ export const scan = async (path: string, options: ScanOptions = {}) => {
 		const files: string[] = new fdir()
 			.withBasePath()
 			.glob(...includedFiles)
-			.exclude((dirName) => excludedFolders.includes(dirName))
+			.exclude((directoryName) => excludedFolders.includes(directoryName))
 			.crawl(project.folder)
 			.sync();
 

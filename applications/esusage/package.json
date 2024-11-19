@@ -6,23 +6,21 @@
 		"access": "public"
 	},
 	"files": [
+		"bin",
 		"dist"
 	],
 	"bin": {
-		"esusage": "./bin/index.mjs"
+		"esusage": "./bin/index.js"
 	},
 	"sideEffects": false,
 	"type": "module",
-	"platform": "node",
-	"source": "./src/index.ts",
-	"main": "./dist/index.cjs",
-	"module": "./dist/index.mjs",
-	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
+			"source": "./src/index.ts",
+			"types": "./dist/index.d.ts",
 			"require": "./dist/index.cjs",
 			"import": "./dist/index.mjs",
-			"types": "./dist/index.d.ts"
+			"default": "./dist/index.mjs"
 		}
 	},
 	"license": "MIT",
@@ -39,7 +37,7 @@
 		"watch": "quickbundle watch"
 	},
 	"devDependencies": {
-		"quickbundle": "1.2.0"
+		"quickbundle": "2.8.0"
 	},
 	"dependencies": {
 		"@esusage/core": "workspace:^",

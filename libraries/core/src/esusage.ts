@@ -1,13 +1,13 @@
-import { readFileSync } from "fs";
+import { readFileSync } from "node:fs";
 
-import { createItem } from "./entities/item";
-import type { Item } from "./entities/item";
-import { require, resolvePackageJson } from "./helpers";
-import { parse } from "./modules/parser";
-import type { ParseOptions } from "./modules/parser";
+import type { Package } from "./types";
 import { scan } from "./modules/scanner";
 import type { ScanOptions } from "./modules/scanner";
-import type { Package } from "./types";
+import { parse } from "./modules/parser";
+import type { ParseOptions } from "./modules/parser";
+import { require, resolvePackageJson } from "./helpers";
+import { createItem } from "./entities/item";
+import type { Item } from "./entities/item";
 
 type Options = Partial<
 	Pick<ScanOptions, "excludeFolders" | "includeFiles"> & {
@@ -35,7 +35,7 @@ export const esusage = async (path: string, options: Options) => {
 		const link = project.link;
 
 		for (const file of project.files) {
-			const code = readFileSync(file, "utf-8");
+			const code = readFileSync(file, "utf8");
 
 			await parse(code, {
 				onAdd(item) {

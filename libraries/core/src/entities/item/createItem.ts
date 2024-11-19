@@ -1,6 +1,5 @@
 /* eslint-disable sort-keys-custom-order/object-keys */
 import type { Package } from "../../types";
-
 import { createLocation } from "./createLocation";
 import type { CreateLocationInput, Location } from "./createLocation";
 

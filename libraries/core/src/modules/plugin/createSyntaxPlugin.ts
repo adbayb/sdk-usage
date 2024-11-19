@@ -1,5 +1,5 @@
-import type { ItemDTO } from "../../entities/item";
 import type { Import, Nodes, Primitive } from "../../types";
+import type { ItemDTO } from "../../entities/item";
 
 export const createSyntaxPlugin = (input: SyntaxPlugin) => {
 	return input;

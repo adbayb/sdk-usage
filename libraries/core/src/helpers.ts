@@ -1,7 +1,7 @@
-import { spawn } from "node:child_process";
-import { existsSync } from "node:fs";
-import { createRequire } from "node:module";
 import { join } from "node:path";
+import { createRequire } from "node:module";
+import { existsSync } from "node:fs";
+import { spawn } from "node:child_process";
 
 export const require = createRequire(import.meta.url);
 
@@ -25,22 +25,27 @@ export const resolvePackageJson = (fromPath: string): string => {
  * exec("ls");
  */
 export const exec = async (command: string, options: { cwd?: string } = {}) => {
-	return new Promise<string>((success, error) => {
+	return new Promise<string>((resolve, reject) => {
 		let stdout = "";
 		let stderr = "";
-		const [bin, ...args] = command.split(" ") as [string, ...string[]];
 
-		const childProcess = spawn(bin, args, {
+		const [bin, ...arguments_] = command.split(" ") as [
+			string,
+			...string[],
+		];
+
+		// eslint-disable-next-line sonarjs/os-command
+		const childProcess = spawn(bin, arguments_, {
 			cwd: options.cwd,
 			shell: true,
 			stdio: "pipe",
 		});
 
-		childProcess.stdout.on("data", (chunk) => {
+		childProcess.stdout.on("data", (chunk: string) => {
 			stdout += chunk;
 		});
 
-		childProcess.stderr.on("data", (chunk) => {
+		childProcess.stderr.on("data", (chunk: string) => {
 			stderr += chunk;
 		});
 
@@ -48,9 +53,9 @@ export const exec = async (command: string, options: { cwd?: string } = {}) => {
 			if (exitCode !== 0) {
 				const output = `${stderr}${stdout}`;
 
-				error(output.trim());
+				reject(new Error(output.trim()));
 			} else {
-				success(stdout.trim());
+				resolve(stdout.trim());
 			}
 		});
 	});

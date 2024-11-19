@@ -28,7 +28,7 @@ export default createSyntaxPlugin((context) => {
 				name: importMetadata.name,
 				module: importMetadata.module,
 				offset: node.span.start,
-				type: "type",
+				type: "typescript/type",
 			};
 		},
 	};

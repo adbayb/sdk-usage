@@ -1,6 +1,8 @@
-import { esusage } from "@esusage/core";
-import jsxSyntaxPlugin from "@esusage/plugin-syntax-jsx";
+import process from "node:process";
+
 import typescriptSyntaxPlugin from "@esusage/plugin-syntax-typescript";
+import jsxSyntaxPlugin from "@esusage/plugin-syntax-jsx";
+import { esusage } from "@esusage/core";
 
 const main = async () => {
 	const items = await esusage(process.cwd(), {
@@ -10,6 +12,4 @@ const main = async () => {
 	console.log(JSON.stringify(items, null, 2), items.length);
 };
 
-main().catch((error) => {
-	console.log("Error", error);
-});
+void main();
