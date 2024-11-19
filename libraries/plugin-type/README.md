@@ -1,3 +1,0 @@
-# @esusage/plugin-type
-
-TODO

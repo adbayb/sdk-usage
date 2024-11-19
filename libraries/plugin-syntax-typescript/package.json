@@ -1,7 +1,7 @@
 {
-	"name": "@esusage/plugin-type",
+	"name": "@esusage/plugin-syntax-typescript",
 	"version": "0.0.0",
-	"description": "ESUsage plugin to enable type analysis",
+	"description": "ESUsage parser plugin to enable types syntax analysis",
 	"author": "Ayoub Adib <adbayb@gmail.com>",
 	"license": "MIT",
 	"files": [
@@ -28,7 +28,7 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/adbayb/esusage.git",
-		"directory": "libraries/plugin-type"
+		"directory": "libraries/plugin-syntax-typescript"
 	},
 	"keywords": [
 		"analyze",

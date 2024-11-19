@@ -24,17 +24,17 @@ importers:
         specifier: 20.14.12
         version: 20.14.12
 
-  applications/cli:
+  applications/esusage:
     dependencies:
       '@esusage/core':
         specifier: workspace:^
         version: link:../../libraries/core
-      '@esusage/plugin-jsx-element':
+      '@esusage/plugin-syntax-jsx':
         specifier: workspace:^
-        version: link:../../libraries/plugin-jsx-element
-      '@esusage/plugin-type':
+        version: link:../../libraries/plugin-syntax-jsx
+      '@esusage/plugin-syntax-typescript':
         specifier: workspace:^
-        version: link:../../libraries/plugin-type
+        version: link:../../libraries/plugin-syntax-typescript
     devDependencies:
       quickbundle:
         specifier: 1.2.0
@@ -54,7 +54,7 @@ importers:
         version: 18.3.3
       esusage:
         specifier: workspace:*
-        version: link:../../applications/cli
+        version: link:../../applications/esusage
 
   libraries/core:
     dependencies:
@@ -75,7 +75,7 @@ importers:
         specifier: 1.2.0
         version: 1.2.0(enquirer@2.4.1)
 
-  libraries/plugin-jsx-element:
+  libraries/plugin-syntax-jsx:
     devDependencies:
       '@esusage/core':
         specifier: workspace:*
@@ -87,7 +87,7 @@ importers:
         specifier: 1.2.0
         version: 1.2.0(enquirer@2.4.1)
 
-  libraries/plugin-type:
+  libraries/plugin-syntax-typescript:
     devDependencies:
       '@esusage/core':
         specifier: workspace:*

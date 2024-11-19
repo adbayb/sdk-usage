@@ -1,10 +1,10 @@
 import { esusage } from "@esusage/core";
-import jsxElementPlugin from "@esusage/plugin-jsx-element";
-import typePlugin from "@esusage/plugin-type";
+import jsxSyntaxPlugin from "@esusage/plugin-syntax-jsx";
+import typescriptSyntaxPlugin from "@esusage/plugin-syntax-typescript";
 
 const main = async () => {
 	const items = await esusage(process.cwd(), {
-		plugins: [jsxElementPlugin, typePlugin],
+		plugins: { syntax: [jsxSyntaxPlugin, typescriptSyntaxPlugin] },
 	});
 
 	console.log(JSON.stringify(items, null, 2), items.length);

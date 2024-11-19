@@ -43,7 +43,7 @@
 	},
 	"dependencies": {
 		"@esusage/core": "workspace:^",
-		"@esusage/plugin-jsx-element": "workspace:^",
-		"@esusage/plugin-type": "workspace:^"
+		"@esusage/plugin-syntax-jsx": "workspace:^",
+		"@esusage/plugin-syntax-typescript": "workspace:^"
 	}
 }

@@ -2,15 +2,16 @@ import { parse as swcParse } from "@swc/core";
 import type { Module } from "@swc/core";
 import { visit } from "esvisitor";
 
+import type { ItemDTO } from "../../entities/item";
 import type { Import, Nodes, Primitive } from "../../types";
-import type { Plugin, PluginOutput } from "../plugin";
+import type { Plugins } from "../plugin";
 
 export type ParseOptions = {
-	onAdd: (item: PluginOutput) => void;
+	onAdd: (item: ItemDTO) => void;
 	/**
 	 * A list of plugins to enable.
 	 */
-	plugins: Plugin[];
+	plugins: Plugins;
 };
 
 export const parse = async (code: string, { onAdd, plugins }: ParseOptions) => {
@@ -53,13 +54,10 @@ export const parse = async (code: string, { onAdd, plugins }: ParseOptions) => {
 		},
 	};
 
-	for (const plugin of plugins) {
+	for (const plugin of plugins.syntax) {
 		const pluginOutput = plugin(context, {
 			getJSXAttributeValue,
-		}) as Record<
-			keyof Nodes,
-			(node: Nodes[keyof Nodes]) => PluginOutput | undefined
-		>;
+		});
 
 		const nodeKeys = Object.keys(
 			pluginOutput,
@@ -75,7 +73,7 @@ export const parse = async (code: string, { onAdd, plugins }: ParseOptions) => {
 					currentVisitorFn(node);
 				}
 
-				const output = pluginOutput[nodeKey](node);
+				const output = pluginOutput[nodeKey]?.(node as never);
 
 				if (output) {
 					onAdd(output);

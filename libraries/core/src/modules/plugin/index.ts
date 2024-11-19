@@ -1,2 +1,2 @@
-export type { Plugin, PluginOutput } from "./createPlugin";
-export { createPlugin } from "./createPlugin";
+export type { Plugins } from "./types";
+export { createSyntaxPlugin } from "./createSyntaxPlugin";

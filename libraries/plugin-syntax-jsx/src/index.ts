@@ -1,8 +1,6 @@
-import { createPlugin } from "@esusage/core";
+import { createSyntaxPlugin } from "@esusage/core";
 
-const TYPE = "jsx-element";
-
-export default createPlugin((context, { getJSXAttributeValue }) => {
+export default createSyntaxPlugin((context, { getJSXAttributeValue }) => {
 	return {
 		JSXOpeningElement(node) {
 			if (node.name.type !== "Identifier") return;
@@ -37,7 +35,7 @@ export default createPlugin((context, { getJSXAttributeValue }) => {
 				},
 				module: importMetadata.module,
 				offset: node.span.start,
-				type: TYPE,
+				type: "jsx/element",
 			};
 		},
 	};

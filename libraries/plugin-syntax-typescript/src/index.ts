@@ -1,8 +1,6 @@
-import { createPlugin } from "@esusage/core";
+import { createSyntaxPlugin } from "@esusage/core";
 
-const TYPE = "type";
-
-export default createPlugin((context) => {
+export default createSyntaxPlugin((context) => {
 	return {
 		TsType(node) {
 			let typeValue = "";
@@ -30,7 +28,7 @@ export default createPlugin((context) => {
 				name: importMetadata.name,
 				module: importMetadata.module,
 				offset: node.span.start,
-				type: TYPE,
+				type: "type",
 			};
 		},
 	};

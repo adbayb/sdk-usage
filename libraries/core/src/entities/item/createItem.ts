@@ -19,6 +19,11 @@ export type Item = {
 	version: Package["version"];
 };
 
+export type ItemDTO = Partial<Pick<Item, "input">> &
+	Pick<Item, "module" | "name" | "type"> & {
+		offset: number;
+	};
+
 type CreateItemInput = Partial<Pick<Item, "input">> &
 	Pick<Item, "module" | "name" | "type" | "version"> & {
 		location: CreateLocationInput;
