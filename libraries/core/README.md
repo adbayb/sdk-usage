@@ -1,3 +1,3 @@
-# @esusage/core
+# @sdk-usage/core
 
 TODO

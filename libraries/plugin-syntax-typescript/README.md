@@ -1,3 +1,3 @@
-# @esusage/plugin-syntax-typescript
+# @sdk-usage/plugin-syntax-typescript
 
 TODO.

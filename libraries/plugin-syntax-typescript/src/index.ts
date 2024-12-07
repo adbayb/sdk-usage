@@ -1,4 +1,4 @@
-import { createSyntaxPlugin } from "@esusage/core";
+import { createSyntaxPlugin } from "@sdk-usage/core";
 
 export default createSyntaxPlugin((context) => {
 	return {

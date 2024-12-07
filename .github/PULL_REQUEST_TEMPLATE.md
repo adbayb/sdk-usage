@@ -6,15 +6,15 @@
   2. Some valuable tests have been added
   3. For non-internal change, a changelog entry is added
 
-  Learn more about contributing [here](https://github.com/adbayb/esusage/blob/main/CONTRIBUTING.md)
+  Learn more about contributing [here](https://github.com/adbayb/sdk-usage/blob/main/CONTRIBUTING.md)
 -->
 
 ## Description
 
 Please include a concise summary of the change with the relevant context and main highlights:
 
--   [ ] What I've done 1
--   [ ] What I've done 2...
+- [ ] What I've done 1
+- [ ] What I've done 2...
 
 ## Screenshots
 
@@ -24,6 +24,6 @@ Please include a concise summary of the change with the relevant context and mai
 
 ## Resources
 
--   Issue (GitHub, ...)
--   Specification (ADRs, RFCs, ...)
--   ...
+- Issue (GitHub, ...)
+- Specification (ADRs, RFCs, ...)
+- ...

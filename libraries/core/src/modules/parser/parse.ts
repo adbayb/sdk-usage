@@ -1,7 +1,6 @@
-/* eslint-disable sonarjs/function-name */
-import { visit } from "esvisitor";
 import { parse as swcParse } from "@swc/core";
 import type { Module } from "@swc/core";
+import { visit } from "@open-vanilla/visitor";
 
 import type { Plugins } from "../plugin";
 import type { Import, Nodes, Primitive } from "../../types";

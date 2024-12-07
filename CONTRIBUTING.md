@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for showing interest to contribute to `esusage` 🥳.
+Thanks for showing interest to contribute to `sdk-usage` 🥳.
 We are open to contributions, we look forward to improving it with your help!
 
 Here you will find guidelines that will help you to know how to contribute to this repository.

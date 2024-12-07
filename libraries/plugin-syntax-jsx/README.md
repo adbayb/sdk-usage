@@ -1,3 +1,3 @@
-# @esusage/plugin-syntax-jsx
+# @sdk-usage/plugin-syntax-jsx
 
 TODO.

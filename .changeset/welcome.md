@@ -1,8 +1,8 @@
 ---
-"esusage": minor
-"@esusage/core": minor
-"@esusage/plugin-syntax-jsx": minor
-"@esusage/plugin-syntax-typescript": minor
+"@sdk-usage/cli": minor
+"@sdk-usage/core": minor
+"@sdk-usage/plugin-syntax-jsx": minor
+"@sdk-usage/plugin-syntax-typescript": minor
 ---
 
 v0.1.0 release 🚀

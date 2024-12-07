@@ -1,31 +1,7 @@
 {
-	"name": "@esusage/core",
+	"name": "@sdk-usage/core",
 	"version": "0.0.0",
-	"description": "ESUsage core functionalities",
-	"author": "Ayoub Adib <adbayb@gmail.com>",
-	"license": "MIT",
-	"files": [
-		"dist"
-	],
-	"type": "module",
-	"exports": {
-		".": {
-			"source": "./src/index.ts",
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.cjs",
-			"types": "./dist/index.d.ts"
-		}
-	},
-	"sideEffects": false,
-	"homepage": "https://github.com/adbayb/esusage/tree/main/packages/core#readme",
-	"bugs": {
-		"url": "https://github.com/adbayb/esusage/issues"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/adbayb/esusage.git",
-		"directory": "libraries/core"
-	},
+	"description": "sdk-usage core functionalities",
 	"keywords": [
 		"analyze",
 		"analyzer",
@@ -38,17 +14,46 @@
 		"react",
 		"api"
 	],
+	"homepage": "https://github.com/adbayb/sdk-usage/tree/main/packages/core#readme",
+	"bugs": {
+		"url": "https://github.com/adbayb/sdk-usage/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/adbayb/sdk-usage.git",
+		"directory": "libraries/core"
+	},
+	"license": "MIT",
+	"author": "Ayoub Adib <adbayb@gmail.com>",
+	"sideEffects": false,
+	"type": "module",
+	"exports": {
+		".": {
+			"source": "./src/index.ts",
+			"types": "./dist/index.d.ts",
+			"require": "./dist/index.cjs",
+			"import": "./dist/index.mjs",
+			"default": "./dist/index.mjs"
+		}
+	},
+	"files": [
+		"dist"
+	],
 	"scripts": {
 		"build": "quickbundle build",
 		"watch": "quickbundle watch"
 	},
 	"dependencies": {
+		"@open-vanilla/visitor": "^1.0.0",
 		"@swc/core": "^1.9.2",
-		"esvisitor": "^1.0.0",
 		"fdir": "^6.4.2"
 	},
 	"devDependencies": {
 		"@types/node": "22.9.0",
 		"quickbundle": "2.8.0"
+	},
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org"
 	}
 }

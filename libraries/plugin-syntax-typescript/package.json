@@ -1,31 +1,7 @@
 {
-	"name": "@esusage/plugin-syntax-typescript",
+	"name": "@sdk-usage/plugin-syntax-typescript",
 	"version": "0.0.0",
-	"description": "ESUsage parser plugin to enable types syntax analysis",
-	"author": "Ayoub Adib <adbayb@gmail.com>",
-	"license": "MIT",
-	"files": [
-		"dist"
-	],
-	"type": "module",
-	"exports": {
-		".": {
-			"source": "./src/index.ts",
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.cjs",
-			"types": "./dist/index.d.ts"
-		}
-	},
-	"sideEffects": false,
-	"homepage": "https://github.com/adbayb/esusage/tree/main/packages/core#readme",
-	"bugs": {
-		"url": "https://github.com/adbayb/esusage/issues"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/adbayb/esusage.git",
-		"directory": "libraries/plugin-syntax-typescript"
-	},
+	"description": "sdk-usage parser plugin to enable types syntax analysis",
 	"keywords": [
 		"analyze",
 		"analyzer",
@@ -38,16 +14,45 @@
 		"react",
 		"api"
 	],
+	"homepage": "https://github.com/adbayb/sdk-usage/tree/main/packages/core#readme",
+	"bugs": {
+		"url": "https://github.com/adbayb/sdk-usage/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/adbayb/sdk-usage.git",
+		"directory": "libraries/plugin-syntax-typescript"
+	},
+	"license": "MIT",
+	"author": "Ayoub Adib <adbayb@gmail.com>",
+	"sideEffects": false,
+	"type": "module",
+	"exports": {
+		".": {
+			"source": "./src/index.ts",
+			"types": "./dist/index.d.ts",
+			"require": "./dist/index.cjs",
+			"import": "./dist/index.mjs",
+			"default": "./dist/index.mjs"
+		}
+	},
+	"files": [
+		"dist"
+	],
 	"scripts": {
 		"build": "quickbundle build",
 		"watch": "quickbundle watch"
 	},
-	"peerDependencies": {
-		"@esusage/core": "^0.1.0"
-	},
 	"devDependencies": {
-		"@esusage/core": "workspace:*",
+		"@sdk-usage/core": "workspace:*",
 		"@types/node": "22.9.0",
 		"quickbundle": "2.8.0"
+	},
+	"peerDependencies": {
+		"@sdk-usage/core": "^0.0.0"
+	},
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org"
 	}
 }
