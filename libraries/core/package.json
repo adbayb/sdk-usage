@@ -46,7 +46,8 @@
 	"dependencies": {
 		"@open-vanilla/visitor": "^1.0.0",
 		"@swc/core": "^1.9.2",
-		"fdir": "^6.4.2"
+		"fdir": "^6.4.2",
+		"picomatch": "^4.0.2"
 	},
 	"devDependencies": {
 		"@types/node": "22.9.0",

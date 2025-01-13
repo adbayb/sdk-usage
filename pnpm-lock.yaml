@@ -55,6 +55,9 @@ importers:
       fdir:
         specifier: ^6.4.2
         version: 6.4.2(picomatch@4.0.2)
+      picomatch:
+        specifier: ^4.0.2
+        version: 4.0.2
     devDependencies:
       '@types/node':
         specifier: 22.9.0

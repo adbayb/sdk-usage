@@ -8,6 +8,7 @@
 		"check": "stack check",
 		"clean": "stack clean",
 		"fix": "stack fix",
+		"preinstall": "npx only-allow pnpm",
 		"prepare": "stack install",
 		"release:log": "stack release --log",
 		"release:publish": "stack release --publish",
@@ -23,8 +24,6 @@
 	"packageManager": "pnpm@9.15.0",
 	"engines": {
 		"node": ">=22.0.0",
-		"npm": "please-use-pnpm",
-		"pnpm": ">=9.0.0",
-		"yarn": "please-use-pnpm"
+		"pnpm": ">=9.0.0"
 	}
 }
