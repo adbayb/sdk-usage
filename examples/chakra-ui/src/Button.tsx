@@ -3,16 +3,16 @@ import type { LinkProps as ChakraLinkProps } from "@chakra-ui/react";
 
 export type ButtonProps = {
 	readonly children: string;
-	readonly test: ChakraLinkProps["isExternal"];
+	readonly test: ChakraLinkProps["hrefLang"];
 };
 
 const MY_VARIABLE = "test";
 
-export const Button = ({ children }: ButtonProps) => (
+export const Button = ({ children, test }: ButtonProps) => (
 	<ChakraLink
 		flexGrow={3}
 		href="https://github.com/vercel/next.js/blob/canary/examples/with-chakra-ui"
-		isExternal
+		hrefLang={test}
 		mx={2}
 	>
 		<ChakraButton

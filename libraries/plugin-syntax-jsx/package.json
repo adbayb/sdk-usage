@@ -45,7 +45,7 @@
 	},
 	"devDependencies": {
 		"@sdk-usage/core": "workspace:*",
-		"@types/node": "22.9.0",
+		"@types/node": "22.10.6",
 		"quickbundle": "2.8.0"
 	},
 	"peerDependencies": {
