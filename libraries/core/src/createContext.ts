@@ -16,7 +16,7 @@ type Options = Partial<
 		 */
 		includeModules: string[];
 		/**
-		 * Whether to resolve installed versions of modules, if false or not possible, will use the version from the package.json.
+		 * Attempt to resolve installed versions of modules. If false or not possible, the specified version from the package.json will be used.
 		 * @default false
 		 */
 		resolveInstalledVersions: boolean;
@@ -54,7 +54,7 @@ export const createContext = (path: string, options: Options) => {
 								return;
 							}
 
-							let version: string;
+							let version = dependencies[item.module] ?? "";
 
 							if (options.resolveInstalledVersions) {
 								try {
@@ -68,10 +68,8 @@ export const createContext = (path: string, options: Options) => {
 										) as Package
 									).version;
 								} catch {
-									version = dependencies[item.module] ?? "";
+									// @TODO: No operation (later warnings can be added).
 								}
-							} else {
-								version = dependencies[item.module] ?? "";
 							}
 
 							items.push(
