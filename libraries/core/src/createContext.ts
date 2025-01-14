@@ -15,6 +15,11 @@ type Options = Partial<
 		 * Only analyze components imported from the specificied module list.
 		 */
 		includeModules: string[];
+		/**
+		 * Whether to resolve installed versions of modules, if false or not possible, will use the version from the package.json.
+		 * @default false
+		 */
+		resolveInstalledVersions: boolean;
 	}
 > &
 	Pick<ParseOptions, "plugins">;
@@ -51,17 +56,21 @@ export const createContext = (path: string, options: Options) => {
 
 							let version: string;
 
-							try {
-								version = (
-									require(
-										resolvePackageJson(
-											require.resolve(item.module, {
-												paths: [file],
-											}),
-										),
-									) as Package
-								).version;
-							} catch {
+							if (options.resolveInstalledVersions) {
+								try {
+									version = (
+										require(
+											resolvePackageJson(
+												require.resolve(item.module, {
+													paths: [file],
+												}),
+											),
+										) as Package
+									).version;
+								} catch {
+									version = dependencies[item.module] ?? "";
+								}
+							} else {
 								version = dependencies[item.module] ?? "";
 							}
 
