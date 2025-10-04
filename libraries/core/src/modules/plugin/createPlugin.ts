@@ -1,11 +1,11 @@
 import type { Import, Nodes, Primitive } from "../../types";
 import type { ItemDTO } from "../../entities/item";
 
-export const createSyntaxPlugin = (input: SyntaxPlugin) => {
+export const createPlugin = (input: Plugin) => {
 	return input;
 };
 
-export type SyntaxPlugin = (
+export type Plugin = (
 	context: {
 		// TODO: do not expose setters (read-only context for getter purposes)
 		imports: Map<Import["alias"], Import>;

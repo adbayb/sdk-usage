@@ -3,8 +3,8 @@ import { readFileSync } from "node:fs";
 import type { Package } from "./types";
 import { scan } from "./modules/scanner";
 import type { ScanOptions } from "./modules/scanner";
+import type { Plugin } from "./modules/plugin";
 import { parse } from "./modules/parser";
-import type { ParseOptions } from "./modules/parser";
 import { require, resolvePackageJson } from "./helpers";
 import { createItem } from "./entities/item";
 import type { Item } from "./entities/item";
@@ -16,15 +16,18 @@ type Options = Partial<
 		 */
 		includeModules: string[];
 		/**
+		 * A list of plugins to enable.
+		 */
+		plugins: Plugin[];
+		/**
 		 * Attempt to resolve installed versions of modules. If false or not possible, the specified version from the package.json will be used.
 		 * @default false
 		 */
 		resolveInstalledVersions: boolean;
 	}
-> &
-	Pick<ParseOptions, "plugins">;
+>;
 
-export const createContext = (path: string, options: Options) => {
+export const createInstance = (path: string, options: Options) => {
 	return {
 		async getItems() {
 			const projects = await scan(path);
@@ -87,7 +90,7 @@ export const createContext = (path: string, options: Options) => {
 								}),
 							);
 						},
-						plugins: options.plugins,
+						plugins: options.plugins ?? [],
 					});
 				}
 			}

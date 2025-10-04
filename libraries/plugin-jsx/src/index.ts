@@ -1,6 +1,6 @@
-import { createSyntaxPlugin } from "@sdk-usage/core";
+import { createPlugin } from "@sdk-usage/core";
 
-export default createSyntaxPlugin((context, { getJSXAttributeValue }) => {
+export default createPlugin((context, { getJSXAttributeValue }) => {
 	return {
 		JSXOpeningElement(node) {
 			if (node.name.type !== "Identifier") return;

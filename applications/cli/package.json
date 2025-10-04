@@ -35,8 +35,8 @@
 	},
 	"dependencies": {
 		"@sdk-usage/core": "workspace:^",
-		"@sdk-usage/plugin-syntax-jsx": "workspace:^",
-		"@sdk-usage/plugin-syntax-typescript": "workspace:^"
+		"@sdk-usage/plugin-jsx": "workspace:^",
+		"@sdk-usage/plugin-typescript": "workspace:^"
 	},
 	"devDependencies": {
 		"@types/node": "22.10.6",

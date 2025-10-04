@@ -2,16 +2,13 @@ import { parse as swcParse } from "@swc/core";
 import type { Module } from "@swc/core";
 import { visit } from "@open-vanilla/visitor";
 
-import type { Plugins } from "../plugin";
+import type { Plugin } from "../plugin";
 import type { Import, Nodes, Primitive } from "../../types";
 import type { ItemDTO } from "../../entities/item";
 
 export type ParseOptions = {
 	onAdd: (item: ItemDTO) => void;
-	/**
-	 * A list of plugins to enable.
-	 */
-	plugins: Plugins;
+	plugins: Plugin[];
 };
 
 export const parse = async (code: string, { onAdd, plugins }: ParseOptions) => {
@@ -54,7 +51,7 @@ export const parse = async (code: string, { onAdd, plugins }: ParseOptions) => {
 		},
 	};
 
-	for (const plugin of plugins.syntax) {
+	for (const plugin of plugins) {
 		const pluginOutput = plugin(context, {
 			getJSXAttributeValue,
 		});

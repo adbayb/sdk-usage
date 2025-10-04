@@ -1,2 +1,2 @@
-export { createContext } from "./createContext";
-export { createSyntaxPlugin } from "./modules/plugin";
+export { createInstance } from "./createInstance";
+export { createPlugin } from "./modules/plugin";

@@ -1,5 +1,5 @@
 {
-	"name": "@sdk-usage/plugin-syntax-typescript",
+	"name": "@sdk-usage/plugin-typescript",
 	"version": "0.0.0",
 	"description": "sdk-usage parser plugin to enable types syntax analysis",
 	"keywords": [
@@ -21,7 +21,7 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/adbayb/sdk-usage.git",
-		"directory": "libraries/plugin-syntax-typescript"
+		"directory": "libraries/plugin-typescript"
 	},
 	"license": "MIT",
 	"author": "Ayoub Adib <adbayb@gmail.com>",

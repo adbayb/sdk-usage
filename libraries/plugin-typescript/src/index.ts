@@ -1,6 +1,6 @@
-import { createSyntaxPlugin } from "@sdk-usage/core";
+import { createPlugin } from "@sdk-usage/core";
 
-export default createSyntaxPlugin((context) => {
+export default createPlugin((context) => {
 	return {
 		TsType(node) {
 			let typeValue = "";
