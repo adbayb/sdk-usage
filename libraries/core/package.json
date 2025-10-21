@@ -45,12 +45,12 @@
 	},
 	"dependencies": {
 		"@open-vanilla/visitor": "^1.0.0",
-		"@swc/core": "^1.10.7",
-		"fdir": "^6.4.2",
-		"picomatch": "^4.0.2"
+		"@swc/core": "^1.13.5",
+		"fdir": "^6.5.0",
+		"picomatch": "^4.0.3"
 	},
 	"devDependencies": {
-		"@types/node": "22.10.6",
+		"@types/node": "22.18.12",
 		"quickbundle": "2.8.0"
 	},
 	"publishConfig": {

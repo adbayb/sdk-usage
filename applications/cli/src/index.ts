@@ -1,11 +1,9 @@
-import process from "node:process";
-
-import typescriptSyntaxPlugin from "@sdk-usage/plugin-typescript";
-import jsxSyntaxPlugin from "@sdk-usage/plugin-jsx";
+import typescriptPlugin from "@sdk-usage/plugin-typescript";
+import jsxPlugin from "@sdk-usage/plugin-jsx";
 import { createInstance } from "@sdk-usage/core";
 
 const instance = createInstance(process.cwd(), {
-	plugins: [jsxSyntaxPlugin, typescriptSyntaxPlugin],
+	plugins: [jsxPlugin, typescriptPlugin],
 });
 
 const main = async () => {

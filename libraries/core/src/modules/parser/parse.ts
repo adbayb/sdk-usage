@@ -43,7 +43,7 @@ export const parse = async (code: string, { onAdd, plugins }: ParseOptions) => {
 					name:
 						// @ts-expect-error `imported` field is not exposed by `ImportSpecifier` node (issue in `@swc/core` type definition).
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-						(specifier.imported?.value || specifierValue) as string,
+						(specifier.imported?.value ?? specifierValue) as string,
 					alias: specifierValue,
 					module,
 				});
