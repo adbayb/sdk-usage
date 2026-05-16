@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import { join } from "node:path";
 import { createRequire } from "node:module";
+import { join } from "node:path";
 
 const package_ = createRequire(import.meta.url)("../package.json");
 

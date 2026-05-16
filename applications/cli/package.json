@@ -39,8 +39,8 @@
 		"@sdk-usage/plugin-typescript": "workspace:^"
 	},
 	"devDependencies": {
-		"@types/node": "22.10.6",
-		"quickbundle": "2.8.0"
+		"@types/node": "22.18.12",
+		"quickbundle": "2.9.0"
 	},
 	"publishConfig": {
 		"access": "public",

@@ -1,16 +1,17 @@
 import { readFileSync } from "node:fs";
 
-import type { Package } from "./types";
-import { scan } from "./modules/scanner";
-import type { ScanOptions } from "./modules/scanner";
-import type { Plugin } from "./modules/plugin";
-import { parse } from "./modules/parser";
-import { require, resolvePackageJson } from "./helpers";
-import { createItem } from "./entities/item";
 import type { Item } from "./entities/item";
+import type { Plugin } from "./modules/plugin";
+import type { ScanOptions } from "./modules/scanner";
+import type { Package } from "./types";
+
+import { createItem } from "./entities/item";
+import { require, resolvePackageJson } from "./helpers";
+import { parse } from "./modules/parser";
+import { scan } from "./modules/scanner";
 
 type Options = Partial<
-	Pick<ScanOptions, "excludeFolders" | "includeFiles"> & {
+	{
 		/**
 		 * Only analyze components imported from the specificied module list.
 		 */
@@ -24,7 +25,7 @@ type Options = Partial<
 		 * @default false
 		 */
 		resolveInstalledVersions: boolean;
-	}
+	} & Pick<ScanOptions, "excludeFolders" | "includeFiles">
 >;
 
 export const createInstance = (path: string, options: Options) => {

@@ -11,7 +11,6 @@ export default createPlugin((context, { getJSXAttributeValue }) => {
 			if (!importMetadata) return;
 
 			return {
-				name: importMetadata.name,
 				input: {
 					data: node.attributes.reduce<Record<string, unknown>>(
 						(props, property) => {
@@ -34,6 +33,7 @@ export default createPlugin((context, { getJSXAttributeValue }) => {
 					},
 				},
 				module: importMetadata.module,
+				name: importMetadata.name,
 				offset: node.span.start,
 				type: "jsx/element",
 			};

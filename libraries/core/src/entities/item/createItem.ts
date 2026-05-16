@@ -1,10 +1,9 @@
-/* eslint-disable sort-keys-custom-order/object-keys */
 import type { Package } from "../../types";
-import { createLocation } from "./createLocation";
 import type { CreateLocationInput, Location } from "./createLocation";
 
+import { createLocation } from "./createLocation";
+
 export type Item = {
-	name: string;
 	createdAt: string;
 	input: {
 		data: Record<string, unknown>;
@@ -14,19 +13,20 @@ export type Item = {
 	};
 	location: Location;
 	module: Package["name"];
+	name: string;
 	type: string;
 	version: Package["version"];
 };
 
-export type ItemDTO = Partial<Pick<Item, "input">> &
-	Pick<Item, "module" | "name" | "type"> & {
-		offset: number;
-	};
+export type ItemDTO = {
+	offset: number;
+} & Partial<Pick<Item, "input">> &
+	Pick<Item, "module" | "name" | "type">;
 
-type CreateItemInput = Partial<Pick<Item, "input">> &
-	Pick<Item, "module" | "name" | "type" | "version"> & {
-		location: CreateLocationInput;
-	};
+type CreateItemInput = {
+	location: CreateLocationInput;
+} & Partial<Pick<Item, "input">> &
+	Pick<Item, "module" | "name" | "type" | "version">;
 
 /**
  * Aggregate factory that creates an item.
@@ -42,26 +42,26 @@ type CreateItemInput = Partial<Pick<Item, "input">> &
  * createItem({ ... });
  */
 export const createItem = ({
-	name,
 	input,
 	location,
 	module,
+	name,
 	type,
 	version,
 }: CreateItemInput) => {
 	const item: Item = {
-		name,
-		type,
-		module,
-		version,
 		createdAt: new Date().toISOString(),
-		location: createLocation(location),
 		input: {
+			data: input?.data ?? {},
 			metadata: {
 				withSpreading: input?.metadata.withSpreading ?? false,
 			},
-			data: input?.data ?? {},
 		},
+		location: createLocation(location),
+		module,
+		name,
+		type,
+		version,
 	};
 
 	return item;

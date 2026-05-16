@@ -1,10 +1,11 @@
-import { parse as swcParse } from "@swc/core";
 import type { Module } from "@swc/core";
-import { visit } from "@open-vanilla/visitor";
 
-import type { Plugin } from "../plugin";
-import type { Import, Nodes, Primitive } from "../../types";
+import { visit } from "@open-vanilla/visitor";
+import { parse as swcParse } from "@swc/core";
+
 import type { ItemDTO } from "../../entities/item";
+import type { Import, Nodes, Primitive } from "../../types";
+import type { Plugin } from "../plugin";
 
 export type ParseOptions = {
 	onAdd: (item: ItemDTO) => void;
@@ -40,12 +41,12 @@ export const parse = async (code: string, { onAdd, plugins }: ParseOptions) => {
 				const specifierValue = specifier.local.value;
 
 				context.imports.set(specifierValue, {
+					alias: specifierValue,
+					module,
 					name:
 						// @ts-expect-error `imported` field is not exposed by `ImportSpecifier` node (issue in `@swc/core` type definition).
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-						(specifier.imported?.value || specifierValue) as string,
-					alias: specifierValue,
-					module,
+						(specifier.imported?.value ?? specifierValue) as string,
 				});
 			});
 		},
@@ -62,8 +63,8 @@ export const parse = async (code: string, { onAdd, plugins }: ParseOptions) => {
 
 		for (const nodeKey of nodeKeys) {
 			const currentVisitorFunction = visitor[nodeKey] as
-				| VisitorFunction
-				| undefined;
+				| undefined
+				| VisitorFunction;
 
 			visitor[nodeKey] = (node) => {
 				if (typeof currentVisitorFunction === "function") {
@@ -95,20 +96,20 @@ const getJSXAttributeValue = (
 	}
 
 	switch (node.type) {
-		case "NullLiteral": {
-			return null;
-		}
-		case "StringLiteral":
-		case "NumericLiteral":
 		case "BigIntLiteral":
 		case "BooleanLiteral":
-		case "JSXText": {
+		case "JSXText":
+		case "NumericLiteral":
+		case "StringLiteral": {
 			return node.value;
 		}
 		case "JSXExpressionContainer": {
 			return getJSXAttributeValue(
 				node.expression as Nodes["JSXAttrValue"],
 			);
+		}
+		case "NullLiteral": {
+			return null;
 		}
 		case "JSXElement":
 		case "JSXFragment":

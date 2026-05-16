@@ -1,4 +1,15 @@
 packages:
-    - "applications/*"
-    - "examples/*"
-    - "libraries/*"
+  - "applications/*"
+  - "examples/*"
+  - "libraries/*"
+allowBuilds:
+  '@swc/core': true
+  unrs-resolver: true
+publicHoistPattern:
+  - "*changesets*"
+  - "*commitlint*"
+  - "*eslint*"
+  - "*prettier*"
+  - "*turbo*"
+  - "*typescript*"
+  - "*types*"

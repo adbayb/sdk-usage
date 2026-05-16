@@ -1,17 +1,17 @@
 import { relative } from "node:path";
 
+export type CreateLocationInput = {
+	code: string;
+	offset: number;
+	path: string;
+} & Pick<Location, "file" | "link" | "module">;
+
 export type Location = {
 	column: number;
 	file: string;
 	line: number;
 	link: string;
 	module: string;
-};
-
-export type CreateLocationInput = Pick<Location, "file" | "link" | "module"> & {
-	code: string;
-	offset: number;
-	path: string;
 };
 
 export const createLocation = ({

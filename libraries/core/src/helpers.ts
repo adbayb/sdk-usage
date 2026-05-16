@@ -1,7 +1,7 @@
-import { join } from "node:path";
-import { createRequire } from "node:module";
-import { existsSync } from "node:fs";
 import { spawn } from "node:child_process";
+import { existsSync } from "node:fs";
+import { createRequire } from "node:module";
+import { join } from "node:path";
 
 export const require = createRequire(import.meta.url);
 
@@ -50,12 +50,12 @@ export const exec = async (command: string, options: { cwd?: string } = {}) => {
 		});
 
 		childProcess.on("close", (exitCode) => {
-			if (exitCode !== 0) {
+			if (exitCode === 0) {
+				resolve(stdout.trim());
+			} else {
 				const output = `${stderr}${stdout}`;
 
 				reject(new Error(output.trim()));
-			} else {
-				resolve(stdout.trim());
 			}
 		});
 	});
