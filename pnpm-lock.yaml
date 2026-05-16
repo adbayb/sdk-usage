@@ -227,8 +227,8 @@ importers:
         specifier: 22.18.12
         version: 22.18.12
       quickbundle:
-        specifier: 2.9.0
-        version: 2.9.0(@swc/helpers@0.5.21)(typescript@6.0.3)
+        specifier: 2.16.0
+        version: 2.16.0(@swc/helpers@0.5.21)(typescript@6.0.3)
 
   examples/chakra-ui:
     dependencies:
@@ -265,8 +265,8 @@ importers:
         specifier: 22.18.12
         version: 22.18.12
       quickbundle:
-        specifier: 2.9.0
-        version: 2.9.0(@swc/helpers@0.5.21)(typescript@6.0.3)
+        specifier: 2.16.0
+        version: 2.16.0(@swc/helpers@0.5.21)(typescript@6.0.3)
 
   libraries/plugin-jsx:
     devDependencies:
@@ -277,8 +277,8 @@ importers:
         specifier: 22.18.12
         version: 22.18.12
       quickbundle:
-        specifier: 2.9.0
-        version: 2.9.0(@swc/helpers@0.5.21)(typescript@6.0.3)
+        specifier: 2.16.0
+        version: 2.16.0(@swc/helpers@0.5.21)(typescript@6.0.3)
 
   libraries/plugin-typescript:
     devDependencies:
@@ -289,8 +289,8 @@ importers:
         specifier: 22.18.12
         version: 22.18.12
       quickbundle:
-        specifier: 2.9.0
-        version: 2.9.0(@swc/helpers@0.5.21)(typescript@6.0.3)
+        specifier: 2.16.0
+        version: 2.16.0(@swc/helpers@0.5.21)(typescript@6.0.3)
 
 packages:
 
@@ -779,8 +779,8 @@ packages:
     resolution: {integrity: sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
-  '@rollup/plugin-commonjs@28.0.9':
-    resolution: {integrity: sha512-PIR4/OHZ79romx0BVVll/PkwWpJ7e5lsqFa3gFfcrFPWwLXLV39JVUzQV9RKjWerE7B845Hqjj9VYlQeieZ2dA==}
+  '@rollup/plugin-commonjs@29.0.2':
+    resolution: {integrity: sha512-S/ggWH1LU7jTyi9DxZOKyxpVd4hF/OZ0JrEbeLjXk/DFXwRny0tjD2c992zOUYQobLrVkRVMDdmHP16HKP7GRg==}
     engines: {node: '>=16.0.0 || 14 >= 14.17'}
     peerDependencies:
       rollup: ^2.68.0||^3.0.0||^4.0.0
@@ -3125,8 +3125,8 @@ packages:
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
-  quickbundle@2.9.0:
-    resolution: {integrity: sha512-15hycJVbCi8wMsNFP+bG5nTNYYD+UOCE7A1fI7dXoD0bgvpDV31VXakNJMtelX/9Hkm/bmIby8A78lhWBJhgqA==}
+  quickbundle@2.16.0:
+    resolution: {integrity: sha512-c5zxvaeJAU4VeXz86oJfrusf3+Y2uAC6oX4VnhOxDZg8BhRaijBvmcXAkh4GhbkxftOAd9xT6/dzadUZpwanfg==}
     hasBin: true
     peerDependencies:
       typescript: ^4.7.0 || ^5.0.0
@@ -4513,7 +4513,7 @@ snapshots:
 
   '@pkgr/core@0.2.9': {}
 
-  '@rollup/plugin-commonjs@28.0.9(rollup@4.60.4)':
+  '@rollup/plugin-commonjs@29.0.2(rollup@4.60.4)':
     dependencies:
       '@rollup/pluginutils': 5.3.0(rollup@4.60.4)
       commondir: 1.0.1
@@ -7243,9 +7243,9 @@ snapshots:
 
   queue-microtask@1.2.3: {}
 
-  quickbundle@2.9.0(@swc/helpers@0.5.21)(typescript@6.0.3):
+  quickbundle@2.16.0(@swc/helpers@0.5.21)(typescript@6.0.3):
     dependencies:
-      '@rollup/plugin-commonjs': 28.0.9(rollup@4.60.4)
+      '@rollup/plugin-commonjs': 29.0.2(rollup@4.60.4)
       '@rollup/plugin-json': 6.1.0(rollup@4.60.4)
       '@rollup/plugin-node-resolve': 16.0.3(rollup@4.60.4)
       '@rollup/plugin-url': 8.0.2(rollup@4.60.4)
