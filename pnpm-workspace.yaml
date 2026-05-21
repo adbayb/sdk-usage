@@ -2,3 +2,17 @@ packages:
     - "applications/*"
     - "examples/*"
     - "libraries/*"
+allowBuilds:
+    "@swc/core": true
+    unrs-resolver: true
+minimumReleaseAgeExclude:
+    - "@adbayb/stack"
+    - quickbundle
+publicHoistPattern:
+    - "*changesets*"
+    - "*commitlint*"
+    - "*eslint*"
+    - "*prettier*"
+    - "*turbo*"
+    - "*typescript*"
+    - "*types*"

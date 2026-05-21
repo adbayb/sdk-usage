@@ -1,8 +1,8 @@
+import { fdir } from "fdir";
 import { dirname } from "node:path";
 
-import { fdir } from "fdir";
-
 import type { Package } from "../../types";
+
 import { exec, require } from "../../helpers";
 
 export type ScanOptions = {

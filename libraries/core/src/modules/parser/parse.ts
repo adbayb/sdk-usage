@@ -1,10 +1,11 @@
-import { parse as swcParse } from "@swc/core";
 import type { Module } from "@swc/core";
-import { visit } from "@open-vanilla/visitor";
 
-import type { Plugin } from "../plugin";
-import type { Import, Nodes, Primitive } from "../../types";
+import { visit } from "@open-vanilla/visitor";
+import { parse as swcParse } from "@swc/core";
+
 import type { ItemDTO } from "../../entities/item";
+import type { Import, Nodes, Primitive } from "../../types";
+import type { Plugin } from "../plugin";
 
 export type ParseOptions = {
 	onAdd: (item: ItemDTO) => void;
@@ -40,12 +41,12 @@ export const parse = async (code: string, { onAdd, plugins }: ParseOptions) => {
 				const specifierValue = specifier.local.value;
 
 				context.imports.set(specifierValue, {
+					alias: specifierValue,
+					module,
 					name:
 						// @ts-expect-error `imported` field is not exposed by `ImportSpecifier` node (issue in `@swc/core` type definition).
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-						(specifier.imported?.value || specifierValue) as string,
-					alias: specifierValue,
-					module,
+						(specifier.imported?.value ?? specifierValue) as string,
 				});
 			});
 		},
@@ -62,8 +63,8 @@ export const parse = async (code: string, { onAdd, plugins }: ParseOptions) => {
 
 		for (const nodeKey of nodeKeys) {
 			const currentVisitorFunction = visitor[nodeKey] as
-				| VisitorFunction
-				| undefined;
+				| undefined
+				| VisitorFunction;
 
 			visitor[nodeKey] = (node) => {
 				if (typeof currentVisitorFunction === "function") {
@@ -87,7 +88,7 @@ type VisitorFunction<Key extends keyof Nodes = keyof Nodes> = (
 ) => void;
 
 const getJSXAttributeValue = (
-	node: Nodes["JSXAttrValue"] | undefined,
+	node: Nodes["JSXAttrValue"] | Nodes["JSXExpression"] | undefined,
 	// eslint-disable-next-line sonarjs/cyclomatic-complexity
 ): Primitive => {
 	if (!node) {
@@ -95,24 +96,57 @@ const getJSXAttributeValue = (
 	}
 
 	switch (node.type) {
-		case "NullLiteral": {
-			return null;
-		}
-		case "StringLiteral":
-		case "NumericLiteral":
 		case "BigIntLiteral":
 		case "BooleanLiteral":
-		case "JSXText": {
+		case "JSXText":
+		case "NumericLiteral":
+		case "StringLiteral": {
 			return node.value;
 		}
 		case "JSXExpressionContainer": {
-			return getJSXAttributeValue(
-				node.expression as Nodes["JSXAttrValue"],
-			);
+			return getJSXAttributeValue(node.expression);
 		}
+		case "NullLiteral": {
+			return null;
+		}
+		case "ArrayExpression":
+		case "ArrowFunctionExpression":
+		case "AssignmentExpression":
+		case "AwaitExpression":
+		case "BinaryExpression":
+		case "CallExpression":
+		case "ClassExpression":
+		case "ConditionalExpression":
+		case "FunctionExpression":
+		case "Identifier":
+		case "Invalid":
 		case "JSXElement":
+		case "JSXEmptyExpression":
 		case "JSXFragment":
+		case "JSXMemberExpression":
+		case "JSXNamespacedName":
+		case "MemberExpression":
+		case "MetaProperty":
+		case "NewExpression":
+		case "ObjectExpression":
+		case "OptionalChainingExpression":
+		case "ParenthesisExpression":
+		case "PrivateName":
 		case "RegExpLiteral":
+		case "SequenceExpression":
+		case "SuperPropExpression":
+		case "TaggedTemplateExpression":
+		case "TemplateLiteral":
+		case "ThisExpression":
+		case "TsAsExpression":
+		case "TsConstAssertion":
+		case "TsInstantiation":
+		case "TsNonNullExpression":
+		case "TsSatisfiesExpression":
+		case "TsTypeAssertion":
+		case "UnaryExpression":
+		case "UpdateExpression":
+		case "YieldExpression":
 		default: {
 			return createUnknownToken(node.type);
 		}

@@ -25,8 +25,8 @@ export default createPlugin((context) => {
 			if (!importMetadata) return;
 
 			return {
-				name: importMetadata.name,
 				module: importMetadata.module,
+				name: importMetadata.name,
 				offset: node.span.start,
 				type: "typescript/type",
 			};

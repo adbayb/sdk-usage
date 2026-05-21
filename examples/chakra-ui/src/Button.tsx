@@ -1,5 +1,6 @@
-import { Button as ChakraButton, Link as ChakraLink } from "@chakra-ui/react";
 import type { LinkProps as ChakraLinkProps } from "@chakra-ui/react";
+
+import { Button as ChakraButton, Link as ChakraLink } from "@chakra-ui/react";
 
 export type ButtonProps = {
 	readonly children: string;
