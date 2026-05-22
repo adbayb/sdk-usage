@@ -1,6 +1,6 @@
 {
 	"name": "@sdk-usage/plugin-jsx",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"description": "sdk-usage parser plugin to enable JSX syntax analysis",
 	"keywords": [
 		"analyze",

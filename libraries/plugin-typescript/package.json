@@ -1,6 +1,6 @@
 {
 	"name": "@sdk-usage/plugin-typescript",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"description": "sdk-usage parser plugin to enable types syntax analysis",
 	"keywords": [
 		"analyze",
