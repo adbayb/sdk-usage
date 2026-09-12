@@ -39,7 +39,7 @@
 		"@sdk-usage/plugin-typescript": "workspace:^"
 	},
 	"devDependencies": {
-		"@types/node": "24.12.4",
+		"@types/node": "24.13.4",
 		"quickbundle": "3.0.0"
 	},
 	"publishConfig": {
