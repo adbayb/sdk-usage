@@ -40,7 +40,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "24.12.4",
-		"quickbundle": "3.0.0"
+		"quickbundle": "3.2.0"
 	},
 	"publishConfig": {
 		"access": "public",
