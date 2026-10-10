@@ -46,7 +46,7 @@
 	"devDependencies": {
 		"@sdk-usage/core": "workspace:*",
 		"@types/node": "24.12.4",
-		"quickbundle": "3.0.0"
+		"quickbundle": "3.2.0"
 	},
 	"peerDependencies": {
 		"@sdk-usage/core": "^0.0.0 || <1.0.0"
