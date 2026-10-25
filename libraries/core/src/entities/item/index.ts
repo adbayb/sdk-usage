@@ -1,2 +1,2 @@
-export { createItem } from "./createItem";
-export type { Item, ItemDTO } from "./createItem";
+export { createItem } from "./create-item";
+export type { Item, ItemDTO } from "./create-item";

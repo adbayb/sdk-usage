@@ -1,35 +1,38 @@
 import type { Package } from "../../types";
-import type { CreateLocationInput, Location } from "./createLocation";
-
-import { createLocation } from "./createLocation";
+import type { CreateLocationInput, Location } from "./create-location";
+import { createLocation } from "./create-location";
 
 export type Item = {
+	name: string;
 	createdAt: string;
 	input: {
-		data: Record<string, unknown>;
 		metadata: {
 			withSpreading: boolean;
 		};
+		data: Record<string, unknown>;
 	};
 	location: Location;
 	module: Package["name"];
-	name: string;
 	type: string;
 	version: Package["version"];
 };
 
-export type ItemDTO = {
-	offset: number;
-} & Partial<Pick<Item, "input">> &
-	Pick<Item, "module" | "name" | "type">;
+export type ItemDTO = Partial<Pick<Item, "input">> &
+	Pick<Item, "module" | "name" | "type"> & {
+		offset: number;
+	};
 
-type CreateItemInput = {
-	location: CreateLocationInput;
-} & Partial<Pick<Item, "input">> &
-	Pick<Item, "module" | "name" | "type" | "version">;
+type CreateItemInput = Partial<Pick<Item, "input">> &
+	Pick<Item, "module" | "name" | "type" | "version"> & {
+		location: CreateLocationInput;
+	};
 
 /**
  * Aggregate factory that creates an item.
+ *
+ * @example
+ * 	createItem({ ... });
+ *
  * @param input - Factory variables.
  * @param input.name - Name.
  * @param input.type - Component type.
@@ -38,28 +41,19 @@ type CreateItemInput = {
  * @param input.location - Location.
  * @param input.input - Parameter list and metadata describing the way it's passed.
  * @returns Created item.
- * @example
- * createItem({ ... });
  */
-export const createItem = ({
-	input,
-	location,
-	module,
-	name,
-	type,
-	version,
-}: CreateItemInput) => {
+export const createItem = ({ name, input, location, module, type, version }: CreateItemInput) => {
 	const item: Item = {
+		name,
 		createdAt: new Date().toISOString(),
 		input: {
-			data: input?.data ?? {},
 			metadata: {
 				withSpreading: input?.metadata.withSpreading ?? false,
 			},
+			data: input?.data ?? {},
 		},
 		location: createLocation(location),
 		module,
-		name,
 		type,
 		version,
 	};

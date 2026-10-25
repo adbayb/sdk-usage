@@ -6,13 +6,11 @@ import type {
 	TsType,
 } from "@swc/core";
 
-/**
- * Import entity to model an import statement.
- */
+/** Import entity to model an import statement. */
 export type Import = {
-	alias: string;
-	module: string; // import specifier value
 	name: string;
+	alias: string;
+	module: string; // Import specifier value
 };
 
 export type Nodes = {
@@ -23,14 +21,12 @@ export type Nodes = {
 	TsType: TsType;
 };
 
-/**
- * Package entity to model `package.json` metadata.
- */
+/** Package entity to model `package.json` metadata. */
 export type Package = {
-	dependencies?: Record<string, string>;
-	description: string;
-	devDependencies?: Record<string, string>;
 	name: string;
+	description: string;
+	dependencies?: Record<string, string>;
+	devDependencies?: Record<string, string>;
 	optionalDependencies?: Record<string, string>;
 	peerDependencies?: Record<string, string>;
 	version: string;

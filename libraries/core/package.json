@@ -5,28 +5,31 @@
 	"keywords": [
 		"analyze",
 		"analyzer",
+		"api",
 		"inspect",
-		"scan",
-		"monitor",
-		"sonar",
-		"usage",
 		"jsx",
+		"monitor",
 		"react",
-		"api"
+		"scan",
+		"sonar",
+		"usage"
 	],
 	"homepage": "https://github.com/adbayb/sdk-usage/tree/main/packages/core#readme",
 	"bugs": {
 		"url": "https://github.com/adbayb/sdk-usage/issues"
 	},
+	"license": "MIT",
+	"author": "Ayoub Adib <adbayb@gmail.com>",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/adbayb/sdk-usage.git",
 		"directory": "libraries/core"
 	},
-	"license": "MIT",
-	"author": "Ayoub Adib <adbayb@gmail.com>",
-	"sideEffects": false,
+	"files": [
+		"dist"
+	],
 	"type": "module",
+	"sideEffects": false,
 	"exports": {
 		".": {
 			"source": "./src/index.ts",
@@ -36,25 +39,22 @@
 			"default": "./dist/index.mjs"
 		}
 	},
-	"files": [
-		"dist"
-	],
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org"
+	},
 	"scripts": {
 		"build": "quickbundle build",
 		"watch": "quickbundle watch"
 	},
 	"dependencies": {
 		"@open-vanilla/visitor": "^1.0.0",
-		"@swc/core": "^1.15.33",
+		"@swc/core": "^1.16.20",
 		"fdir": "^6.5.0",
-		"picomatch": "^4.0.4"
+		"picomatch": "^4.0.7"
 	},
 	"devDependencies": {
-		"@types/node": "24.12.4",
-		"quickbundle": "3.0.0"
-	},
-	"publishConfig": {
-		"access": "public",
-		"registry": "https://registry.npmjs.org"
+		"@types/node": "24.19.2",
+		"quickbundle": "3.2.2"
 	}
 }

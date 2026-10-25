@@ -4,15 +4,22 @@
 	"description": "A code analyzer to collect ECMAScript modules usage with JSX and TypeScript support",
 	"homepage": "https://github.com/adbayb/sdk-usage/tree/main/sdk-usage#readme",
 	"bugs": "https://github.com/adbayb/sdk-usage/issues",
+	"license": "MIT",
+	"author": "Ayoub Adib <adbayb@gmail.com> (https://twitter.com/adbayb)",
 	"repository": {
 		"type": "git",
 		"url": "git@github.com:adbayb/sdk-usage.git",
 		"directory": "applications/cli"
 	},
-	"license": "MIT",
-	"author": "Ayoub Adib <adbayb@gmail.com> (https://twitter.com/adbayb)",
-	"sideEffects": false,
+	"bin": {
+		"sdk-usage": "./bin/index.js"
+	},
+	"files": [
+		"bin",
+		"dist"
+	],
 	"type": "module",
+	"sideEffects": false,
 	"exports": {
 		".": {
 			"source": "./src/index.ts",
@@ -22,13 +29,10 @@
 			"default": "./dist/index.mjs"
 		}
 	},
-	"bin": {
-		"sdk-usage": "./bin/index.js"
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org"
 	},
-	"files": [
-		"bin",
-		"dist"
-	],
 	"scripts": {
 		"build": "quickbundle build",
 		"watch": "quickbundle watch"
@@ -39,11 +43,7 @@
 		"@sdk-usage/plugin-typescript": "workspace:^"
 	},
 	"devDependencies": {
-		"@types/node": "24.12.4",
-		"quickbundle": "3.0.0"
-	},
-	"publishConfig": {
-		"access": "public",
-		"registry": "https://registry.npmjs.org"
+		"@types/node": "24.19.2",
+		"quickbundle": "3.2.2"
 	}
 }

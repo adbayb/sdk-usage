@@ -1,18 +1,12 @@
-import { fdir } from "fdir";
 import { dirname } from "node:path";
-
+import { fdir as Fdir } from "fdir";
+import { exec, require } from "../../helpers";
 import type { Package } from "../../types";
 
-import { exec, require } from "../../helpers";
-
 export type ScanOptions = {
-	/**
-	 * A list of folders to ignore.
-	 */
+	/** A list of folders to ignore. */
 	excludeFolders?: string[];
-	/**
-	 * A list of files to include (following glob matcher).
-	 */
+	/** A list of files to include (following glob matcher). */
 	includeFiles?: string[];
 };
 
@@ -20,14 +14,16 @@ export const scan = async (path: string, options: ScanOptions = {}) => {
 	const excludedFolders = options.excludeFolders ?? DEFAULT_EXCLUDED_FOLDERS;
 	const includedFiles = options.includeFiles ?? DEFAULT_INCLUDED_FILES;
 
-	const projectPaths = new fdir()
+	const projectPaths = new Fdir()
 		.withBasePath()
 		.glob("**/package.json")
-		.exclude((directoryName) => excludedFolders.includes(directoryName))
+		.exclude((directoryName) => {
+			return excludedFolders.includes(directoryName);
+		})
 		.crawl(path)
 		.sync();
 
-	const projects: { folder: string; link: string; metadata: Package }[] = [];
+	const projects: { metadata: Package; folder: string; link: string }[] = [];
 
 	for (const projectPath of projectPaths) {
 		const metadata = require(projectPath) as Package;
@@ -42,23 +38,25 @@ export const scan = async (path: string, options: ScanOptions = {}) => {
 			link = "";
 		}
 
-		projects.push({ folder, link, metadata });
+		projects.push({ metadata, folder, link });
 	}
 
 	return projects.map((project) => {
-		const files: string[] = new fdir()
+		const files: string[] = new Fdir()
 			.withBasePath()
 			.glob(...includedFiles)
-			.exclude((directoryName) => excludedFolders.includes(directoryName))
+			.exclude((directoryName) => {
+				return excludedFolders.includes(directoryName);
+			})
 			.crawl(project.folder)
 			.sync();
 
-		return { ...project, files };
+		return Object.assign(project, { files });
 	});
 };
 
 const DEFAULT_EXCLUDED_FOLDERS = [".git", "node_modules", "dist", "out"];
 
 const DEFAULT_INCLUDED_FILES = [
-	"**/*/!(test|*.test|stories|*.stories).?(m){j,t}s?(x)", // js|jsx|ts|tsx|cjs|mjs|cjsx|mjsx excluding test-like and story-like files
+	"**/*/!(test|*.test|stories|*.stories).?(m){j,t}s?(x)", // Js|jsx|ts|tsx|cjs|mjs|cjsx|mjsx excluding test-like and story-like files
 ];

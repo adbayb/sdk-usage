@@ -1,14 +1,12 @@
 import { createPlugin } from "@sdk-usage/core";
 
-export default createPlugin((context) => {
+/** Plugin that collects TypeScript usages of imported types. */
+export const plugin = createPlugin((context) => {
 	return {
 		TsType(node) {
 			let typeValue = "";
 
-			if (
-				node.type === "TsTypeReference" &&
-				node.typeName.type === "Identifier"
-			) {
+			if (node.type === "TsTypeReference" && node.typeName.type === "Identifier") {
 				typeValue = node.typeName.value;
 			}
 
@@ -22,11 +20,13 @@ export default createPlugin((context) => {
 
 			const importMetadata = context.imports.get(typeValue);
 
-			if (!importMetadata) return;
+			if (!importMetadata) {
+				return;
+			}
 
 			return {
-				module: importMetadata.module,
 				name: importMetadata.name,
+				module: importMetadata.module,
 				offset: node.span.start,
 				type: "typescript/type",
 			};

@@ -1,34 +1,32 @@
 import { readFileSync } from "node:fs";
-
 import type { Item } from "./entities/item";
-import type { Plugin } from "./modules/plugin";
-import type { ScanOptions } from "./modules/scanner";
-import type { Package } from "./types";
-
 import { createItem } from "./entities/item";
 import { require, resolvePackageJson } from "./helpers";
 import { parse } from "./modules/parser";
+import type { Plugin } from "./modules/plugin";
+import type { ScanOptions } from "./modules/scanner";
 import { scan } from "./modules/scanner";
+import type { Package } from "./types";
 
 type Options = Partial<
-	{
-		/**
-		 * Only analyze components imported from the specificied module list.
-		 */
+	Pick<ScanOptions, "excludeFolders" | "includeFiles"> & {
+		/** Only analyze components imported from the specificied module list. */
 		includeModules: string[];
-		/**
-		 * A list of plugins to enable.
-		 */
+		/** A list of plugins to enable. */
 		plugins: Plugin[];
 		/**
-		 * Attempt to resolve installed versions of modules. If false or not possible, the specified version from the package.json will be used.
+		 * Attempt to resolve installed versions of modules. If false or not possible, the specified
+		 * version from the package.json will be used.
+		 *
 		 * @default false
 		 */
 		resolveInstalledVersions: boolean;
-	} & Pick<ScanOptions, "excludeFolders" | "includeFiles">
+	}
 >;
 
 export const createInstance = (path: string, options: Options) => {
+	const { includeModules, plugins, resolveInstalledVersions } = options;
+
 	return {
 		async getItems() {
 			const projects = await scan(path);
@@ -43,34 +41,36 @@ export const createInstance = (path: string, options: Options) => {
 					...project.metadata.dependencies,
 				};
 
-				const link = project.link;
+				const { link } = project;
 
 				for (const file of project.files) {
 					const code = readFileSync(file, "utf8");
 
 					await parse(code, {
 						onAdd(item) {
+							const { module: itemModule, offset } = item;
+
 							if (
-								options.includeModules &&
-								options.includeModules.length > 0 &&
-								!options.includeModules.includes(item.module)
+								includeModules &&
+								includeModules.length > 0 &&
+								!includeModules.includes(itemModule)
 							) {
 								return;
 							}
 
-							let version = dependencies[item.module] ?? "";
+							let version = dependencies[itemModule] ?? "";
 
-							if (options.resolveInstalledVersions) {
+							if (resolveInstalledVersions) {
 								try {
-									version = (
-										require(
-											resolvePackageJson(
-												require.resolve(item.module, {
-													paths: [file],
-												}),
-											),
-										) as Package
-									).version;
+									const { version: installedVersion } = require(
+										resolvePackageJson(
+											require.resolve(itemModule, {
+												paths: [file],
+											}),
+										),
+									) as Package;
+
+									version = installedVersion;
 								} catch {
 									// @TODO: No operation (later warnings can be added).
 								}
@@ -84,14 +84,14 @@ export const createInstance = (path: string, options: Options) => {
 										file,
 										link,
 										module,
-										offset: item.offset,
+										offset,
 										path,
 									},
 									version,
 								}),
 							);
 						},
-						plugins: options.plugins ?? [],
+						plugins: plugins ?? [],
 					});
 				}
 			}

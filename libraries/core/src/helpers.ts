@@ -17,12 +17,14 @@ export const resolvePackageJson = (fromPath: string): string => {
 
 /**
  * Execute an external command.
+ *
+ * @example
+ * 	exec("ls");
+ *
  * @param command - The command to execute.
  * @param options - Options including current working directory configuration.
  * @param options.cwd - Configure the current working directory.
  * @returns The output (either the command output or error).
- * @example
- * exec("ls");
  */
 export const exec = async (command: string, options: { cwd?: string } = {}) => {
 	return new Promise<string>((resolve, reject) => {

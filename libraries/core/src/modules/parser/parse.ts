@@ -1,8 +1,6 @@
-import type { Module } from "@swc/core";
-
 import { visit } from "@open-vanilla/visitor";
+import type { Module } from "@swc/core";
 import { parse as swcParse } from "@swc/core";
-
 import type { ItemDTO } from "../../entities/item";
 import type { Import, Nodes, Primitive } from "../../types";
 import type { Plugin } from "../plugin";
@@ -29,7 +27,9 @@ export const parse = async (code: string, { onAdd, plugins }: ParseOptions) => {
 		// TODO: log error with file path
 	}
 
-	if (ast === undefined) return;
+	if (ast === undefined) {
+		return;
+	}
 
 	const visitor: {
 		[Key in keyof Nodes]?: VisitorFunction<Key>;
@@ -41,12 +41,9 @@ export const parse = async (code: string, { onAdd, plugins }: ParseOptions) => {
 				const specifierValue = specifier.local.value;
 
 				context.imports.set(specifierValue, {
+					name: "imported" in specifier ? specifier.imported.value : specifierValue,
 					alias: specifierValue,
 					module,
-					name:
-						// @ts-expect-error `imported` field is not exposed by `ImportSpecifier` node (issue in `@swc/core` type definition).
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-						(specifier.imported?.value ?? specifierValue) as string,
 				});
 			});
 		},
@@ -57,14 +54,10 @@ export const parse = async (code: string, { onAdd, plugins }: ParseOptions) => {
 			getJSXAttributeValue,
 		});
 
-		const nodeKeys = Object.keys(
-			pluginOutput,
-		) as (keyof typeof pluginOutput)[];
+		const nodeKeys = Object.keys(pluginOutput) as (keyof typeof pluginOutput)[];
 
 		for (const nodeKey of nodeKeys) {
-			const currentVisitorFunction = visitor[nodeKey] as
-				| undefined
-				| VisitorFunction;
+			const currentVisitorFunction = visitor[nodeKey] as undefined | VisitorFunction;
 
 			visitor[nodeKey] = (node) => {
 				if (typeof currentVisitorFunction === "function") {
@@ -83,9 +76,7 @@ export const parse = async (code: string, { onAdd, plugins }: ParseOptions) => {
 	visit<Nodes>(ast, visitor);
 };
 
-type VisitorFunction<Key extends keyof Nodes = keyof Nodes> = (
-	node: Nodes[Key],
-) => void;
+type VisitorFunction<Key extends keyof Nodes = keyof Nodes> = (node: Nodes[Key]) => void;
 
 const getJSXAttributeValue = (
 	node: Nodes["JSXAttrValue"] | Nodes["JSXExpression"] | undefined,
@@ -95,69 +86,36 @@ const getJSXAttributeValue = (
 		return true;
 	}
 
-	switch (node.type) {
-		case "BigIntLiteral":
-		case "BooleanLiteral":
-		case "JSXText":
-		case "NumericLiteral":
-		case "StringLiteral": {
-			return node.value;
-		}
-		case "JSXExpressionContainer": {
-			return getJSXAttributeValue(node.expression);
-		}
-		case "NullLiteral": {
-			return null;
-		}
-		case "ArrayExpression":
-		case "ArrowFunctionExpression":
-		case "AssignmentExpression":
-		case "AwaitExpression":
-		case "BinaryExpression":
-		case "CallExpression":
-		case "ClassExpression":
-		case "ConditionalExpression":
-		case "FunctionExpression":
-		case "Identifier":
-		case "Invalid":
-		case "JSXElement":
-		case "JSXEmptyExpression":
-		case "JSXFragment":
-		case "JSXMemberExpression":
-		case "JSXNamespacedName":
-		case "MemberExpression":
-		case "MetaProperty":
-		case "NewExpression":
-		case "ObjectExpression":
-		case "OptionalChainingExpression":
-		case "ParenthesisExpression":
-		case "PrivateName":
-		case "RegExpLiteral":
-		case "SequenceExpression":
-		case "SuperPropExpression":
-		case "TaggedTemplateExpression":
-		case "TemplateLiteral":
-		case "ThisExpression":
-		case "TsAsExpression":
-		case "TsConstAssertion":
-		case "TsInstantiation":
-		case "TsNonNullExpression":
-		case "TsSatisfiesExpression":
-		case "TsTypeAssertion":
-		case "UnaryExpression":
-		case "UpdateExpression":
-		case "YieldExpression":
-		default: {
-			return createUnknownToken(node.type);
-		}
+	if (
+		node.type === "BigIntLiteral" ||
+		node.type === "BooleanLiteral" ||
+		node.type === "JSXText" ||
+		node.type === "NumericLiteral" ||
+		node.type === "StringLiteral"
+	) {
+		return node.value;
 	}
+
+	if (node.type === "JSXExpressionContainer") {
+		return getJSXAttributeValue(node.expression);
+	}
+
+	if (node.type === "NullLiteral") {
+		return;
+	}
+
+	return createUnknownToken(node.type);
 };
 
 /**
  * Helper to unify the way unknown AST token are managed.
+ *
+ * @example
+ * 	createUnknownToken("VariableDeclaration");
+ *
  * @param token - AST token value.
  * @returns Formatted AST token.
- * @example
- * createUnknownToken("VariableDeclaration");
  */
-const createUnknownToken = (token: string) => `#${token}`;
+const createUnknownToken = (token: string) => {
+	return `#${token}`;
+};

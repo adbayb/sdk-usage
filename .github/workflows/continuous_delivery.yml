@@ -19,33 +19,27 @@ jobs:
             id-token: write
             pull-requests: write
         steps:
-            - uses: actions/checkout@v6
-            - uses: pnpm/action-setup@v6
-            - uses: actions/setup-node@v6
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+            - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+            - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
               with:
                   cache: pnpm
-                  node-version-file: ".nvmrc"
+                  node-version-file: "package.json"
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
-            - name: Publish pre-release version(s)
-              if: "!contains(github.event.head_commit.message, 'chore: release package(s)')"
+            - name: Create release pull request or Publish stable version(s)
+              id: changesets
+              uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
+              with:
+                  commit-message: "chore: release package(s)"
+                  create-github-releases: true
+                  pr-title: "chore: release package(s)"
+                  publish-script: pnpm release:publish
+                  version-script: pnpm release:version
+            - name: Publish snapshot version(s)
+              if: steps.changesets.outputs.published == 'false' && steps.changesets.outputs.has-changesets == 'true'
               run: |
-                  pnpm --filter="!." --filter="!./applications/*" --filter="!./examples/*" --filter="!./tools/*" --recursive exec \
-                    node -e "const fs=require('fs'),pkg=JSON.parse(fs.readFileSync('package.json'));pkg.version=pkg.version+'-next-${GITHUB_SHA::7}';fs.writeFileSync('package.json',JSON.stringify(pkg,null,2)+'\n');"
-                  pnpm --filter="!." --filter="!./applications/*" --filter="!./examples/*" --filter="!./tools/*" --recursive exec pnpm publish --tag next --no-git-checks
-            - name: Create release pull request
-              if: "!contains(github.event.head_commit.message, 'chore: release package(s)')"
-              uses: changesets/action@v1
-              with:
-                  commit: "chore: release package(s)"
-                  title: "chore: release package(s)"
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            - name: Publish stable version(s)
-              if: "contains(github.event.head_commit.message, 'chore: release package(s)')"
-              uses: changesets/action@v1
-              with:
-                  version: pnpm release:version
-                  publish: pnpm release:publish
+                  git stash # To avoid being affected by changes made in the previous step, including the removal of changeset files that could lead to errors.
+                  pnpm release:snapshot
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
