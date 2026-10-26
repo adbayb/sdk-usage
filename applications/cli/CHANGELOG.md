@@ -1,5 +1,15 @@
 # @sdk-usage/cli
 
+## 0.1.1
+
+### Patch Changes
+
+- [`e7d80cf`](https://github.com/adbayb/sdk-usage/commit/e7d80cfb8c93dda0ef6b3da8caad8deffa8a378c) Thanks [@adbayb](https://github.com/adbayb)! - Replace the default exports from the JSX and TypeScript plugins with a named `plugin` export. This is a breaking change for consumers of either plugin. Update the CLI to use the named exports and fix parser/type-check issues.
+- Updated dependencies [[`e7d80cf`](https://github.com/adbayb/sdk-usage/commit/e7d80cfb8c93dda0ef6b3da8caad8deffa8a378c), [`f08690d`](https://github.com/adbayb/sdk-usage/commit/f08690da86e7b1d7b84c9b59d2ad273f39de4d33), [`f08690d`](https://github.com/adbayb/sdk-usage/commit/f08690da86e7b1d7b84c9b59d2ad273f39de4d33)]:
+    - @sdk-usage/core@0.2.0
+    - @sdk-usage/plugin-jsx@0.2.0
+    - @sdk-usage/plugin-typescript@0.2.0
+
 ## 0.1.0
 
 ### Minor Changes

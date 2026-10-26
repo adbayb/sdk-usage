@@ -1,5 +1,11 @@
 # @sdk-usage/plugin-typescript
 
+## 0.2.0
+
+### Minor Changes
+
+- [`e7d80cf`](https://github.com/adbayb/sdk-usage/commit/e7d80cfb8c93dda0ef6b3da8caad8deffa8a378c) Thanks [@adbayb](https://github.com/adbayb)! - Replace the default exports from the JSX and TypeScript plugins with a named `plugin` export. This is a breaking change for consumers of either plugin. Update the CLI to use the named exports and fix parser/type-check issues.
+
 ## 0.1.0
 
 ### Minor Changes
