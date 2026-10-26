@@ -4,8 +4,6 @@ packages:
     - "libraries/*"
 saveExact: true
 verifyDepsBeforeRun: "warn"
-allowBuilds:
-    "@swc/core": true
 update:
     githubActions: true
 minimumReleaseAgeExclude:
@@ -21,3 +19,8 @@ publicHoistPattern:
 permissions:
     "@adbayb/stack":
         skills: true
+    "@swc/core":
+        build: true
+skills:
+    dirs:
+        - .agents/skills

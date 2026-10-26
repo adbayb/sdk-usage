@@ -4,13 +4,23 @@ import { plugin as jsxPlugin } from "@sdk-usage/plugin-jsx";
 import { plugin as typescriptPlugin } from "@sdk-usage/plugin-typescript";
 
 const main = async () => {
-	const instance = createInstance(cwd(), {
-		plugins: [jsxPlugin, typescriptPlugin],
-	});
+	try {
+		const instance = createInstance(cwd(), {
+			plugins: [jsxPlugin, typescriptPlugin],
+		});
 
-	const items = await instance.getItems();
+		const output = [];
 
-	console.log(JSON.stringify(items, undefined, 2), items.length);
+		for await (const item of instance.getItems()) {
+			output.push(item);
+		}
+
+		console.log(JSON.stringify(output, undefined, 2));
+		console.error(`${output.length} items`);
+	} catch (error) {
+		console.error(error);
+		process.exitCode = 1;
+	}
 };
 
 /*

@@ -1,6 +1,5 @@
 import type { Package } from "../../types";
-import type { CreateLocationInput, Location } from "./create-location";
-import { createLocation } from "./create-location";
+import type { Location } from "./create-locator";
 
 export type Item = {
 	name: string;
@@ -23,12 +22,10 @@ export type ItemDTO = Partial<Pick<Item, "input">> &
 	};
 
 type CreateItemInput = Partial<Pick<Item, "input">> &
-	Pick<Item, "module" | "name" | "type" | "version"> & {
-		location: CreateLocationInput;
-	};
+	Pick<Item, "location" | "module" | "name" | "type" | "version">;
 
 /**
- * Aggregate factory that creates an item.
+ * Creates an SDK usage item.
  *
  * @example
  * 	createItem({ ... });
@@ -40,10 +37,17 @@ type CreateItemInput = Partial<Pick<Item, "input">> &
  * @param input.version - Module version.
  * @param input.location - Location.
  * @param input.input - Parameter list and metadata describing the way it's passed.
- * @returns Created item.
+ * @returns An SDK usage item with its source location and module version.
  */
-export const createItem = ({ name, input, location, module, type, version }: CreateItemInput) => {
-	const item: Item = {
+export const createItem = ({
+	name,
+	input,
+	location,
+	module,
+	type,
+	version,
+}: CreateItemInput): Item => {
+	return {
 		name,
 		createdAt: new Date().toISOString(),
 		input: {
@@ -52,11 +56,9 @@ export const createItem = ({ name, input, location, module, type, version }: Cre
 			},
 			data: input?.data ?? {},
 		},
-		location: createLocation(location),
+		location,
 		module,
 		type,
 		version,
 	};
-
-	return item;
 };

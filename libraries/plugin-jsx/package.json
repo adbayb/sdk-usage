@@ -45,12 +45,14 @@
 	},
 	"scripts": {
 		"build": "quickbundle build",
+		"test": "vitest run",
 		"watch": "quickbundle watch"
 	},
 	"devDependencies": {
 		"@sdk-usage/core": "workspace:*",
 		"@types/node": "24.19.2",
-		"quickbundle": "3.2.2"
+		"quickbundle": "3.2.2",
+		"vitest": "5.0.5"
 	},
 	"peerDependencies": {
 		"@sdk-usage/core": "^0.0.0 || <1.0.0"
