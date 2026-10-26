@@ -19,7 +19,9 @@ export const plugin = createPlugin((context, { getJSXAttributeValue }) => {
 				name: importMetadata.name,
 				input: {
 					metadata: {
-						withSpreading: false, // TODO
+						withSpreading: node.attributes.some((attribute) => {
+							return attribute.type === "SpreadElement";
+						}),
 					},
 					data: node.attributes.reduce<Record<string, unknown>>((props, property) => {
 						if (

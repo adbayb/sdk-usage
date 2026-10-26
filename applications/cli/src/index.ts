@@ -8,13 +8,27 @@ const main = async () => {
 		plugins: [jsxPlugin, typescriptPlugin],
 	});
 
-	const items = await instance.getItems();
+	const output = [];
 
-	console.log(JSON.stringify(items, undefined, 2), items.length);
+	for await (const item of instance.getItems()) {
+		output.push(item);
+	}
+
+	console.log(JSON.stringify(output, undefined, 2));
+	console.error(`${output.length} items`);
+};
+
+const run = async () => {
+	try {
+		await main();
+	} catch (error) {
+		console.error(error);
+		process.exitCode = 1;
+	}
 };
 
 /*
  * Top-level await is not supported by the package's CommonJS build.
  */
 // oxlint-disable-next-line unicorn/prefer-top-level-await
-void main();
+void run();

@@ -17,7 +17,11 @@ export type Location = {
 };
 
 export const createLocation = ({ code, file, link, module, offset, path }: CreateLocationInput) => {
-	const linesTillOffset = code.slice(0, Math.max(0, offset)).split(NEWLINE_PATTERN);
+	const codeUnitOffset = Buffer.from(code)
+		.subarray(0, Math.max(0, offset))
+		.toString("utf8").length;
+
+	const linesTillOffset = code.slice(0, codeUnitOffset).split(NEWLINE_PATTERN);
 	const line = linesTillOffset.length;
 	const column = (linesTillOffset[line - 1] as string).length;
 
