@@ -18,7 +18,7 @@
 		"watch": "stack watch"
 	},
 	"devDependencies": {
-		"@adbayb/stack": "3.5.1"
+		"@adbayb/stack": "3.5.3"
 	},
 	"devEngines": {
 		"packageManager": {
