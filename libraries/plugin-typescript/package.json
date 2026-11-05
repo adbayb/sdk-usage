@@ -50,9 +50,9 @@
 	},
 	"devDependencies": {
 		"@sdk-usage/core": "workspace:*",
-		"@types/node": "24.19.2",
+		"@types/node": "26.6.6",
 		"quickbundle": "3.2.2",
-		"vitest": "5.0.5"
+		"vitest": "5.1.0"
 	},
 	"peerDependencies": {
 		"@sdk-usage/core": "^0.0.0 || <1.0.0"

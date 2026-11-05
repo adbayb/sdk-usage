@@ -1,8 +1,8 @@
 import { describe, expect, test, vi } from "vitest";
-import { plugin } from "./index";
+import { plugin } from "./plugin";
 
 describe(plugin, () => {
-	test.each(["Button", "UiButton"])("collects imported type reference %s", (alias) => {
+	test.each(["Button", "UiButton"])("should collect imported type reference %s", (alias) => {
 		const { TsType: visitType } = plugin(
 			{ imports: new Map([[alias, { name: "Button", alias, module: "ui" }]]) },
 			{ getJSXAttributeValue: vi.fn() },
@@ -22,7 +22,7 @@ describe(plugin, () => {
 		).toStrictEqual({ name: "Button", module: "ui", offset: 10, type: "typescript/type" });
 	});
 
-	test("collects indexed-access types from their imported object type", () => {
+	test("should collect indexed-access types from their imported object type", () => {
 		const { TsType: visitType } = plugin(
 			{
 				imports: new Map([
@@ -61,7 +61,7 @@ describe(plugin, () => {
 		});
 	});
 
-	test("ignores local types and primitive types", () => {
+	test("should ignore local types and primitive types", () => {
 		const { TsType: visitType } = plugin(
 			{ imports: new Map() },
 			{ getJSXAttributeValue: vi.fn() },

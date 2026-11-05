@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 import { createLocator } from "./create-locator";
 
 describe(createLocator, () => {
-	test("locates byte offsets after multibyte characters, in any lookup order", () => {
+	test("should locate byte offsets after multibyte characters, in any lookup order", () => {
 		const code = 'const face = "😀";\n<Button />\n\t<Link />';
 
 		const locate = createLocator({

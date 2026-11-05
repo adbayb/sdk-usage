@@ -26,7 +26,7 @@ const emptyPlugin: Plugin = () => {
 };
 
 describe(parse, () => {
-	test("maps a named import with no imported alias to its local name", async () => {
+	test("should map a named import with no imported alias to its local name", async () => {
 		const items = await parse('import { Button } from "ui";', {
 			file: "fixture.tsx",
 			plugins: [importPlugin],
@@ -35,7 +35,7 @@ describe(parse, () => {
 		expect([...items]).toMatchObject([{ name: "Button", module: "ui", type: "test" }]);
 	});
 
-	test("preserves depth-first output and plugin order while skipping empty outputs", async () => {
+	test("should preserve depth-first output and plugin order while skipping empty outputs", async () => {
 		const items = await parse("const view = <Parent><Child /></Parent>;", {
 			file: "fixture.tsx",
 			plugins: [createOrderedPlugin("first"), emptyPlugin, createOrderedPlugin("last")],
@@ -55,7 +55,7 @@ describe(parse, () => {
 		]);
 	});
 
-	test("reports 0-based byte offsets", async () => {
+	test("should report 0-based byte offsets", async () => {
 		const code = 'const face = "😀"; <Button />';
 		const prefix = code.slice(0, code.indexOf("<Button"));
 
@@ -67,7 +67,7 @@ describe(parse, () => {
 		expect(item?.offset).toBe(Buffer.byteLength(prefix));
 	});
 
-	test("includes the source file path when parsing fails", async () => {
+	test("should include the source file path when parsing fails", async () => {
 		const parsing = parse("const = ;", { file: "fixture.tsx", plugins: [] });
 
 		await expect(parsing).rejects.toMatchObject({

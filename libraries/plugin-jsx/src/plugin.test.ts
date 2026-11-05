@@ -3,10 +3,10 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createInstance } from "@sdk-usage/core";
 import { describe, expect, test } from "vitest";
-import { plugin } from "./index";
+import { plugin } from "./plugin";
 
 describe(plugin, () => {
-	test("records spread props and explicit attributes", async () => {
+	test("should record spread props and explicit attributes", async () => {
 		const directory = await mkdtemp(join(tmpdir(), "sdk-usage-jsx-test-"));
 
 		try {

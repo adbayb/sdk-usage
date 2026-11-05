@@ -50,11 +50,11 @@
 	},
 	"dependencies": {
 		"@open-vanilla/visitor": "^1.0.0",
-		"@swc/core": "^1.16.20"
+		"@swc/core": "^1.16.21"
 	},
 	"devDependencies": {
-		"@types/node": "24.19.2",
+		"@types/node": "26.6.6",
 		"quickbundle": "3.2.2",
-		"vitest": "5.0.5"
+		"vitest": "5.1.0"
 	}
 }

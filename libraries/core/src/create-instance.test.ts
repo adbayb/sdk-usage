@@ -42,7 +42,7 @@ describe(createInstance, () => {
 		);
 	});
 
-	test("applies file and folder filters and resolves versions per nested package", async () => {
+	test("should apply file and folder filters and resolve versions per nested package", async () => {
 		const root = await createPackageDirectory();
 
 		await createSourceFile(root, "src/main.tsx");
@@ -88,7 +88,7 @@ describe(createInstance, () => {
 		},
 		{ expected: [], includeFiles: ["!**/*.tsx"] },
 		{ expected: [], includeFiles: [] },
-	])("matches file patterns $includeFiles", async ({ expected, ...options }) => {
+	])("should match file patterns $includeFiles", async ({ expected, ...options }) => {
 		const root = await createPackageDirectory();
 
 		for (const file of [
@@ -115,7 +115,7 @@ describe(createInstance, () => {
 		).toStrictEqual(expected);
 	});
 
-	test("does not access files before consumption", async () => {
+	test("should not access files before consumption", async () => {
 		const root = await createPackageDirectory();
 		const items = createInstance(root, { plugins: [usagePlugin] }).getItems();
 
@@ -124,7 +124,7 @@ describe(createInstance, () => {
 		await items[Symbol.asyncIterator]().return?.();
 	});
 
-	test("returns no usages when package metadata is missing", async () => {
+	test("should return no usages when package metadata is missing", async () => {
 		const root = await createPackageDirectory();
 
 		await rm(join(root, "package.json"));
@@ -135,7 +135,7 @@ describe(createInstance, () => {
 		).resolves.toStrictEqual([]);
 	});
 
-	test("reports a missing source file and closes directory handles", async () => {
+	test("should report a missing source file and close directory handles", async () => {
 		const root = await createPackageDirectory();
 		const missingFile = join(root, "missing.tsx");
 		const sourceFile = join(root, "main.tsx");
@@ -156,7 +156,7 @@ describe(createInstance, () => {
 		}
 	});
 
-	test("bounds read-ahead and stops visiting nodes after iterator return", async () => {
+	test("should bound read-ahead and stop visiting nodes after iterator return", async () => {
 		const root = await createPackageDirectory();
 
 		await createSourceFile(root, "src/main.tsx", "<Button />".repeat(1000));
@@ -177,7 +177,7 @@ describe(createInstance, () => {
 		expect(visitElement).toHaveBeenCalledTimes(visitedWhilePaused);
 	});
 
-	test("stops a pending scan and closes a directory opened during iterator return", async () => {
+	test("should stop a pending scan and close a directory opened during iterator return", async () => {
 		const root = await createPackageDirectory();
 
 		for (let index = 0; index < 100; index += 1) {
@@ -230,7 +230,7 @@ describe(createInstance, () => {
 			},
 			plugin: failingPlugin,
 		},
-	])("closes directory handles on $name", async ({ consume, plugin }) => {
+	])("should close directory handles on $name", async ({ consume, plugin }) => {
 		const root = await createPackageDirectory();
 
 		for (let index = 0; index < 100; index += 1) {

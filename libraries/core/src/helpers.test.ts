@@ -15,7 +15,7 @@ describe(resolvePackageJson, () => {
 		);
 	});
 
-	test("resolves the nearest package metadata from a nested directory", async () => {
+	test("should resolve the nearest package metadata from a nested directory", async () => {
 		const root = await mkdtemp(join(tmpdir(), "sdk-usage-resolve-test-"));
 
 		temporaryDirectories.push(root);
@@ -32,13 +32,13 @@ describe(resolvePackageJson, () => {
 });
 
 describe(exec, () => {
-	test("returns trimmed command output", async () => {
+	test("should return trimmed command output", async () => {
 		await expect(exec(`"${process.execPath}" -e 'console.log("output")'`)).resolves.toBe(
 			"output",
 		);
 	});
 
-	test("rejects failed commands with their error output", async () => {
+	test("should reject failed commands with their error output", async () => {
 		await expect(
 			exec(`"${process.execPath}" -e 'console.error("failed"); process.exit(1)'`),
 		).rejects.toThrow("failed");
