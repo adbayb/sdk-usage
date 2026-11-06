@@ -11,8 +11,7 @@
 - Reports imported function calls, constructor calls, tagged templates, and value references.
 - Collects imported values used in JSX attribute expressions.
 - Follows namespace aliases and destructured members through variable declarations.
-- Reports namespace member access, including optional chains, by the final statically known member
-  name; string-literal computed properties are supported.
+- Reports namespace member access, including optional chains, by the final statically known member name; string-literal computed properties are supported.
 
 Type-only imports, TypeScript type references, JSX names, and shadowed imported bindings are
 excluded. Dynamic computed member names, local declarations, and references not derived from

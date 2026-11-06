@@ -11,7 +11,7 @@
 - Runs the JSX, JavaScript, and TypeScript collection plugins.
 - Scans JavaScript, JSX, TypeScript, and TSX source files under the current directory.
 - Reports source locations, package names, and dependency versions.
-- Writes the result array to standard output and the item count to standard error.
+- Writes a contextual usage report and formatted JSON to standard output. Errors go to standard error.
 
 ## 🚀 Usage
 
@@ -37,8 +37,8 @@ line options; use `@sdk-usage/core` directly to configure file filters, module f
 ## 🏗️ Architecture
 
 The CLI wires `@sdk-usage/core` with the JSX, JavaScript, and TypeScript plugins, consumes the
-resulting async iterable, and serializes the items as JSON. See the [core documentation](../../libraries/core/README.md)
-to customize scanning.
+resulting async iterable, and formats the usages and JSON into one report on standard output. See
+the [core documentation](../../libraries/core/README.md) to customize scanning.
 
 ## ✍️ Contribution
 

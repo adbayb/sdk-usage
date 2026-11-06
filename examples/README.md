@@ -9,8 +9,7 @@
 ## ✨ Features
 
 - `chakra-ui` demonstrates JSX, JavaScript runtime, and TypeScript type collection.
-- The fixture includes imported Chakra components and props, React hook usage, and imported value
-  references.
+- The fixture includes imported Chakra components and props, React hook usage, and imported value references.
 
 ## 🚀 Usage
 

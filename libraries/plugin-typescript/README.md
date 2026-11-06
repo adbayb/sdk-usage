@@ -10,8 +10,7 @@
 
 - Collects imported type aliases and qualified namespace types such as `UI.ButtonProps`.
 - Supports inline import types such as `import("ui").ButtonProps`.
-- Collects interface heritage, `implements` references, and `typeof` queries such as
-  `typeof UI.Button`.
+- Collects interface heritage, `implements` references, and `typeof` queries such as `typeof UI.Button`.
 - Collects indexed-access types through their referenced base type, once per reference.
 
 For qualified names, the collected name is the final type name. Inline import types require a
