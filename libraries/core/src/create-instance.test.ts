@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import type { Dir } from "node:fs";
 import { mkdtemp, mkdir, opendir, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -7,7 +8,7 @@ import { setImmediate } from "node:timers/promises";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { createInstance } from "./create-instance";
 import type { Plugin } from "./modules/plugin";
-import type { Nodes } from "./types";
+import type { AstNodes } from "./types";
 
 vi.mock(import("node:fs/promises"), { spy: true });
 
@@ -15,7 +16,7 @@ const MAXIMUM_READ_AHEAD = getDefaultHighWaterMark(true);
 const pluginFailure = new Error("Plugin failed");
 const temporaryDirectories: string[] = [];
 
-const visitElement = vi.fn((node: Nodes["JSXOpeningElement"]) => {
+const visitElement = vi.fn((node: AstNodes["JSXOpeningElement"]) => {
 	return { name: "Button", module: "ui", offset: node.span.start, type: "test" };
 });
 
@@ -75,13 +76,31 @@ describe(createInstance, () => {
 		]);
 	});
 
+	test("should use the package's repository remote in source locations", async () => {
+		const root = await createPackageDirectory();
+		const repositoryUrl = "https://example.com/fixture.git";
+
+		execFileSync("git", ["init", "--quiet"], { cwd: root });
+		execFileSync("git", ["remote", "add", "origin", repositoryUrl], { cwd: root });
+		await createSourceFile(root, "src/main.tsx");
+
+		const [item] = await Array.fromAsync(
+			createInstance(root, { plugins: [usagePlugin] }).getItems(),
+		);
+
+		expect(item?.location.link).toBe(repositoryUrl);
+	});
+
 	test.each<{ expected: string[]; includeFiles?: string[] }>([
-		{ expected: ["./src/main.jsx", "./src/main.tsx"] },
+		{ expected: ["./main.tsx", "./src/main.jsx", "./src/main.tsx"] },
 		{
-			expected: ["./src/main.jsx", "./src/main.test.tsx", "./src/main.tsx"],
+			expected: ["./main.tsx", "./src/main.jsx", "./src/main.test.tsx", "./src/main.tsx"],
 			includeFiles: ["**/*.{jsx,tsx}"],
 		},
-		{ expected: ["./src/main.tsx"], includeFiles: ["**/!(main.test).tsx"] },
+		{
+			expected: ["./main.tsx", "./src/main.tsx"],
+			includeFiles: ["**/!(main.test).tsx"],
+		},
 		{
 			expected: ["./.hidden/main.tsx", "./src/.hidden.tsx"],
 			includeFiles: ["**/.*.tsx", "**/.hidden/**/*.tsx"],
@@ -92,6 +111,7 @@ describe(createInstance, () => {
 		const root = await createPackageDirectory();
 
 		for (const file of [
+			"main.tsx",
 			"src/main.tsx",
 			"src/main.jsx",
 			"src/main.test.tsx",

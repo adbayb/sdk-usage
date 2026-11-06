@@ -1,21 +1,37 @@
 import { createPlugin } from "@sdk-usage/core";
 
 /** Plugin that collects JSX usages of imported components. */
-export const plugin = createPlugin((context, { getJSXAttributeValue }) => {
+export const plugin = createPlugin((input) => {
 	return {
 		JSXOpeningElement(node) {
-			if (node.name.type !== "Identifier") {
-				return;
+			let name: string | undefined;
+			let root = node.name;
+
+			if (root.type === "JSXNamespacedName") {
+				name = root.name.value;
+				root = root.namespace;
+			} else {
+				while (root.type === "JSXMemberExpression") {
+					name ??= root.property.value;
+					root = root.object;
+				}
 			}
 
-			const importMetadata = context.imports.get(node.name.value);
+			const importMetadata = input.imports.get(root.value);
 
-			if (!importMetadata) {
+			const bindingContext =
+				"ctxt" in root && typeof root.ctxt === "number" ? root.ctxt : undefined;
+
+			if (
+				!importMetadata ||
+				importMetadata.typeOnly ||
+				(bindingContext !== undefined && importMetadata.bindingContext !== bindingContext)
+			) {
 				return;
 			}
 
 			return {
-				name: importMetadata.name,
+				name: name ?? importMetadata.name,
 				input: {
 					metadata: {
 						withSpreading: node.attributes.some((attribute) => {
@@ -23,14 +39,16 @@ export const plugin = createPlugin((context, { getJSXAttributeValue }) => {
 						}),
 					},
 					data: node.attributes.reduce<Record<string, unknown>>((props, property) => {
-						if (
-							property.type !== "JSXAttribute" ||
-							property.name.type !== "Identifier"
-						) {
+						if (property.type !== "JSXAttribute") {
 							return props;
 						}
 
-						props[property.name.value] = getJSXAttributeValue(property.value);
+						const attributeName =
+							property.name.type === "Identifier"
+								? property.name.value
+								: `${property.name.namespace.value}:${property.name.name.value}`;
+
+						props[attributeName] = input.getJSXAttributeValue(property.value);
 
 						return props;
 					}, {}),

@@ -1,91 +1,57 @@
-import { describe, expect, test, vi } from "vitest";
+import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { createInstance } from "@sdk-usage/core";
+import { describe, expect, test } from "vitest";
 import { plugin } from "./plugin";
 
 describe(plugin, () => {
-	test.each(["Button", "UiButton"])("should collect imported type reference %s", (alias) => {
-		const { TsType: visitType } = plugin(
-			{ imports: new Map([[alias, { name: "Button", alias, module: "ui" }]]) },
-			{ getJSXAttributeValue: vi.fn() },
-		);
+	test("should collect imported, qualified, and inline types once per reference", async () => {
+		const directory = await mkdtemp(join(tmpdir(), "sdk-usage-typescript-test-"));
 
-		expect(
-			visitType?.({
-				span: { ctxt: 0, end: 20, start: 10 },
-				type: "TsTypeReference",
-				typeName: {
-					optional: false,
-					span: { ctxt: 0, end: 20, start: 10 },
-					type: "Identifier",
-					value: alias,
-				},
-			}),
-		).toStrictEqual({ name: "Button", module: "ui", offset: 10, type: "typescript/type" });
-	});
+		try {
+			await mkdir(join(directory, "src"), { recursive: true });
 
-	test("should collect indexed-access types from their imported object type", () => {
-		const { TsType: visitType } = plugin(
-			{
-				imports: new Map([
-					["Props", { name: "ButtonProps", alias: "Props", module: "ui" }],
-				]),
-			},
-			{ getJSXAttributeValue: vi.fn() },
-		);
+			await writeFile(
+				join(directory, "package.json"),
+				JSON.stringify({ name: "fixture", version: "1.0.0" }),
+			);
 
-		expect(
-			visitType?.({
-				indexType: {
-					kind: "string",
-					span: { ctxt: 0, end: 22, start: 16 },
-					type: "TsKeywordType",
-				},
-				objectType: {
-					span: { ctxt: 0, end: 15, start: 10 },
-					type: "TsTypeReference",
-					typeName: {
-						optional: false,
-						span: { ctxt: 0, end: 15, start: 10 },
-						type: "Identifier",
-						value: "Props",
-					},
-				},
-				readonly: false,
-				span: { ctxt: 0, end: 30, start: 10 },
-				type: "TsIndexedAccessType",
-			}),
-		).toStrictEqual({
-			name: "ButtonProps",
-			module: "ui",
-			offset: 10,
-			type: "typescript/type",
-		});
-	});
+			await writeFile(
+				join(directory, "src", "index.ts"),
+				[
+					'import { ButtonProps as Props } from "ui";',
+					'import * as UI from "ui";',
+					"type Imported = Props;",
+					"type Qualified = UI.ButtonProps;",
+					'type Inline = import("ui").ButtonProps;',
+					'type NestedInline = import("ui").Components.ButtonProps;',
+					'type Indexed = Props["label"];',
+					"interface ExtendsNamed extends Props {}",
+					"interface ExtendsNamespace extends UI.ButtonProps {}",
+					"type QueryNamed = typeof Props;",
+					"type QueryNamespace = typeof UI.Button;",
+					"type LocalShadow<Props> = Props;",
+					"type Local = string;",
+				].join("\n"),
+			);
 
-	test("should ignore local types and primitive types", () => {
-		const { TsType: visitType } = plugin(
-			{ imports: new Map() },
-			{ getJSXAttributeValue: vi.fn() },
-		);
+			const items = await Array.fromAsync(
+				createInstance(directory, { plugins: [plugin] }).getItems(),
+			);
 
-		expect(
-			visitType?.({
-				span: { ctxt: 0, end: 20, start: 10 },
-				type: "TsTypeReference",
-				typeName: {
-					optional: false,
-					span: { ctxt: 0, end: 20, start: 10 },
-					type: "Identifier",
-					value: "Local",
-				},
-			}),
-		).toBeUndefined();
-
-		expect(
-			visitType?.({
-				kind: "string",
-				span: { ctxt: 0, end: 20, start: 10 },
-				type: "TsKeywordType",
-			}),
-		).toBeUndefined();
+			expect(
+				items.map(({ name, module, type }) => {
+					return { name, module, type };
+				}),
+			).toStrictEqual([
+				...Array.from({ length: 8 }, () => {
+					return { name: "ButtonProps", module: "ui", type: "typescript/type" };
+				}),
+				{ name: "Button", module: "ui", type: "typescript/type" },
+			]);
+		} finally {
+			await rm(directory, { force: true, recursive: true });
+		}
 	});
 });

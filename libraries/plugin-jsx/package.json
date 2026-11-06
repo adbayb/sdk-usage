@@ -1,7 +1,7 @@
 {
 	"name": "@sdk-usage/plugin-jsx",
 	"version": "0.1.0",
-	"description": "sdk-usage parser plugin to enable JSX syntax analysis",
+	"description": "Parser plugin for collecting imported JSX component usage.",
 	"keywords": [
 		"analyze",
 		"analyzer",
@@ -14,7 +14,7 @@
 		"sonar",
 		"usage"
 	],
-	"homepage": "https://github.com/adbayb/sdk-usage/tree/main/packages/core#readme",
+	"homepage": "https://github.com/adbayb/sdk-usage/tree/main/libraries/plugin-jsx#readme",
 	"bugs": {
 		"url": "https://github.com/adbayb/sdk-usage/issues"
 	},

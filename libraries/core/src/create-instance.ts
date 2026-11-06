@@ -109,7 +109,6 @@ const getInstalledVersion = (module: string, file: string) => {
 
 		return version;
 	} catch {
-		// TODO: No operation (later warnings can be added).
 		return undefined;
 	}
 };

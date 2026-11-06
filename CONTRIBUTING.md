@@ -8,14 +8,25 @@ It can be about reporting an issue, proposing a bug fix, adding some features, a
 
 ## 🥇 Your first contribution
 
-TODO
+Open an issue to report a bug or propose a change, then submit a pull request with a focused fix
+or feature. Include tests for behavior changes and describe the validation you ran.
 
 ## 🗂️ Conventions
 
-TODO
+- Use the root scripts for checks and tests: `pnpm check` and `pnpm test`.
+- Run `pnpm fix` to format files and apply lint fixes.
+- Add a Changesets entry for changes to published packages with `pnpm release:changelog`.
+- Use a Conventional Commit-style pull request title.
 
 ## 👨‍🍳 Recipes
 
-### How to XXX?
+### How to run checks?
 
-TODO
+Install dependencies with `pnpm install --frozen-lockfile`, then run:
+
+```sh
+pnpm check
+pnpm test
+```
+
+For a single package, use `pnpm --filter <package> test`.

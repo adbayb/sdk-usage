@@ -1,5 +1,12 @@
 import type { ItemDTO } from "../../entities/item";
-import type { Import, Nodes, Primitive } from "../../types";
+import type {
+	AstNode,
+	AstJSXAttrValue,
+	AstNodes,
+	Import,
+	Primitive,
+	UnsupportedSyntaxToken,
+} from "../../types";
 
 /**
  * Returns a plugin definition unchanged for convenient type inference.
@@ -11,14 +18,10 @@ export const createPlugin = (input: Plugin) => {
 	return input;
 };
 
-export type Plugin = (
-	context: {
-		// TODO: do not expose setters (read-only context for getter purposes)
-		imports: Map<Import["alias"], Import>;
-	},
-	helpers: {
-		getJSXAttributeValue: (node: Nodes["JSXAttrValue"] | undefined) => Primitive;
-	},
-) => {
-	[Key in keyof Nodes]?: (node: Nodes[Key]) => ItemDTO | undefined;
+export type Plugin = (input: {
+	getJSXAttributeValue: (node: AstJSXAttrValue | undefined) => Primitive | UnsupportedSyntaxToken;
+	getParentNode: (node: object) => AstNode | undefined;
+	imports: Map<Import["alias"], Import>;
+}) => {
+	[Key in keyof AstNodes]?: (node: AstNodes[Key]) => ItemDTO | undefined;
 };

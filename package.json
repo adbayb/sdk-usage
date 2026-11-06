@@ -2,6 +2,7 @@
 	"name": "root",
 	"version": "0.0.0",
 	"private": true,
+	"description": "A code analyzer that collects usage of SDK-like components from JSX, JavaScript, and TypeScript source.",
 	"type": "module",
 	"scripts": {
 		"build": "stack build",

@@ -6,7 +6,7 @@ import { describe, expect, test } from "vitest";
 import { plugin } from "./plugin";
 
 describe(plugin, () => {
-	test("should record spread props and explicit attributes", async () => {
+	test("should collect imported JSX tags and preserve typed expression tokens", async () => {
 		const directory = await mkdtemp(join(tmpdir(), "sdk-usage-jsx-test-"));
 
 		try {
@@ -19,7 +19,16 @@ describe(plugin, () => {
 
 			await writeFile(
 				join(directory, "src", "index.tsx"),
-				'import { Button as UiButton } from "ui"; const props = {}; <UiButton {...props} disabled />',
+				[
+					'import { Button as UiButton } from "ui";',
+					'import * as UI from "ui";',
+					'import type { TypeOnly } from "ui";',
+					'const props = {}; <UiButton {...props} disabled run={() => {}} marker="#ArrowFunctionExpression" />;',
+					"<UI.Form.Link />;",
+					'<UI:Button data:kind="primary" />;',
+					"function shadowed(UiButton: unknown) { return <UiButton />; }",
+					"<TypeOnly />;",
+				].join("\n"),
 			);
 
 			const items = await Array.fromAsync(
@@ -34,8 +43,26 @@ describe(plugin, () => {
 					name: "Button",
 					input: {
 						metadata: { withSpreading: true },
-						data: { disabled: true },
+						data: {
+							disabled: true,
+							marker: "#ArrowFunctionExpression",
+							run: {
+								syntax: "ArrowFunctionExpression",
+								type: "unsupported-syntax",
+							},
+						},
 					},
+				},
+				{
+					name: "Link",
+					module: "ui",
+					type: "jsx/element",
+				},
+				{
+					name: "Button",
+					input: { data: { "data:kind": "primary" } },
+					module: "ui",
+					type: "jsx/element",
 				},
 			]);
 		} finally {

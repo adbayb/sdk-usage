@@ -1,9 +1,13 @@
+import { execFile } from "node:child_process";
 import type { Dirent } from "node:fs";
 import { opendir, readFile } from "node:fs/promises";
 import { join, matchesGlob, relative, sep } from "node:path";
 import { Readable } from "node:stream";
-import { exec } from "../../helpers";
+import { promisify } from "node:util";
 import type { Package } from "../../types";
+
+// oxlint-disable-next-line typescript/strict-void-return -- Node provides a Promise adapter for execFile.
+const execFileAsync = promisify(execFile);
 
 export type ScannedFile = Project & { file: string };
 
@@ -20,7 +24,7 @@ export type ScanOptions = {
 const DEFAULT_EXCLUDED_FOLDERS = [".git", "node_modules", "dist", "out"];
 
 const DEFAULT_INCLUDED_FILES = [
-	"**/*/!(test|*.test|stories|*.stories).?(m){j,t}s?(x)", // Includes js|jsx|ts|tsx|cjs|mjs|cjsx|mjsx files outside test-like and story-like ones
+	"**/!(test|*.test|stories|*.stories).?(m){j,t}s?(x)", // Includes js|jsx|ts|tsx|cjs|mjs|cjsx|mjsx files outside test-like and story-like ones
 ];
 
 /**
@@ -91,10 +95,7 @@ const getProject = async (folder: string): Promise<Project | undefined> => {
 	try {
 		const content = await readFile(join(folder, "package.json"), "utf8");
 		const metadata = JSON.parse(content) as Package;
-
-		const link = await exec("git config --get remote.origin.url", { cwd: folder }).catch(() => {
-			return "";
-		});
+		const link = await getRepositoryUrl(folder);
 
 		return { metadata, folder, link };
 	} catch (error) {
@@ -103,5 +104,17 @@ const getProject = async (folder: string): Promise<Project | undefined> => {
 		}
 
 		throw error;
+	}
+};
+
+const getRepositoryUrl = async (folder: string) => {
+	try {
+		const { stdout } = await execFileAsync("git", ["config", "--get", "remote.origin.url"], {
+			cwd: folder,
+		});
+
+		return stdout.trim();
+	} catch {
+		return "";
 	}
 };

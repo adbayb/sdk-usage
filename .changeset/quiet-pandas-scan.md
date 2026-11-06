@@ -1,5 +1,5 @@
 ---
-"@sdk-usage/cli": patch
+"@sdk-usage/cli": minor
 "@sdk-usage/core": minor
 "@sdk-usage/plugin-jsx": patch
 ---

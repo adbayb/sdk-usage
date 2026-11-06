@@ -1,4 +1,3 @@
-import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
 import { createRequire } from "node:module";
 import { join } from "node:path";
@@ -13,47 +12,4 @@ export const resolvePackageJson = (fromPath: string): string => {
 	}
 
 	return resolvePackageJson(join(fromPath, "../"));
-};
-
-/**
- * Execute an external command.
- *
- * @example
- * 	exec("ls");
- *
- * @param command - The command to execute.
- * @param options - Options including current working directory configuration.
- * @param options.cwd - Configure the current working directory.
- * @returns The command's output.
- */
-export const exec = async (command: string, options: { cwd?: string } = {}) => {
-	return new Promise<string>((resolve, reject) => {
-		let stdout = "";
-		let stderr = "";
-
-		// eslint-disable-next-line sonarjs/os-command
-		const childProcess = spawn(command, {
-			cwd: options.cwd,
-			shell: true,
-			stdio: "pipe",
-		});
-
-		childProcess.stdout.on("data", (chunk: string) => {
-			stdout += chunk;
-		});
-
-		childProcess.stderr.on("data", (chunk: string) => {
-			stderr += chunk;
-		});
-
-		childProcess.on("close", (exitCode) => {
-			if (exitCode === 0) {
-				resolve(stdout.trim());
-			} else {
-				const output = `${stderr}${stdout}`;
-
-				reject(new Error(output.trim()));
-			}
-		});
-	});
 };

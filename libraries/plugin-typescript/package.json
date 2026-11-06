@@ -1,7 +1,7 @@
 {
 	"name": "@sdk-usage/plugin-typescript",
 	"version": "0.1.0",
-	"description": "sdk-usage parser plugin to enable types syntax analysis",
+	"description": "Parser plugin for collecting imported TypeScript type usage.",
 	"keywords": [
 		"analyze",
 		"analyzer",
@@ -14,7 +14,7 @@
 		"sonar",
 		"usage"
 	],
-	"homepage": "https://github.com/adbayb/sdk-usage/tree/main/packages/core#readme",
+	"homepage": "https://github.com/adbayb/sdk-usage/tree/main/libraries/plugin-typescript#readme",
 	"bugs": {
 		"url": "https://github.com/adbayb/sdk-usage/issues"
 	},

@@ -1,12 +1,13 @@
 import { cwd } from "node:process";
 import { createInstance } from "@sdk-usage/core";
+import { plugin as javascriptPlugin } from "@sdk-usage/plugin-javascript";
 import { plugin as jsxPlugin } from "@sdk-usage/plugin-jsx";
 import { plugin as typescriptPlugin } from "@sdk-usage/plugin-typescript";
 
 const main = async () => {
 	try {
 		const instance = createInstance(cwd(), {
-			plugins: [jsxPlugin, typescriptPlugin],
+			plugins: [jsxPlugin, javascriptPlugin, typescriptPlugin],
 		});
 
 		const output = [];

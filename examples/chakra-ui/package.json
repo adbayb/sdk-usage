@@ -1,6 +1,7 @@
 {
 	"name": "@examples/chakra-ui",
 	"private": true,
+	"description": "Private example package demonstrating SDK usage collection with Chakra UI.",
 	"type": "module",
 	"exports": "./src/index.ts",
 	"scripts": {

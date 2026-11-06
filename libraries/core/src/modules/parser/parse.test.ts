@@ -2,10 +2,10 @@ import { describe, expect, test } from "vitest";
 import type { Plugin } from "../plugin";
 import { parse } from "./parse";
 
-const importPlugin: Plugin = (context) => {
+const importPlugin: Plugin = (input) => {
 	return {
 		ImportDeclaration(node) {
-			const imported = context.imports.get(node.specifiers[0]?.local.value ?? "");
+			const imported = input.imports.get(node.specifiers[0]?.local.value ?? "");
 
 			return {
 				name: imported?.name ?? "",
