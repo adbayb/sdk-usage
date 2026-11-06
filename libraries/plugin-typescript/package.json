@@ -1,6 +1,6 @@
 {
 	"name": "@sdk-usage/plugin-typescript",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Parser plugin for collecting imported TypeScript type usage.",
 	"keywords": [
 		"analyze",

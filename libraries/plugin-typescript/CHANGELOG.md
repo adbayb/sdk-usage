@@ -1,5 +1,21 @@
 # @sdk-usage/plugin-typescript
 
+## 0.2.0
+
+### Minor Changes
+
+- [`e7d80cf`](https://github.com/adbayb/sdk-usage/commit/e7d80cfb8c93dda0ef6b3da8caad8deffa8a378c) Thanks [@adbayb](https://github.com/adbayb)! - Replace the default exports from the JSX and TypeScript plugins with a named `plugin` export. This is a breaking change for consumers of either plugin. Update the CLI to use the named exports and fix parser/type-check issues.
+
+- [`193e885`](https://github.com/adbayb/sdk-usage/commit/193e88563f19047d98e8fd9f882ad7d375181d51) Thanks [@adbayb](https://github.com/adbayb)! - Dispatch plugins by SWC node type, enabling TypeScript collection in the parser. Collect imported
+  TypeScript references (including qualified/inline types, interface heritage, and `typeof` queries),
+  JSX member-expression components, and namespaced JSX tags and attributes. Represent unsupported
+  JSX expressions with typed tokens, pass plugin helpers through one input object, and enable the
+  JavaScript plugin in the CLI.
+
+### Patch Changes
+
+- [`0093cac`](https://github.com/adbayb/sdk-usage/commit/0093caca2693b185fa90274c62a5aa88e644e97d) Thanks [@adbayb](https://github.com/adbayb)! - Update dependencies including SWC.
+
 ## 0.1.0
 
 ### Minor Changes

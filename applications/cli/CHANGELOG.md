@@ -1,5 +1,37 @@
 # @sdk-usage/cli
 
+## 0.2.0
+
+### Minor Changes
+
+- [`78f66b4`](https://github.com/adbayb/sdk-usage/commit/78f66b47b8bfb5468c0e07e310327b54edba12e3) Thanks [@adbayb](https://github.com/adbayb)! - Style the output to make it clearer and cleaner.
+
+- [`b54ae59`](https://github.com/adbayb/sdk-usage/commit/b54ae5937267951fb382d6ea6b56f57bf48ecee2) Thanks [@adbayb](https://github.com/adbayb)! - Stream SDK usages with backpressure instead of buffering every result in memory, so consumers can process results as they arrive and slow consumers limit read-ahead. When consumed incrementally, memory no longer grows with the total number of results.
+
+    - `@sdk-usage/core` (breaking): `getItems()` returns a lazy `AsyncIterable<Item>` instead of `Promise<Item[]>`. Iterate it with `for await`; breaking out of the loop or returning from the iterator cancels the remaining scan.
+    - `@sdk-usage/core`: `excludeFolders` and `includeFiles` are now applied, files in nested workspace packages are reported once, and versions come from the nearest `package.json`.
+    - `@sdk-usage/core`: `includeFiles` patterns follow `node:path.matchesGlob`, so dot-prefixed segments must be matched explicitly and a leading `!` does not negate. The `fdir` and `picomatch` dependencies are removed.
+    - `@sdk-usage/core`: an invalid source file now fails with an error naming the file instead of being skipped silently. Named imports without an alias resolve, and location columns are no longer shifted by one character or skewed by multibyte characters.
+    - `@sdk-usage/plugin-jsx`: `withSpreading` metadata now reports JSX spread attributes.
+    - `@sdk-usage/cli`: prints the item count to stderr and exits with code 1 on failure.
+
+### Patch Changes
+
+- [`e7d80cf`](https://github.com/adbayb/sdk-usage/commit/e7d80cfb8c93dda0ef6b3da8caad8deffa8a378c) Thanks [@adbayb](https://github.com/adbayb)! - Replace the default exports from the JSX and TypeScript plugins with a named `plugin` export. This is a breaking change for consumers of either plugin. Update the CLI to use the named exports and fix parser/type-check issues.
+
+- [`193e885`](https://github.com/adbayb/sdk-usage/commit/193e88563f19047d98e8fd9f882ad7d375181d51) Thanks [@adbayb](https://github.com/adbayb)! - Dispatch plugins by SWC node type, enabling TypeScript collection in the parser. Collect imported
+  TypeScript references (including qualified/inline types, interface heritage, and `typeof` queries),
+  JSX member-expression components, and namespaced JSX tags and attributes. Represent unsupported
+  JSX expressions with typed tokens, pass plugin helpers through one input object, and enable the
+  JavaScript plugin in the CLI.
+
+- [`0093cac`](https://github.com/adbayb/sdk-usage/commit/0093caca2693b185fa90274c62a5aa88e644e97d) Thanks [@adbayb](https://github.com/adbayb)! - Update dependencies including SWC.
+- Updated dependencies [[`e7d80cf`](https://github.com/adbayb/sdk-usage/commit/e7d80cfb8c93dda0ef6b3da8caad8deffa8a378c), [`193e885`](https://github.com/adbayb/sdk-usage/commit/193e88563f19047d98e8fd9f882ad7d375181d51), [`0093cac`](https://github.com/adbayb/sdk-usage/commit/0093caca2693b185fa90274c62a5aa88e644e97d), [`b54ae59`](https://github.com/adbayb/sdk-usage/commit/b54ae5937267951fb382d6ea6b56f57bf48ecee2), [`193e885`](https://github.com/adbayb/sdk-usage/commit/193e88563f19047d98e8fd9f882ad7d375181d51)]:
+    - @sdk-usage/core@0.2.0
+    - @sdk-usage/plugin-jsx@0.2.0
+    - @sdk-usage/plugin-typescript@0.2.0
+    - @sdk-usage/plugin-javascript@0.1.0
+
 ## 0.1.0
 
 ### Minor Changes
