@@ -1,8 +1,8 @@
 import { writeFile } from "node:fs/promises";
 import { basename, join } from "node:path";
-import { cwd, stdin, stdout } from "node:process";
+import { argv, cwd, stdin, stdout } from "node:process";
 import { clearScreenDown, createInterface, cursorTo } from "node:readline";
-import { styleText } from "node:util";
+import { parseArgs, styleText } from "node:util";
 import { createAnalyzer } from "@sdk-usage/core";
 import { plugin as javascriptPlugin } from "@sdk-usage/plugin-javascript";
 import { plugin as jsxPlugin } from "@sdk-usage/plugin-jsx";
@@ -149,7 +149,19 @@ const main = async () => {
 	try {
 		const root = cwd();
 
+		const {
+			values: { "include-files": includeFiles, "include-modules": includeModules },
+		} = parseArgs({
+			args: argv.slice(2),
+			options: {
+				"include-files": { multiple: true, type: "string" },
+				"include-modules": { multiple: true, type: "string" },
+			},
+		});
+
 		const analyzer = createAnalyzer(root, {
+			...(includeFiles ? { includeFiles } : {}),
+			...(includeModules ? { includeModules } : {}),
 			plugins: [jsxPlugin, javascriptPlugin, typescriptPlugin],
 		});
 

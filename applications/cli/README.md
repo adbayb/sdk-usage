@@ -10,6 +10,7 @@
 
 - Runs the JSX, JavaScript, and TypeScript collection plugins.
 - Scans JavaScript, JSX, TypeScript, and TSX source files under the current directory.
+- Filters usage by import module names and file patterns.
 - Reports source locations, package names, and dependency versions.
 - Groups usages by name, with counts and nested source locations.
 - Writes a contextual usage report and formatted JSON to standard output. Errors go to standard error.
@@ -39,8 +40,28 @@ or type `q` and press Enter to quit. Saving replaces the file if it already exis
 When you redirect input or output, you get the full report and JSON without a prompt.
 
 The command scans the current working directory. It excludes `.git`, `node_modules`, `dist`,
-`out`, test-like files, and story-like files by default. The current CLI does not accept command
-line options; use `@sdk-usage/core` directly to configure file filters, module filters, or plugins.
+`out`, test-like files, and story-like files by default.
+
+### CLI options
+
+| Flag                         | Description                                                                                                                                                                                |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `--include-modules <module>` | Only collect usage from the exact import module name. Repeat to include multiple modules. Omit to include all modules.                                                                     |
+| `--include-files <pattern>`  | Match files using a glob pattern relative to each package directory. Repeat to include multiple patterns. These patterns replace the default file patterns; folder exclusions still apply. |
+
+```sh
+pnpm exec sdk-usage \
+  --include-modules "@chakra-ui/react" \
+  --include-modules "react" \
+  --include-files "**/*.tsx" \
+  --include-files "**/*.ts"
+```
+
+Quote file patterns to prevent shell expansion. Patterns follow Node.js `path.matchesGlob`
+semantics: dot-prefixed path segments require explicit matches, and a leading `!` does not negate
+a pattern. You can also pass values with `=`, such as `--include-files="**/*.{jsx,tsx}"`.
+
+Use `@sdk-usage/core` directly to configure folder exclusions or plugins.
 
 <br>
 

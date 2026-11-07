@@ -1,5 +1,6 @@
 import { writeFile } from "node:fs/promises";
 import { createInterface } from "node:readline";
+import type { createAnalyzer } from "@sdk-usage/core";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 const inputTTY = Object.getOwnPropertyDescriptor(process.stdin, "isTTY");
@@ -14,8 +15,10 @@ vi.mock(import("node:fs/promises"), async (importOriginal) => {
 
 const fixture = vi.hoisted(() => {
 	return {
+		argv: ["node", "sdk-usage"],
 		close: vi.fn(),
 		commands: [] as string[],
+		createAnalyzer: vi.fn<typeof createAnalyzer>(),
 		isInputTTY: true,
 		isOutputTTY: true,
 		items: [
@@ -66,15 +69,13 @@ vi.mock(import("@sdk-usage/core"), async (importOriginal) => {
 
 	return {
 		...original,
-		createAnalyzer: () => {
-			return {
-				async *getItems() {
-					for (const item of fixture.items) {
-						yield await Promise.resolve(item);
-					}
-				},
-			};
-		},
+		createAnalyzer: fixture.createAnalyzer.mockReturnValue({
+			async *getItems() {
+				for (const item of fixture.items) {
+					yield await Promise.resolve(item);
+				}
+			},
+		}),
 	};
 });
 
@@ -83,6 +84,7 @@ vi.mock(import("node:process"), async (importOriginal) => {
 
 	return {
 		...original,
+		argv: fixture.argv,
 		cwd: () => {
 			return "/projects/fixture";
 		},
@@ -138,6 +140,7 @@ describe("report", () => {
 		vi.resetModules();
 		vi.clearAllMocks();
 		vi.mocked(writeFile).mockResolvedValue();
+		fixture.argv.splice(2);
 		fixture.commands = ["q"];
 		fixture.isInputTTY = true;
 		fixture.isOutputTTY = true;
@@ -173,6 +176,66 @@ describe("report", () => {
 			Reflect.deleteProperty(process.stdout, "isTTY");
 		}
 	});
+
+	test.each([
+		{
+			args: [],
+		},
+		{
+			args: ["--include-modules", "@chakra-ui/react"],
+			includeModules: ["@chakra-ui/react"],
+		},
+		{
+			args: ["--include-files", "**/*.{jsx,tsx}"],
+			includeFiles: ["**/*.{jsx,tsx}"],
+		},
+		{
+			args: [
+				"--include-modules",
+				"@chakra-ui/react",
+				"--include-modules=react",
+				"--include-files",
+				"**/*.tsx",
+				"--include-files=**/*.ts",
+			],
+			includeFiles: ["**/*.tsx", "**/*.ts"],
+			includeModules: ["@chakra-ui/react", "react"],
+		},
+	])("should pass CLI filters to the analyzer: $args", async ({ args, ...options }) => {
+		vi.spyOn(console, "log").mockImplementation(() => {
+			/* Empty */
+		});
+
+		fixture.argv.push(...args);
+		await import("./index");
+
+		await vi.waitFor(() => {
+			expect(fixture.close).toHaveBeenCalledWith();
+		});
+
+		const plugins: unknown = expect.any(Array);
+
+		expect(fixture.createAnalyzer).toHaveBeenCalledExactlyOnceWith("/projects/fixture", {
+			...options,
+			plugins,
+		});
+	});
+
+	test.each([["--include-modules"], ["--include-files"], ["--unknown"]])(
+		"should report invalid CLI arguments without analyzing: %s",
+		async (argument) => {
+			const errorLog = vi.spyOn(console, "error").mockImplementation(() => {
+				/* Empty */
+			});
+
+			fixture.argv.push(argument);
+			await import("./index");
+			expect(errorLog).toHaveBeenCalledExactlyOnceWith(expect.any(Error));
+			expect(process.exitCode).toBe(1);
+			expect(fixture.createAnalyzer).not.toHaveBeenCalled();
+			expect(createInterface).not.toHaveBeenCalled();
+		},
+	);
 
 	test("should group names with counts and preserve each location's package and type", async () => {
 		const log = vi.spyOn(console, "log").mockImplementation(() => {
