@@ -1,31 +1,31 @@
 import { basename } from "node:path";
-import { cwd } from "node:process";
+import { cwd, stdin, stdout } from "node:process";
+import { clearScreenDown, createInterface, cursorTo } from "node:readline";
 import { styleText } from "node:util";
 import { createInstance } from "@sdk-usage/core";
 import { plugin as javascriptPlugin } from "@sdk-usage/plugin-javascript";
 import { plugin as jsxPlugin } from "@sdk-usage/plugin-jsx";
 import { plugin as typescriptPlugin } from "@sdk-usage/plugin-typescript";
 
+type ReportItem = {
+	name: string;
+	location: { column: number; file: string; line: number };
+	module: string;
+	type: string;
+	version: string;
+};
+
 type TextStyle = "bold" | "cyan" | "dim" | "green" | "magenta";
 
 const style = (format: readonly TextStyle[] | TextStyle, text: string) => {
-	return styleText(format, text, { stream: process.stdout });
+	return styleText(format, text, { stream: stdout });
 };
 
 const pluralize = (count: number, noun: string) => {
 	return `${count} ${noun}${count === 1 ? "" : "s"}`;
 };
 
-const formatReport = (
-	root: string,
-	items: {
-		name: string;
-		location: { column: number; file: string; line: number };
-		module: string;
-		type: string;
-		version: string;
-	}[],
-) => {
+const formatReport = (root: string, items: ReportItem[]) => {
 	const modules = new Set(
 		items.map(({ module }) => {
 			return module;
@@ -52,25 +52,82 @@ const formatReport = (
 					`Project: ${basename(root)}`,
 					style("dim", `Root: ${root}`),
 					"",
-					...items.flatMap(({ name, location, module, type, version }) => {
-						const packageName = version ? `${module}@${version}` : module;
-
-						return [
-							`${style("bold", name)} ${style("magenta", type)}`,
-							`  ${packageName}`,
-							`  ${location.file}:${location.line}:${location.column}`,
-							"",
-						];
-					}),
+					...formatUsages(items),
 				];
 
-	return [
-		style(["bold", "cyan"], "SDK Usage Report"),
-		"",
-		...details,
-		style("bold", "Raw output (JSON)"),
-		JSON.stringify(items, undefined, 2),
-	].join("\n");
+	return [style(["bold", "cyan"], "SDK Usage Report"), "", ...details].join("\n");
+};
+
+const formatUsages = (items: ReportItem[]) => {
+	const lines: string[] = [];
+
+	for (const [name, usages] of Map.groupBy(items, (item) => {
+		return item.name;
+	})) {
+		lines.push(`${style("bold", name)} (${pluralize(usages.length, "usage")})`);
+
+		for (const { location, module, type, version } of usages) {
+			const packageName = version ? `${module}@${version}` : module;
+
+			lines.push(
+				`  ${location.file}:${location.line}:${location.column}`,
+				`    ${packageName} ${style("magenta", type)}`,
+			);
+		}
+
+		lines.push("");
+	}
+
+	return lines;
+};
+
+const printReport = async (report: string, items: ReportItem[]) => {
+	console.log(report);
+
+	if (!stdin.isTTY || !stdout.isTTY) {
+		console.log(style("bold", "Raw output (JSON)"));
+		console.log(JSON.stringify(items, undefined, 2));
+
+		return;
+	}
+
+	const terminal = createInterface({ input: stdin, output: stdout });
+	let isExpanded = false;
+
+	const renderRawOutput = () => {
+		if (isExpanded) {
+			console.log(style("bold", "Raw output (JSON)"));
+			console.log(JSON.stringify(items, undefined, 2));
+		}
+
+		terminal.setPrompt(
+			`${isExpanded ? "[-]" : "[+]"} Raw output (JSON) | r + Enter: ${isExpanded ? "collapse" : "expand"} | q + Enter: quit\n`,
+		);
+
+		terminal.prompt();
+	};
+
+	try {
+		renderRawOutput();
+
+		for await (const command of terminal) {
+			if (command.trim().toLowerCase() === "q") {
+				break;
+			}
+
+			if (command.trim().toLowerCase() === "r") {
+				isExpanded = !isExpanded;
+				cursorTo(stdout, 0, 0);
+				clearScreenDown(stdout);
+				console.log(report);
+				renderRawOutput();
+			} else {
+				terminal.prompt();
+			}
+		}
+	} finally {
+		terminal.close();
+	}
 };
 
 const main = async () => {
@@ -81,13 +138,13 @@ const main = async () => {
 			plugins: [jsxPlugin, javascriptPlugin, typescriptPlugin],
 		});
 
-		const output = [];
+		const items = [];
 
 		for await (const item of instance.getItems()) {
-			output.push(item);
+			items.push(item);
 		}
 
-		console.log(formatReport(root, output));
+		await printReport(formatReport(root, items), items);
 	} catch (error) {
 		console.error(error);
 		process.exitCode = 1;
