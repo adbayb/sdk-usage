@@ -13,6 +13,8 @@
 - Run plugin visitors over parsed syntax and stream matching usage items.
 - Report source file, line, column, repository link, package, and dependency version.
 
+<br>
+
 ## 🚀 Usage
 
 Install the core package and the plugins you want to run:
@@ -44,6 +46,8 @@ semantics. By default, the scanner excludes `.git`, `node_modules`, `dist`, and 
 test-like and story-like source files. `getItems()` returns an async iterable; stopping iteration
 cancels pending scans.
 
+<br>
+
 ## 🏗️ Architecture
 
 Core owns package scanning, source parsing, plugin dispatch, and usage-item metadata. Plugins
@@ -51,9 +55,13 @@ receive one input object containing imported-binding metadata and parser helpers
 visitors keyed by SWC node type. See the [plugin documentation](../plugin-jsx/README.md) for a
 built-in example.
 
+<br>
+
 ## ✍️ Contribution
 
 See the repository [contribution guide](../../CONTRIBUTING.md).
+
+<br>
 
 ## 📖 License
 

@@ -20,6 +20,8 @@ Attributes without a value become `true`; null values become `undefined`.
 
 Fragments, unimported tags, spread contents, and dynamic expression values are not collected.
 
+<br>
+
 ## 🚀 Usage
 
 Install the core package and the plugin:
@@ -39,15 +41,21 @@ for await (const item of analyzer.getItems()) {
 }
 ```
 
+<br>
+
 ## 🏗️ Architecture
 
 The plugin registers a visitor for `JSXOpeningElement` nodes with core and emits `jsx/element` items for
 recognized imported components. Core resolves each item to its source location and package
 metadata. See [core](../core/README.md) for scanning options.
 
+<br>
+
 ## ✍️ Contribution
 
 See the repository [contribution guide](../../CONTRIBUTING.md).
+
+<br>
 
 ## 📖 License
 

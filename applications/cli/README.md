@@ -14,6 +14,8 @@
 - Groups usages by name, with counts and nested source locations.
 - Writes a contextual usage report and formatted JSON to standard output. Errors go to standard error.
 
+<br>
+
 ## 🚀 Usage
 
 Requires Node.js 22.5 or newer because `@sdk-usage/core` uses `node:path.matchesGlob`.
@@ -40,15 +42,21 @@ The command scans the current working directory. It excludes `.git`, `node_modul
 `out`, test-like files, and story-like files by default. The current CLI does not accept command
 line options; use `@sdk-usage/core` directly to configure file filters, module filters, or plugins.
 
+<br>
+
 ## 🏗️ Architecture
 
 The CLI wires `@sdk-usage/core` with the JSX, JavaScript, and TypeScript plugins, consumes the
 resulting async iterable, and formats the usages and JSON into one report on standard output. See
 the [core documentation](../../libraries/core/README.md) to customize scanning.
 
+<br>
+
 ## ✍️ Contribution
 
 See the repository [contribution guide](../../CONTRIBUTING.md).
+
+<br>
 
 ## 📖 License
 

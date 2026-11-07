@@ -18,6 +18,8 @@ Type-only imports, TypeScript type references, JSX names, and shadowed imported 
 excluded. Dynamic computed member names, local declarations, and references not derived from
 imports are not collected. Dynamic imports and CommonJS `require()` are not collected.
 
+<br>
+
 ## 🚀 Usage
 
 Install the core package and the plugin:
@@ -37,6 +39,8 @@ for await (const item of analyzer.getItems()) {
 }
 ```
 
+<br>
+
 ## 🏗️ Architecture
 
 The plugin registers JavaScript and TypeScript syntax visitors with core and emits
@@ -44,9 +48,13 @@ The plugin registers JavaScript and TypeScript syntax visitors with core and emi
 values. Core resolves each item to its source location and package metadata. See [core](../core/README.md)
 for scanning options.
 
+<br>
+
 ## ✍️ Contribution
 
 See the repository [contribution guide](../../CONTRIBUTING.md).
+
+<br>
 
 ## 📖 License
 

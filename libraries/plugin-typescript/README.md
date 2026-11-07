@@ -17,6 +17,8 @@ For qualified names, the collected name is the final type name. Inline import ty
 qualified type; an unqualified `import("ui")` does not identify a specific SDK usage. Local types,
 primitive types, and type declarations by themselves are not collected.
 
+<br>
+
 ## 🚀 Usage
 
 Install the core package and the plugin:
@@ -36,15 +38,21 @@ for await (const item of analyzer.getItems()) {
 }
 ```
 
+<br>
+
 ## 🏗️ Architecture
 
 The plugin registers TypeScript syntax visitors with core and emits `typescript/type` items for
 references to imported modules. Core resolves each item to its source location and package
 metadata. See [core](../core/README.md) for scanning options.
 
+<br>
+
 ## ✍️ Contribution
 
 See the repository [contribution guide](../../CONTRIBUTING.md).
+
+<br>
 
 ## 📖 License
 
