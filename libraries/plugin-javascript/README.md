@@ -9,6 +9,7 @@
 ## ✨ Features
 
 - Reports imported function calls, constructor calls, tagged templates, and value references.
+- Includes positional call and constructor arguments in `input.data` when statically representable.
 - Collects imported values used in JSX attribute expressions.
 - Follows namespace aliases and destructured members through variable declarations.
 - Reports namespace member access, including optional chains, by the final statically known member name; string-literal computed properties are supported.

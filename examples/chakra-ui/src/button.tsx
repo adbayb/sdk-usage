@@ -1,6 +1,6 @@
 import type { LinkProps as ChakraLinkProps } from "@chakra-ui/react";
 import { Button as ChakraButton, Link as ChakraLink } from "@chakra-ui/react";
-import React, { useId } from "react";
+import React, { useId, useState } from "react";
 
 const { version: reactVersion } = React;
 
@@ -15,6 +15,7 @@ const MY_VARIABLE = "test";
 
 export const Button = ({ children, test }: ButtonProps) => {
 	const linkId = useId();
+	const [count, setCount] = useState(0);
 
 	return (
 		<ChakraLink
@@ -27,7 +28,11 @@ export const Button = ({ children, test }: ButtonProps) => {
 		>
 			<ChakraButton
 				bgGradient="linear(to-tr, teal.300,yellow.400)"
+				data-count={count}
 				data-test={MY_VARIABLE}
+				onClick={() => {
+					setCount(count + 1);
+				}}
 				width="100%"
 			>
 				{children}

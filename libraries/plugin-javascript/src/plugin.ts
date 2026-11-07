@@ -10,6 +10,7 @@ export const plugin = createPlugin((input) => {
 				node.span.start,
 				"javascript/call",
 				input.imports,
+				node.arguments,
 			);
 		},
 		Identifier(node) {
@@ -46,6 +47,7 @@ export const plugin = createPlugin((input) => {
 				node.span.start,
 				"javascript/constructor",
 				input.imports,
+				node.arguments,
 			);
 		},
 		TaggedTemplateExpression(node) {
@@ -53,6 +55,8 @@ export const plugin = createPlugin((input) => {
 		},
 	};
 });
+
+type AstArguments = AstCallNode["arguments"] | AstConstructorNode["arguments"];
 
 type AstCallee =
 	| AstCallNode["callee"]
@@ -84,6 +88,7 @@ const createCalleeUsage = (
 	offset: number,
 	type: UsageType,
 	imports: Imports,
+	arguments_: AstArguments = [],
 ) => {
 	const { name, root } = getCalleeRoot(callee);
 
@@ -102,7 +107,43 @@ const createCalleeUsage = (
 		module: imported.module,
 		offset,
 		type,
+		...(arguments_.length > 0 && {
+			input: {
+				metadata: { withSpreading: false },
+				data: Object.fromEntries(
+					arguments_.map(({ expression, spread }, index) => {
+						return [
+							index,
+							spread
+								? createUnsupportedSyntax("SpreadElement")
+								: getArgumentValue(expression),
+						];
+					}),
+				),
+			},
+		}),
 	};
+};
+
+const getArgumentValue = (expression: AstCallNode["arguments"][number]["expression"]) => {
+	if (
+		expression.type === "BigIntLiteral" ||
+		expression.type === "BooleanLiteral" ||
+		expression.type === "NumericLiteral" ||
+		expression.type === "StringLiteral"
+	) {
+		return expression.value;
+	}
+
+	if (expression.type === "NullLiteral") {
+		return;
+	}
+
+	return createUnsupportedSyntax(expression.type);
+};
+
+const createUnsupportedSyntax = (syntax: string) => {
+	return { syntax, type: "unsupported-syntax" };
 };
 
 const getCalleeRoot = (callee: AstCallee) => {

@@ -21,10 +21,12 @@ describe(plugin, () => {
 				join(directory, "src", "index.js"),
 				[
 					'import { run as sdkRun, Client, SDK_VERSION, template } from "sdk";',
+					'import { useState } from "react";',
 					'import * as SDK from "sdk";',
 					'import type { TypeOnly } from "sdk";',
 					'import { type InlineType, action } from "sdk";',
 					"sdkRun();",
+					"useState(0);",
 					'SDK["start"]();',
 					"SDK[method]();",
 					"SDK.client.connect();",
@@ -63,6 +65,7 @@ describe(plugin, () => {
 				}),
 			).toStrictEqual([
 				{ name: "run", module: "sdk", type: "javascript/call" },
+				{ name: "useState", module: "react", type: "javascript/call" },
 				{ name: "start", module: "sdk", type: "javascript/call" },
 				{ name: "connect", module: "sdk", type: "javascript/call" },
 				{ name: "connect", module: "sdk", type: "javascript/call" },
@@ -84,6 +87,14 @@ describe(plugin, () => {
 				{ name: "SDK", module: "sdk", type: "javascript/reference" },
 				{ name: "action", module: "sdk", type: "javascript/reference" },
 			]);
+
+			expect(
+				items.find(({ name }) => {
+					return name === "useState";
+				}),
+			).toMatchObject({
+				input: { data: { "0": 0 } },
+			});
 		} finally {
 			await rm(directory, { force: true, recursive: true });
 		}
