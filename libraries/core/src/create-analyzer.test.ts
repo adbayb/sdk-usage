@@ -6,7 +6,7 @@ import { dirname, join } from "node:path";
 import { getDefaultHighWaterMark } from "node:stream";
 import { setImmediate } from "node:timers/promises";
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { createInstance } from "./create-instance";
+import { createAnalyzer } from "./create-analyzer";
 import type { Plugin } from "./modules/plugin";
 import type { AstNodes } from "./types";
 
@@ -32,7 +32,7 @@ const failingPlugin: Plugin = () => {
 	};
 };
 
-describe(createInstance, () => {
+describe(createAnalyzer, () => {
 	afterEach(async () => {
 		vi.resetAllMocks();
 
@@ -57,7 +57,7 @@ describe(createInstance, () => {
 		);
 
 		const items = await Array.fromAsync(
-			createInstance(root, {
+			createAnalyzer(root, {
 				excludeFolders: ["ignored"],
 				includeFiles: ["**/*.tsx"],
 				plugins: [usagePlugin],
@@ -85,7 +85,7 @@ describe(createInstance, () => {
 		await createSourceFile(root, "src/main.tsx");
 
 		const [item] = await Array.fromAsync(
-			createInstance(root, { plugins: [usagePlugin] }).getItems(),
+			createAnalyzer(root, { plugins: [usagePlugin] }).getItems(),
 		);
 
 		expect(item?.location.link).toBe(repositoryUrl);
@@ -123,7 +123,7 @@ describe(createInstance, () => {
 		}
 
 		const items = await Array.fromAsync(
-			createInstance(root, { ...options, plugins: [usagePlugin] }).getItems(),
+			createAnalyzer(root, { ...options, plugins: [usagePlugin] }).getItems(),
 		);
 
 		expect(
@@ -137,7 +137,7 @@ describe(createInstance, () => {
 
 	test("should not access files before consumption", async () => {
 		const root = await createPackageDirectory();
-		const items = createInstance(root, { plugins: [usagePlugin] }).getItems();
+		const items = createAnalyzer(root, { plugins: [usagePlugin] }).getItems();
 
 		await setImmediate();
 		expect(readFile).not.toHaveBeenCalled();
@@ -151,7 +151,7 @@ describe(createInstance, () => {
 		await createSourceFile(root, "src/main.tsx");
 
 		await expect(
-			Array.fromAsync(createInstance(root, { plugins: [usagePlugin] }).getItems()),
+			Array.fromAsync(createAnalyzer(root, { plugins: [usagePlugin] }).getItems()),
 		).resolves.toStrictEqual([]);
 	});
 
@@ -164,7 +164,7 @@ describe(createInstance, () => {
 
 		await expect(
 			Array.fromAsync(
-				createInstance(root, {
+				createAnalyzer(root, {
 					includeFiles: ["**/*.tsx"],
 					plugins: [usagePlugin],
 				}).getItems(),
@@ -181,7 +181,7 @@ describe(createInstance, () => {
 
 		await createSourceFile(root, "src/main.tsx", "<Button />".repeat(1000));
 
-		const items = createInstance(root, {
+		const items = createAnalyzer(root, {
 			includeFiles: ["**/*.tsx"],
 			plugins: [usagePlugin],
 		}).getItems();
@@ -221,7 +221,7 @@ describe(createInstance, () => {
 		});
 
 		// Nothing matches, so without cancellation the pending read would traverse every directory.
-		const items = createInstance(root, {}).getItems();
+		const items = createAnalyzer(root, {}).getItems();
 		const pendingRead = Promise.allSettled([items[Symbol.asyncIterator]().next()]);
 		const directory = await opened.promise;
 		const returned = items[Symbol.asyncIterator]().return?.();
@@ -258,7 +258,7 @@ describe(createInstance, () => {
 		}
 
 		await consume(
-			createInstance(root, { includeFiles: ["**/*.tsx"], plugins: [plugin] }).getItems(),
+			createAnalyzer(root, { includeFiles: ["**/*.tsx"], plugins: [plugin] }).getItems(),
 		);
 
 		const directories = await Promise.all(

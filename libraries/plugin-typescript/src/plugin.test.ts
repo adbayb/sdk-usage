@@ -1,7 +1,7 @@
 import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createInstance } from "@sdk-usage/core";
+import { createAnalyzer } from "@sdk-usage/core";
 import { describe, expect, test } from "vitest";
 import { plugin } from "./plugin";
 
@@ -37,7 +37,7 @@ describe(plugin, () => {
 			);
 
 			const items = await Array.fromAsync(
-				createInstance(directory, { plugins: [plugin] }).getItems(),
+				createAnalyzer(directory, { plugins: [plugin] }).getItems(),
 			);
 
 			expect(

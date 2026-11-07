@@ -3,7 +3,7 @@ import { basename, join } from "node:path";
 import { cwd, stdin, stdout } from "node:process";
 import { clearScreenDown, createInterface, cursorTo } from "node:readline";
 import { styleText } from "node:util";
-import { createInstance } from "@sdk-usage/core";
+import { createAnalyzer } from "@sdk-usage/core";
 import { plugin as javascriptPlugin } from "@sdk-usage/plugin-javascript";
 import { plugin as jsxPlugin } from "@sdk-usage/plugin-jsx";
 import { plugin as typescriptPlugin } from "@sdk-usage/plugin-typescript";
@@ -149,13 +149,13 @@ const main = async () => {
 	try {
 		const root = cwd();
 
-		const instance = createInstance(root, {
+		const analyzer = createAnalyzer(root, {
 			plugins: [jsxPlugin, javascriptPlugin, typescriptPlugin],
 		});
 
 		const items = [];
 
-		for await (const item of instance.getItems()) {
+		for await (const item of analyzer.getItems()) {
 			items.push(item);
 		}
 

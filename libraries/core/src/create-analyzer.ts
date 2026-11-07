@@ -31,7 +31,7 @@ type Options = Partial<
  * @param options - Optional file filters, module filters, and parser plugins.
  * @returns An analyzer that collects matching SDK usages.
  */
-export const createInstance = (path: string, options: Options) => {
+export const createAnalyzer = (path: string, options: Options) => {
 	const { includeModules = [], plugins = [], resolveInstalledVersions = false } = options;
 
 	const getFileItems = async ({ metadata, file, link }: ScannedFile, signal: AbortSignal) => {

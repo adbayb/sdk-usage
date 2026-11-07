@@ -35,12 +35,12 @@ pnpm add @sdk-usage/core @sdk-usage/plugin-jsx @sdk-usage/plugin-javascript @sdk
 ```
 
 ```ts
-import { createInstance } from "@sdk-usage/core";
+import { createAnalyzer } from "@sdk-usage/core";
 import { plugin as javascript } from "@sdk-usage/plugin-javascript";
 import { plugin as jsx } from "@sdk-usage/plugin-jsx";
 import { plugin as typescript } from "@sdk-usage/plugin-typescript";
 
-const analyzer = createInstance(process.cwd(), {
+const analyzer = createAnalyzer(process.cwd(), {
 	plugins: [jsx, javascript, typescript],
 });
 

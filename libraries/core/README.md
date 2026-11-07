@@ -22,12 +22,12 @@ pnpm add @sdk-usage/core @sdk-usage/plugin-jsx @sdk-usage/plugin-javascript @sdk
 ```
 
 ```ts
-import { createInstance } from "@sdk-usage/core";
+import { createAnalyzer } from "@sdk-usage/core";
 import { plugin as javascript } from "@sdk-usage/plugin-javascript";
 import { plugin as jsx } from "@sdk-usage/plugin-jsx";
 import { plugin as typescript } from "@sdk-usage/plugin-typescript";
 
-const analyzer = createInstance(process.cwd(), {
+const analyzer = createAnalyzer(process.cwd(), {
 	includeFiles: ["**/*.tsx"],
 	includeModules: ["@chakra-ui/react"],
 	plugins: [jsx, javascript, typescript],
@@ -38,7 +38,7 @@ for await (const item of analyzer.getItems()) {
 }
 ```
 
-`createInstance(path, options)` accepts `includeFiles`, `excludeFolders`, `includeModules`,
+`createAnalyzer(path, options)` accepts `includeFiles`, `excludeFolders`, `includeModules`,
 `plugins`, and `resolveInstalledVersions`. File patterns follow Node.js `path.matchesGlob`
 semantics. By default, the scanner excludes `.git`, `node_modules`, `dist`, and `out`, and ignores
 test-like and story-like source files. `getItems()` returns an async iterable; stopping iteration

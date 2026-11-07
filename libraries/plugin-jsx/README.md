@@ -29,10 +29,10 @@ pnpm add @sdk-usage/core @sdk-usage/plugin-jsx
 ```
 
 ```ts
-import { createInstance } from "@sdk-usage/core";
+import { createAnalyzer } from "@sdk-usage/core";
 import { plugin } from "@sdk-usage/plugin-jsx";
 
-const analyzer = createInstance(process.cwd(), { plugins: [plugin] });
+const analyzer = createAnalyzer(process.cwd(), { plugins: [plugin] });
 
 for await (const item of analyzer.getItems()) {
 	console.log(item);

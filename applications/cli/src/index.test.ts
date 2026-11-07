@@ -66,7 +66,7 @@ vi.mock(import("@sdk-usage/core"), async (importOriginal) => {
 
 	return {
 		...original,
-		createInstance: () => {
+		createAnalyzer: () => {
 			return {
 				async *getItems() {
 					for (const item of fixture.items) {
