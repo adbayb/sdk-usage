@@ -1,5 +1,12 @@
 # @sdk-usage/cli
 
+## 0.3.1
+
+### Patch Changes
+
+- Updated dependencies [[`bc03818`](https://github.com/adbayb/sdk-usage/commit/bc0381809c2c66f3bd1cc76d06d8e6dee79a8f46)]:
+    - @sdk-usage/core@0.3.0
+
 ## 0.3.0
 
 ### Minor Changes

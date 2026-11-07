@@ -1,6 +1,6 @@
 {
 	"name": "@sdk-usage/core",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"description": "Core APIs for scanning package source and collecting SDK usage through syntax plugins.",
 	"keywords": [
 		"analyze",

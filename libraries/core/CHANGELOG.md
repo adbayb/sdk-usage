@@ -1,5 +1,11 @@
 # @sdk-usage/core
 
+## 0.3.0
+
+### Minor Changes
+
+- [`bc03818`](https://github.com/adbayb/sdk-usage/commit/bc0381809c2c66f3bd1cc76d06d8e6dee79a8f46) Thanks [@adbayb](https://github.com/adbayb)! - Rename the public `createInstance` API to `createAnalyzer`.
+
 ## 0.2.0
 
 ### Minor Changes
