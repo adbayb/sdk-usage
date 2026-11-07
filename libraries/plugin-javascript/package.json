@@ -1,6 +1,6 @@
 {
 	"name": "@sdk-usage/plugin-javascript",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"description": "Parser plugin for collecting imported JavaScript runtime usage.",
 	"keywords": [
 		"analyze",
