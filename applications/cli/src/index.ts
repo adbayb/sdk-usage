@@ -1,4 +1,5 @@
-import { basename } from "node:path";
+import { writeFile } from "node:fs/promises";
+import { basename, join } from "node:path";
 import { cwd, stdin, stdout } from "node:process";
 import { clearScreenDown, createInterface, cursorTo } from "node:readline";
 import { styleText } from "node:util";
@@ -81,7 +82,7 @@ const formatUsages = (items: ReportItem[]) => {
 	return lines;
 };
 
-const printReport = async (report: string, items: ReportItem[]) => {
+const printReport = async (root: string, report: string, items: ReportItem[]) => {
 	console.log(report);
 
 	if (!stdin.isTTY || !stdout.isTTY) {
@@ -101,7 +102,7 @@ const printReport = async (report: string, items: ReportItem[]) => {
 		}
 
 		terminal.setPrompt(
-			`${isExpanded ? "[-]" : "[+]"} Raw output (JSON) | r + Enter: ${isExpanded ? "collapse" : "expand"} | q + Enter: quit\n`,
+			`${isExpanded ? "[-]" : "[+]"} Raw output (JSON) | r + Enter: ${isExpanded ? "collapse" : "expand"} | s + Enter: save JSON | q + Enter: quit\n`,
 		);
 
 		terminal.prompt();
@@ -113,6 +114,20 @@ const printReport = async (report: string, items: ReportItem[]) => {
 		for await (const command of terminal) {
 			if (command.trim().toLowerCase() === "q") {
 				break;
+			}
+
+			if (command.trim().toLowerCase() === "s") {
+				const file = join(root, "sdk-usage.json");
+
+				await writeFile(file, `${JSON.stringify(items, undefined, 2)}\n`, {
+					encoding: "utf8",
+					flag: "w",
+				});
+
+				console.log(style("green", `Saved JSON report to ${file}`));
+				terminal.prompt();
+
+				continue;
 			}
 
 			if (command.trim().toLowerCase() === "r") {
@@ -144,7 +159,7 @@ const main = async () => {
 			items.push(item);
 		}
 
-		await printReport(formatReport(root, items), items);
+		await printReport(root, formatReport(root, items), items);
 	} catch (error) {
 		console.error(error);
 		process.exitCode = 1;

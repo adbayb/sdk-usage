@@ -1,8 +1,16 @@
+import { writeFile } from "node:fs/promises";
 import { createInterface } from "node:readline";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 const inputTTY = Object.getOwnPropertyDescriptor(process.stdin, "isTTY");
 const outputTTY = Object.getOwnPropertyDescriptor(process.stdout, "isTTY");
+const { exitCode } = process;
+
+vi.mock(import("node:fs/promises"), async (importOriginal) => {
+	const original = await importOriginal();
+
+	return { ...original, writeFile: vi.fn() };
+});
 
 const fixture = vi.hoisted(() => {
 	return {
@@ -129,6 +137,7 @@ describe("report", () => {
 	beforeEach(() => {
 		vi.resetModules();
 		vi.clearAllMocks();
+		vi.mocked(writeFile).mockResolvedValue();
 		fixture.commands = ["q"];
 		fixture.isInputTTY = true;
 		fixture.isOutputTTY = true;
@@ -150,6 +159,7 @@ describe("report", () => {
 
 	afterEach(() => {
 		vi.restoreAllMocks();
+		process.exitCode = exitCode;
 
 		if (inputTTY) {
 			Object.defineProperty(process.stdin, "isTTY", inputTTY);
@@ -232,6 +242,62 @@ describe("report", () => {
 		expect(log.mock.calls.at(-1)?.[0]).not.toContain('"name"');
 	});
 
+	test("should save the complete raw JSON without expanding it", async () => {
+		const log = vi.spyOn(console, "log").mockImplementation(() => {
+			/* Empty */
+		});
+
+		fixture.commands = ["s", "q"];
+		await import("./index");
+
+		await vi.waitFor(() => {
+			expect(fixture.close).toHaveBeenCalledWith();
+		});
+
+		expect(writeFile).toHaveBeenCalledExactlyOnceWith(
+			"/projects/fixture/sdk-usage.json",
+			`${JSON.stringify(fixture.items, undefined, 2)}\n`,
+			{ encoding: "utf8", flag: "w" },
+		);
+
+		expect(log).toHaveBeenCalledWith("Saved JSON report to /projects/fixture/sdk-usage.json");
+
+		expect(
+			log.mock.calls.some(([output]) => {
+				return output === "Raw output (JSON)";
+			}),
+		).toBe(false);
+	});
+
+	test("should report save failures and close the terminal without claiming success", async () => {
+		const error = new Error("Permission denied");
+
+		const log = vi.spyOn(console, "log").mockImplementation(() => {
+			/* Empty */
+		});
+
+		const errorLog = vi.spyOn(console, "error").mockImplementation(() => {
+			/* Empty */
+		});
+
+		vi.mocked(writeFile).mockRejectedValueOnce(error);
+		fixture.commands = ["s"];
+		await import("./index");
+
+		await vi.waitFor(() => {
+			expect(errorLog).toHaveBeenCalledWith(error);
+		});
+
+		expect(fixture.close).toHaveBeenCalledWith();
+		expect(process.exitCode).toBe(1);
+
+		expect(
+			log.mock.calls.some(([output]) => {
+				return String(output).startsWith("Saved JSON");
+			}),
+		).toBe(false);
+	});
+
 	test.each([
 		{ isInputTTY: false, isOutputTTY: true },
 		{ isInputTTY: true, isOutputTTY: false },
@@ -250,6 +316,7 @@ describe("report", () => {
 			});
 
 			expect(createInterface).not.toHaveBeenCalled();
+			expect(writeFile).not.toHaveBeenCalled();
 		},
 	);
 
