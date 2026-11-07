@@ -1,6 +1,6 @@
 {
 	"name": "@sdk-usage/cli",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"description": "Command-line interface for scanning projects and collecting SDK usage as JSON.",
 	"homepage": "https://github.com/adbayb/sdk-usage/tree/main/applications/cli#readme",
 	"bugs": "https://github.com/adbayb/sdk-usage/issues",
