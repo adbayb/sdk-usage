@@ -1,5 +1,11 @@
 # @sdk-usage/cli
 
+## 0.4.0
+
+### Minor Changes
+
+- [`1013dce`](https://github.com/adbayb/sdk-usage/commit/1013dce6421224dc076c763b63ece7d8e1ed644b) Thanks [@adbayb](https://github.com/adbayb)! - Add repeatable `--include-modules` and `--include-files` CLI flags to filter analyzed modules and files.
+
 ## 0.3.1
 
 ### Patch Changes
