@@ -1,5 +1,16 @@
 # @sdk-usage/cli
 
+## 0.3.0
+
+### Minor Changes
+
+- [`4353813`](https://github.com/adbayb/sdk-usage/commit/43538135656300b4e364e44f94fd53cb76f13b7f) Thanks [@adbayb](https://github.com/adbayb)! - Group usages by name with counts and nested locations, make raw JSON collapsible in interactive terminals, and add an interactive command to save the JSON report.
+
+### Patch Changes
+
+- Updated dependencies [[`22504bb`](https://github.com/adbayb/sdk-usage/commit/22504bb82a0a90f06bfe523054c8a2439b168fcf)]:
+    - @sdk-usage/plugin-javascript@0.2.0
+
 ## 0.2.0
 
 ### Minor Changes
